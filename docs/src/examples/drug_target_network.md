@@ -119,15 +119,15 @@ pareto_front = compute_pareto_front(graph, source, target; max_solutions=1000)
 
 | Solution | Drug→Target | Efficacy | Toxicity | Cost | Time | **Best For** |
 |----------|-------------|----------|----------|------|------|--------------|
-| 1 | Morphine→MOR | 98% | 70% | $50 | 1.0h | Emergency/Trauma |
-| 2 | Morphine→COX-1 | 95% | 60% | $50 | 1.5h | Post-surgery |
-| 3 | Aspirin→COX-1 | 85% | 30% | $5 | 2.5h | Chronic pain |
-| 4 | Aspirin→COX-2 | 70% | 40% | $5 | 3.0h | Inflammation |
-| 5 | Ibuprofen→COX-1 | 65% | 15% | $15 | 3.5h | **General use (knee point)** |
-| 6 | Ibuprofen→COX-2 | 60% | 10% | $15 | 4.0h | Elderly patients |
-| 7 | Ibuprofen→MOR | 55% | 10% | $15 | 4.5h | Pediatric |
-| 8 | Novel→COX-2 | 45% | 5% | $200 | 6.5h | High-risk patients |
-| 9 | Novel→MOR | 40% | 3% | $200 | 7.5h | Preventive care |
+| 1 | Morphine→MOR | 98% | 70% | \$50 | 1.0h | Emergency/Trauma |
+| 2 | Morphine→COX-1 | 95% | 60% | \$50 | 1.5h | Post-surgery |
+| 3 | Aspirin→COX-1 | 85% | 30% | \$5 | 2.5h | Chronic pain |
+| 4 | Aspirin→COX-2 | 70% | 40% | \$5 | 3.0h | Inflammation |
+| 5 | Ibuprofen→COX-1 | 65% | 15% | \$15 | 3.5h | **General use (knee point)** |
+| 6 | Ibuprofen→COX-2 | 60% | 10% | \$15 | 4.0h | Elderly patients |
+| 7 | Ibuprofen→MOR | 55% | 10% | \$15 | 4.5h | Pediatric |
+| 8 | Novel→COX-2 | 45% | 5% | \$200 | 6.5h | High-risk patients |
+| 9 | Novel→MOR | 40% | 3% | \$200 | 7.5h | Preventive care |
 
 ### Selecting the Best Solution
 
@@ -143,7 +143,7 @@ best = weighted_sum_approach(graph, source, target, weights)
 #### Option 2: Constraint-Based (Clinical Guidelines)
 
 ```julia
-# Elderly patient: toxicity must be ≤15%, cost ≤$20
+# Elderly patient: toxicity must be ≤15%, cost ≤\$20
 constraints = [Inf, 15.0, 20.0, Inf]
 best = epsilon_constraint_approach(graph, source, target, 1, constraints)
 # → Solution 5 or 6: Ibuprofen (low toxicity, affordable)

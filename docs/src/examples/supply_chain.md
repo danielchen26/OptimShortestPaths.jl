@@ -88,9 +88,9 @@ println("Route: ", route)
 
 **Results Example**:
 ```
-Factory A → Warehouse 1 → DC 2 → Region 1: $45.30
-Factory A → Warehouse 3 → DC 4 → Region 1: $52.80
-Optimal route saves: $7.50 (14% reduction)
+Factory A → Warehouse 1 → DC 2 → Region 1: \$45.30
+Factory A → Warehouse 3 → DC 4 → Region 1: \$52.80
+Optimal route saves: \$7.50 (14% reduction)
 ```
 
 ---
@@ -124,10 +124,10 @@ routes = compute_pareto_front(graph, source, target)
 
 | Route | Cost | Time | Reliability | Carbon | **Best For** |
 |-------|------|------|-------------|--------|--------------|
-| Express Air | $200 | 8h | 99% | 150kg | Urgent orders |
-| Standard Ground | $85 | 48h | 95% | 30kg | Regular orders |
-| Eco-Friendly | $95 | 72h | 90% | 10kg | Green customers |
-| Budget | $50 | 96h | 85% | 40kg | Price-sensitive |
+| Express Air | \$200 | 8h | 99% | 150kg | Urgent orders |
+| Standard Ground | \$85 | 48h | 95% | 30kg | Regular orders |
+| Eco-Friendly | \$95 | 72h | 90% | 10kg | Green customers |
+| Budget | \$50 | 96h | 85% | 40kg | Price-sensitive |
 
 ### Route Selection Strategies
 

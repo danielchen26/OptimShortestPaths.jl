@@ -74,7 +74,7 @@ println("Treatment path: ", join(sequence, " → "))
 
 **Example Result**:
 ```
-Minimum cost: $95,000
+Minimum cost: \$95,000
 Treatment path: Initial → Screening → ChemoA → Surgery → Remission
 ```
 
@@ -108,10 +108,10 @@ protocols = compute_pareto_front(graph, initial_state, remission_state)
 
 | Protocol | Cost | Time | QoL | Success | **Best For** |
 |----------|------|------|-----|---------|--------------|
-| Aggressive | $200k | 6mo | 40% | 95% | Young, low-risk patients |
-| Standard | $120k | 9mo | 60% | 85% | Average patients |
-| Conservative | $80k | 12mo | 75% | 75% | Elderly, high-risk |
-| Palliative | $40k | 15mo | 85% | 50% | Late-stage, comfort focus |
+| Aggressive | \$200k | 6mo | 40% | 95% | Young, low-risk patients |
+| Standard | \$120k | 9mo | 60% | 85% | Average patients |
+| Conservative | \$80k | 12mo | 75% | 75% | Elderly, high-risk |
+| Palliative | \$40k | 15mo | 85% | 50% | Late-stage, comfort focus |
 
 ### Patient-Specific Selection
 
