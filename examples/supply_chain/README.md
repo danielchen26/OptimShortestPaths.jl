@@ -1,8 +1,8 @@
-# 📦 Supply Chain Optimization with OptimSPath
+# 📦 Supply Chain Optimization with OptimShortestPaths
 
 ## Overview
 
-This example demonstrates how to transform complex multi-echelon supply chain optimization problems into shortest-path problems using the OptimSPath framework. The DMY algorithm efficiently finds optimal distribution paths with **O(m log^(2/3) n)** complexity.
+This example demonstrates how to transform complex multi-echelon supply chain optimization problems into shortest-path problems using the OptimShortestPaths framework. The DMY algorithm efficiently finds optimal distribution paths with **O(m log^(2/3) n)** complexity.
 
 ## Problem Description
 
@@ -75,7 +75,7 @@ julia --project=. generate_figures.jl
 
 | Method | Complexity | Runtime | Optimality |
 |--------|-----------|---------|------------|
-| OptimSPath-DMY | O(m log^(2/3) n) | 0.05ms | Shortest paths |
+| OptimShortestPaths-DMY | O(m log^(2/3) n) | 0.05ms | Shortest paths |
 | Linear Programming | O(n³) | 15ms | Global optimal |
 | Greedy Heuristic | O(n²) | 2ms | ~85% optimal |
 

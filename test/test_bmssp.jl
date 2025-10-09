@@ -1,15 +1,15 @@
 using Test
 using DataStructures: OrderedSet
 
-const INF = OptimSPath.INF
+const INF = OptimShortestPaths.INF
 
 @testset "BMSSP Tests" begin
     
     @testset "Basic BMSSP Functionality" begin
         # Create a simple test graph: 1 -> 2 -> 3 -> 4
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2), OptimShortestPaths.Edge(3, 4, 3)]
         weights = [1.0, 2.0, 1.5]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         # Initialize distance and parent arrays
         dist = fill(INF, 4)
@@ -31,9 +31,9 @@ const INF = OptimSPath.INF
     
     @testset "Bounded BMSSP" begin
         # Create test graph with bound
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3), OptimSPath.Edge(3, 4, 4)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2), OptimShortestPaths.Edge(2, 4, 3), OptimShortestPaths.Edge(3, 4, 4)]
         weights = [1.0, 5.0, 2.0, 1.0]  # Path 1->2->4 costs 3.0, path 1->3->4 costs 6.0
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         dist = fill(INF, 4)
         parent = fill(0, 4)
@@ -52,9 +52,9 @@ const INF = OptimSPath.INF
     
     @testset "Early Termination" begin
         # Create a graph where early termination should occur
-        edges = [OptimSPath.Edge(1, 2, 1)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1)]
         weights = [1.0]
-        graph = OptimSPath.DMYGraph(2, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(2, edges, weights)
         
         dist = fill(INF, 2)
         parent = fill(0, 2)
@@ -70,9 +70,9 @@ const INF = OptimSPath.INF
     end
     
     @testset "Single Round BMSSP" begin
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2)]
         weights = [2.0, 3.0]
-        graph = OptimSPath.DMYGraph(3, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(3, edges, weights)
         
         dist = fill(INF, 3)
         parent = fill(0, 3)
@@ -89,9 +89,9 @@ const INF = OptimSPath.INF
     end
     
     @testset "BMSSP Input Validation" begin
-        edges = [OptimSPath.Edge(1, 2, 1)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1)]
         weights = [1.0]
-        graph = OptimSPath.DMYGraph(2, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(2, edges, weights)
         
         dist = fill(INF, 2)
         parent = fill(0, 2)
@@ -119,9 +119,9 @@ const INF = OptimSPath.INF
     
     @testset "BMSSP Statistics" begin
         # Create a more complex graph for statistics testing
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3), OptimSPath.Edge(3, 4, 4), OptimSPath.Edge(2, 3, 5)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2), OptimShortestPaths.Edge(2, 4, 3), OptimShortestPaths.Edge(3, 4, 4), OptimShortestPaths.Edge(2, 3, 5)]
         weights = [1.0, 2.0, 1.0, 1.0, 0.5]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         dist = fill(INF, 4)
         parent = fill(0, 4)
@@ -139,9 +139,9 @@ const INF = OptimSPath.INF
     end
     
     @testset "Count Relaxations" begin
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2), OptimShortestPaths.Edge(2, 4, 3)]
         weights = [1.0, 2.0, 1.0]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         dist = fill(INF, 4)
         dist[1] = 0.0

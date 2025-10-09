@@ -4,9 +4,9 @@ using Test
     
     @testset "Graph Validation" begin
         # Valid graph
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2)]
         weights = [1.0, 2.0]
-        graph = OptimSPath.DMYGraph(3, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(3, edges, weights)
         
         @test validate_graph(graph) == true
         
@@ -19,9 +19,9 @@ using Test
     end
     
     @testset "Edge Access Functions" begin
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 3, 3)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2), OptimShortestPaths.Edge(2, 3, 3)]
         weights = [1.0, 2.0, 1.5]
-        graph = OptimSPath.DMYGraph(3, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(3, edges, weights)
         
         # Test outgoing edges
         outgoing_1 = outgoing_edges(graph, 1)
@@ -58,9 +58,9 @@ using Test
     end
     
     @testset "Graph Statistics" begin
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2)]
         weights = [1.0, 2.0]
-        graph = OptimSPath.DMYGraph(3, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(3, edges, weights)
         
         # Test density
         density = graph_density(graph)
@@ -71,9 +71,9 @@ using Test
         @test has_self_loops(graph) == false
         
         # Graph with self-loop
-        self_loop_edges = [OptimSPath.Edge(1, 1, 1), OptimSPath.Edge(1, 2, 2)]
+        self_loop_edges = [OptimShortestPaths.Edge(1, 1, 1), OptimShortestPaths.Edge(1, 2, 2)]
         self_loop_weights = [0.5, 1.0]
-        self_loop_graph = OptimSPath.DMYGraph(2, self_loop_edges, self_loop_weights)
+        self_loop_graph = OptimShortestPaths.DMYGraph(2, self_loop_edges, self_loop_weights)
         @test has_self_loops(self_loop_graph) == true
         
         # Test vertex degrees
@@ -83,9 +83,9 @@ using Test
     end
     
     @testset "Advanced Graph Functions" begin
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(1, 3, 2), OptimShortestPaths.Edge(2, 4, 3)]
         weights = [1.0, 2.0, 1.5]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         # Test edge iteration
         edge_pairs = iterate_edges(graph, 1)
@@ -120,9 +120,9 @@ using Test
     end
     
     @testset "Error Handling" begin
-        edges = [OptimSPath.Edge(1, 2, 1)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1)]
         weights = [1.0]
-        graph = OptimSPath.DMYGraph(2, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(2, edges, weights)
         
         # Test bounds checking
         @test_throws BoundsError out_degree(graph, 0)

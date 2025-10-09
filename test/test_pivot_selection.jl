@@ -46,9 +46,9 @@ using DataStructures: OrderedSet
     
     @testset "Advanced Pivot Selection" begin
         # Create a test graph
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3), OptimSPath.Edge(1, 4, 4)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2), OptimShortestPaths.Edge(3, 4, 3), OptimShortestPaths.Edge(1, 4, 4)]
         weights = [1.0, 1.0, 1.0, 3.0]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         U_tilde = [1, 2, 3, 4]
         S = OrderedSet{Int}()
@@ -123,9 +123,9 @@ using DataStructures: OrderedSet
     
     @testset "Adaptive Partitioning" begin
         # Create test graph
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2), OptimShortestPaths.Edge(3, 4, 3)]
         weights = [1.0, 1.0, 1.0]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         U = [1, 2, 3, 4]
         dist = [0.0, 1.0, 2.0, 3.0]

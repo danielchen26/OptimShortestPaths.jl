@@ -1,4 +1,4 @@
-using OptimSPath
+using OptimShortestPaths
 using Random
 
 # Try multiple seeds to find the failing case
@@ -6,13 +6,13 @@ for seed in 1:100
     Random.seed!(seed)
     
     n = rand(5:20)
-    edges = OptimSPath.Edge[]
+    edges = OptimShortestPaths.Edge[]
     weights = Float64[]
     
     # Create spanning tree
     for i in 2:n
         parent = rand(1:(i-1))
-        push!(edges, OptimSPath.Edge(parent, i, length(edges)+1))
+        push!(edges, OptimShortestPaths.Edge(parent, i, length(edges)+1))
         push!(weights, rand() * 5.0 + 0.1)
     end
     
@@ -22,23 +22,23 @@ for seed in 1:100
         u = rand(1:n)
         v = rand(1:n)
         if u != v
-            push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+            push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
             push!(weights, rand() * 5.0 + 0.1)
         end
     end
     
-    graph = OptimSPath.DMYGraph(n, edges, weights)
+    graph = OptimShortestPaths.DMYGraph(n, edges, weights)
     
     # Test from multiple sources
     test_sources = unique([1, rand(1:n), rand(1:n)])
     for source in test_sources
-        dmy_dist = OptimSPath.dmy_sssp!(graph, source)
+        dmy_dist = OptimShortestPaths.dmy_sssp!(graph, source)
         
-        if any(d < OptimSPath.INF for d in dmy_dist)
-            max_finite_dist = maximum(d for d in dmy_dist if d < OptimSPath.INF)
+        if any(d < OptimShortestPaths.INF for d in dmy_dist)
+            max_finite_dist = maximum(d for d in dmy_dist if d < OptimShortestPaths.INF)
             bound = max_finite_dist / 2
             
-            bounded_dist = OptimSPath.dmy_sssp_bounded!(graph, source, bound)
+            bounded_dist = OptimShortestPaths.dmy_sssp_bounded!(graph, source, bound)
             
             for i in 1:n
                 if dmy_dist[i] <= bound
@@ -50,7 +50,7 @@ for seed in 1:100
                         println("  bound = $bound")
                         println("  Graph: $n vertices, $(length(edges)) edges")
                         # Debug: Check if vertex i is reachable within bound
-                        if bounded_dist[i] == OptimSPath.INF && dmy_dist[i] <= bound
+                        if bounded_dist[i] == OptimShortestPaths.INF && dmy_dist[i] <= bound
                             println("  ERROR: Vertex should be reachable within bound!")
                         end
                     end

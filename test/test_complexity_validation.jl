@@ -5,7 +5,7 @@ Complexity validation tests to ensure DMY algorithm meets theoretical guarantees
 using Test
 using Statistics
 using LinearAlgebra
-using OptimSPath
+using OptimShortestPaths
 
 @testset "Algorithm Complexity Validation" begin
     
@@ -17,15 +17,15 @@ using OptimSPath
             expected_k = max(1, ceil(Int, n^(1/3)))
             
             # Create a simple graph
-            edges = OptimSPath.Edge[]
+            edges = OptimShortestPaths.Edge[]
             weights = Float64[]
             for i in 1:min(n-1, 100)
-                push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
+                push!(edges, OptimShortestPaths.Edge(i, i+1, length(edges)+1))
                 push!(weights, 1.0)
             end
             
             if n > 0
-                graph = OptimSPath.DMYGraph(n, edges, weights)
+                graph = OptimShortestPaths.DMYGraph(n, edges, weights)
                 
                 # We need to verify k is calculated correctly
                 # This should be done by checking the internal calculation
@@ -43,12 +43,12 @@ using OptimSPath
         
         for n in sizes
             # Create sparse graph with m ≈ 2n
-            edges = OptimSPath.Edge[]
+            edges = OptimShortestPaths.Edge[]
             weights = Float64[]
             
             # Create path
             for i in 1:n-1
-                push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
+                push!(edges, OptimShortestPaths.Edge(i, i+1, length(edges)+1))
                 push!(weights, rand())
             end
             
@@ -57,18 +57,18 @@ using OptimSPath
                 u = rand(1:n)
                 v = rand(1:n)
                 if u != v
-                    push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+                    push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
                     push!(weights, rand())
                 end
             end
             
-            graph = OptimSPath.DMYGraph(n, edges, weights)
+            graph = OptimShortestPaths.DMYGraph(n, edges, weights)
             
             # Measure time (average of multiple runs)
             runs = 10
             t = 0.0
             for _ in 1:runs
-                t += @elapsed OptimSPath.dmy_sssp!(graph, 1)
+                t += @elapsed OptimShortestPaths.dmy_sssp!(graph, 1)
             end
             push!(times, t / runs)
         end
@@ -93,27 +93,27 @@ using OptimSPath
         # Ensure correctness is maintained regardless of k calculation
         for n in [1, 2, 3, 5, 8, 10, 20, 50, 100]
             # Create complete graph for worst case
-            edges = OptimSPath.Edge[]
+            edges = OptimShortestPaths.Edge[]
             weights = Float64[]
             
             for i in 1:n
                 for j in 1:n
                     if i != j
-                        push!(edges, OptimSPath.Edge(i, j, length(edges)+1))
+                        push!(edges, OptimShortestPaths.Edge(i, j, length(edges)+1))
                         push!(weights, rand() * 10)
                     end
                 end
             end
             
             if !isempty(edges)
-                graph = OptimSPath.DMYGraph(n, edges, weights)
+                graph = OptimShortestPaths.DMYGraph(n, edges, weights)
                 
                 # Compare with Dijkstra
-                dmy_dist = OptimSPath.dmy_sssp!(graph, 1)
-                dijkstra_dist = OptimSPath.simple_dijkstra(graph, 1)
+                dmy_dist = OptimShortestPaths.dmy_sssp!(graph, 1)
+                dijkstra_dist = OptimShortestPaths.simple_dijkstra(graph, 1)
                 
                 for i in 1:n
-                    if dmy_dist[i] == OptimSPath.INF && dijkstra_dist[i] == OptimSPath.INF
+                    if dmy_dist[i] == OptimShortestPaths.INF && dijkstra_dist[i] == OptimShortestPaths.INF
                         @test true
                     else
                         @test abs(dmy_dist[i] - dijkstra_dist[i]) < 1e-10
@@ -133,11 +133,11 @@ using OptimSPath
         
         for _ in 1:runs
             # Create random sparse graph
-            edges = OptimSPath.Edge[]
+            edges = OptimShortestPaths.Edge[]
             weights = Float64[]
             
             for i in 1:n-1
-                push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
+                push!(edges, OptimShortestPaths.Edge(i, i+1, length(edges)+1))
                 push!(weights, rand())
             end
             
@@ -145,15 +145,15 @@ using OptimSPath
                 u = rand(1:n)
                 v = rand(1:n)
                 if u != v
-                    push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+                    push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
                     push!(weights, rand())
                 end
             end
             
-            graph = OptimSPath.DMYGraph(n, edges, weights)
+            graph = OptimShortestPaths.DMYGraph(n, edges, weights)
             
-            push!(dmy_times, @elapsed OptimSPath.dmy_sssp!(graph, 1))
-            push!(dijkstra_times, @elapsed OptimSPath.simple_dijkstra(graph, 1))
+            push!(dmy_times, @elapsed OptimShortestPaths.dmy_sssp!(graph, 1))
+            push!(dijkstra_times, @elapsed OptimShortestPaths.simple_dijkstra(graph, 1))
         end
         
         # Calculate statistics
@@ -186,19 +186,19 @@ using OptimSPath
         n = 1000
         m = 2000
         
-        edges = OptimSPath.Edge[]
+        edges = OptimShortestPaths.Edge[]
         weights = Float64[]
         
         for i in 1:min(m, n*(n-1))
             u = rand(1:n)
             v = rand(1:n)
             if u != v
-                push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+                push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
                 push!(weights, rand())
             end
         end
         
-        graph = OptimSPath.DMYGraph(n, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(n, edges, weights)
         
         # Expected memory: O(n) for distances + O(n) for parents + O(m) for edges
         expected_memory_order = n + m

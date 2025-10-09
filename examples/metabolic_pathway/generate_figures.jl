@@ -5,8 +5,8 @@ Generate Figures for Metabolic Pathway Analysis
 Creates visualizations for single and multi-objective optimization results.
 """
 
-using OptimSPath
-using OptimSPath.MultiObjective
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
 using Plots
 using StatsPlots
 using Random
@@ -32,8 +32,8 @@ function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark
 end
 benchmark_summary(results) = "DMY achieves $(round(results.speedup[end], digits=2))× speedup at n=$(results.sizes[end]) vertices (sparse graph)"
 
-# Multi-objective optimization tools from OptimSPath
-using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimShortestPaths
+using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 

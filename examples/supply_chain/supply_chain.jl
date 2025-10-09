@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 """
-Supply Chain Optimization using OptimSPath Framework
+Supply Chain Optimization using OptimShortestPaths Framework
 ==============================================
 
 This example demonstrates how to transform complex supply chain optimization problems
@@ -14,10 +14,10 @@ Problem: Multi-echelon supply chain network optimization
 - Handle multi-modal transportation options
 """
 
-# Add OptimSPath to load path
+# Add OptimShortestPaths to load path
 push!(LOAD_PATH, joinpath(@__DIR__, "..", "..", "src"))
-include(joinpath(@__DIR__, "..", "..", "src", "OptimSPath.jl"))
-using .OptimSPath
+include(joinpath(@__DIR__, "..", "..", "src", "OptimShortestPaths.jl"))
+using .OptimShortestPaths
 
 using Random
 using LinearAlgebra
@@ -26,7 +26,7 @@ using Statistics
 Random.seed!(42)
 
 println("=" ^ 80)
-println(" " ^ 15, "📦 SUPPLY CHAIN OPTIMIZATION WITH OptimSPath")
+println(" " ^ 15, "📦 SUPPLY CHAIN OPTIMIZATION WITH OptimShortestPaths")
 println("=" ^ 80)
 
 # ==============================================================================
@@ -172,7 +172,7 @@ println("\n🔄 TRANSFORMING TO SHORTEST-PATH PROBLEM")
 println("-" ^ 60)
 
 # Build adjacency matrix with costs
-edges = OptimSPath.Edge[]
+edges = OptimShortestPaths.Edge[]
 weights = Float64[]
 edge_capacity = Float64[]
 edge_id = 0
@@ -185,7 +185,7 @@ for f in factory_ids
         cost = calculate_transport_cost(:factory, :warehouse, distance)
         
         global edge_id += 1
-        push!(edges, OptimSPath.Edge(f, w, edge_id))
+        push!(edges, OptimShortestPaths.Edge(f, w, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(factory_capacity[f-minimum(factory_ids)+1], 
                                  warehouse_capacity[w-minimum(warehouse_ids)+1]))
@@ -199,7 +199,7 @@ for w in warehouse_ids
         cost = calculate_transport_cost(:warehouse, :distribution, distance)
         
         global edge_id += 1
-        push!(edges, OptimSPath.Edge(w, d, edge_id))
+        push!(edges, OptimShortestPaths.Edge(w, d, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(warehouse_capacity[w-minimum(warehouse_ids)+1],
                                  dc_capacity[d-minimum(dc_ids)+1]))
@@ -213,7 +213,7 @@ for d in dc_ids
         cost = calculate_transport_cost(:distribution, :customer, distance)
         
         global edge_id += 1
-        push!(edges, OptimSPath.Edge(d, c, edge_id))
+        push!(edges, OptimShortestPaths.Edge(d, c, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(dc_capacity[d-minimum(dc_ids)+1],
                                  customer_demand[c-minimum(customer_ids)+1]))
@@ -228,7 +228,7 @@ for f in factory_ids[1:2]  # Only first two factories
         cost = calculate_transport_cost(:factory, :distribution, distance) * 1.5  # Premium
         
         global edge_id += 1
-        push!(edges, OptimSPath.Edge(f, d, edge_id))
+        push!(edges, OptimShortestPaths.Edge(f, d, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(factory_capacity[f-minimum(factory_ids)+1],
                                  dc_capacity[d-minimum(dc_ids)+1]) * 0.5)  # Limited capacity
@@ -251,7 +251,7 @@ println("\n🚀 SOLVING WITH DMY ALGORITHM")
 println("-" ^ 60)
 
 # Create the graph
-supply_graph = OptimSPath.DMYGraph(total_nodes, edges, weights)
+supply_graph = OptimShortestPaths.DMYGraph(total_nodes, edges, weights)
 
 # Solve from each factory to find optimal distribution paths
 println("\nFinding optimal paths from each factory...")
@@ -264,7 +264,7 @@ for (idx, factory) in enumerate(factory_ids)
     
     # Run DMY algorithm
     t_dmy = @elapsed begin
-        distances = OptimSPath.dmy_sssp!(supply_graph, factory)
+        distances = OptimShortestPaths.dmy_sssp!(supply_graph, factory)
     end
     push!(all_times, t_dmy)
     
@@ -358,7 +358,7 @@ greedy_time_estimate = (n^2) * 5e-6
 println("""
 Algorithm Performance Comparison:
   
-  DMY (OptimSPath):
+  DMY (OptimShortestPaths):
     • Complexity: O(m log^(2/3) n)
     • Actual Time: $(round(avg_time*1000, digits=3))ms
     • Optimality: Guaranteed for shortest paths
@@ -396,7 +396,7 @@ Extending to Multi-Objective Optimization:
 """)
 
 # Sample multi-objective edge
-sample_edge = OptimSPath.MultiObjectiveEdge(
+sample_edge = OptimShortestPaths.MultiObjectiveEdge(
     factory_ids[1], 
     warehouse_ids[1],
     [15.0, 2.5, 0.95, 50.0],  # [cost, time_days, reliability, carbon_kg]
@@ -428,7 +428,7 @@ Key Results:
 ✅ Demand Met: $(round(100*satisfied_demand/total_demand, digits=1))%
 ✅ Cost Reduction: ~25% vs manual planning
 
-Benefits of OptimSPath Approach:
+Benefits of OptimShortestPaths Approach:
 ─────────────────────────
 • Transforms complex supply chain into graph problem
 • Finds optimal paths in O(m log^(2/3) n) time

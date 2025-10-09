@@ -1,4 +1,4 @@
-# 🌟 OptimSPath Framework Comprehensive Dashboard
+# 🌟 OptimShortestPaths Framework Comprehensive Dashboard
 
 ## Optimization Problems Unified as Shortest-paths
 
@@ -6,11 +6,11 @@
 
 ---
 
-## 📚 The OptimSPath Philosophy
+## 📚 The OptimShortestPaths Philosophy
 
-OptimSPath provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.
+OptimShortestPaths provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.
 
-![OptimSPath Transformation Framework](figures/optimspath_philosophy.png)
+![OptimShortestPaths Transformation Framework](figures/optimspath_philosophy.png)
 
 ### Key Transformation Principles
 
@@ -27,7 +27,7 @@ OptimSPath provides a **systematic transformation framework** that converts opti
 
 ## 🎯 Problem Casting Methodology
 
-OptimSPath provides a systematic 6-step approach to transform optimization problems:
+OptimShortestPaths provides a systematic 6-step approach to transform optimization problems:
 
 ![Problem Casting Methodology](figures/problem_casting_methodology.png)
 
@@ -48,13 +48,13 @@ Performance metrics across different application domains:
 
 ![Real-World Applications](figures/real_world_applications.png)
 
-The heatmap reports +15-32% improvements over traditional baselines, while the underlying OptimSPath scores remain in the high 80s and 90s for cost, speed, coverage, and efficiency across every domain.
+The heatmap reports +15-32% improvements over traditional baselines, while the underlying OptimShortestPaths scores remain in the high 80s and 90s for cost, speed, coverage, and efficiency across every domain.
 
 ---
 
 ## 🌍 Multi-Domain Applications
 
-OptimSPath successfully transforms problems across diverse domains:
+OptimShortestPaths successfully transforms problems across diverse domains:
 
 ![Multi-Domain Applications](figures/multi_domain_applications.png)
 
@@ -98,7 +98,7 @@ OptimSPath successfully transforms problems across diverse domains:
 
 ## 💡 Real-World Example: Supply Chain Optimization
 
-OptimSPath transforms supply chain networks into solvable shortest-path problems. For a comprehensive implementation, see the dedicated [Supply Chain Example](../supply_chain/).
+OptimShortestPaths transforms supply chain networks into solvable shortest-path problems. For a comprehensive implementation, see the dedicated [Supply Chain Example](../supply_chain/).
 
 ![Supply Chain Example](figures/supply_chain_optimization.png)
 
@@ -110,7 +110,7 @@ OptimSPath transforms supply chain networks into solvable shortest-path problems
 
 ### Measured Results
 - Total optimal cost: **$34.2k**
-- OptimSPath runtime: **~0.011 ms** (single SSSP solve)
+- OptimShortestPaths runtime: **~0.011 ms** (single SSSP solve)
 - Average cost per unit shipped: **$9.1**
 - Network utilization: **~82% capacity**
 
@@ -118,7 +118,7 @@ OptimSPath transforms supply chain networks into solvable shortest-path problems
 
 ## 🎯 Multi-Objective Optimization
 
-OptimSPath handles competing objectives through Pareto optimization:
+OptimShortestPaths handles competing objectives through Pareto optimization:
 
 ![Pareto Front](figures/multi_objective_optimization.png)
 
@@ -184,7 +184,7 @@ OptimSPath handles competing objectives through Pareto optimization:
    - Parse data into vertex/edge structure
    - Define transition weights
 
-2. **OptimSPath Transformation**
+2. **OptimShortestPaths Transformation**
    ```julia
    graph = DMYGraph(n_vertices, edges, weights)
    distances = dmy_sssp!(graph, source)
@@ -222,7 +222,7 @@ The DMY algorithm demonstrates:
 ✅ **Multi-objective Support** - 57% Pareto optimal solutions identified  
 ✅ **Practical Performance** - Sub-millisecond on real problems  
 
-### The OptimSPath Approach
+### The OptimShortestPaths Approach
 
 > "A systematic method to transform optimization problems into efficient shortest-path problems"
 
@@ -252,4 +252,4 @@ The DMY algorithm demonstrates:
 
 ---
 
-*Based on actual benchmark measurements - OptimSPath Framework v1.0.0*
+*Based on actual benchmark measurements - OptimShortestPaths Framework v1.0.0*

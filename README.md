@@ -9,13 +9,13 @@
   Optimization via Shortest Paths
 ```
 
-# OptimSPath Framework
+# OptimShortestPaths Framework
 
-**OptimSPath** is a practical Julia framework that casts optimization problems as graph shortest-path problems and leverages the breakthrough **2025 DMY algorithm** [1]. It provides multi-objective optimization tooling and domain-specific templates for pharmaceutical, metabolic, and healthcare applications.
+**OptimShortestPaths** is a practical Julia framework that casts optimization problems as graph shortest-path problems and leverages the breakthrough **2025 DMY algorithm** [1]. It provides multi-objective optimization tooling and domain-specific templates for pharmaceutical, metabolic, and healthcare applications.
 
-## 🎯 **What OptimSPath Is (and Isn't)**
+## 🎯 **What OptimShortestPaths Is (and Isn't)**
 
-### What OptimSPath Provides (Value Added)
+### What OptimShortestPaths Provides (Value Added)
 - **Domain Casting Framework**: Ready-made templates to transform optimization problems into graphs
 - **Integration of DMY Algorithm**: Implementation of the STOC 2025 Best Paper algorithm [1]
 - **Multi-Objective Tooling**: Standard MCDA approaches (weighted sum, ε-constraint, lexicographic)
@@ -57,9 +57,9 @@
 ## 📁 **Project Structure**
 
 ```
-OptimSPath/
+OptimShortestPaths/
 ├── src/                          # Source code
-│   ├── OptimSPath.jl                   # Main module (casting framework)
+│   ├── OptimShortestPaths.jl                   # Main module (casting framework)
 │   ├── core_types.jl             # Data structures
 │   ├── graph_utils.jl            # Graph utilities
 │   ├── bmssp.jl                  # Bounded Multi-Source Shortest Path
@@ -78,8 +78,8 @@ OptimSPath/
 
 ```bash
 # Clone the repository
-git clone https://github.com/danielchen26/OptimSPath.git
-cd OptimSPath
+git clone https://github.com/danielchen26/OptimShortestPaths.git
+cd OptimShortestPaths
 
 # Setup in development mode
 julia --project=. -e "using Pkg; Pkg.develop(path=\".\"); Pkg.instantiate()"
@@ -95,7 +95,7 @@ julia --project=. -e "using Pkg; Pkg.add.(\"Plots\", \"StatsPlots\", \"GraphReci
 
 ### Basic Usage
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 # Create a directed graph with non-negative weights
 edges = [Edge(1, 2, 1), Edge(1, 3, 2), Edge(2, 4, 3), Edge(3, 4, 4)]
@@ -109,7 +109,7 @@ println(distances)  # [0.0, 1.0, 2.0, 2.5]
 
 ### Casting a domain problem
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 metabolites = ["Glucose", "G6P", "Pyruvate"]
 reactions = ["Hexokinase", "Pyruvate_Kinase"]
@@ -139,7 +139,7 @@ Replace `<example_name>` with `comprehensive_demo`, `drug_target_network`,
 
 ## 🔄 **Two Approaches: Generic vs Domain-Specific Functions**
 
-OptimSPath provides **TWO ways** to use its shortest-path algorithms, giving you complete flexibility:
+OptimShortestPaths provides **TWO ways** to use its shortest-path algorithms, giving you complete flexibility:
 
 ### **Approach 1: Generic Functions (Recommended for General Use)**
 Use these domain-agnostic functions that work with ANY graph structure:
@@ -188,7 +188,7 @@ cost, sequence = optimize_treatment_sequence(protocol, "Screening", "Remission")
 | New domain not in examples | Generic Functions | No existing domain wrapper |
 | Building a general tool | Generic Functions | Maximum flexibility |
 | Working in pharmaceuticals/healthcare | Either | Domain wrappers available |
-| Learning OptimSPath | Start with Generic | Understand core concepts |
+| Learning OptimShortestPaths | Start with Generic | Understand core concepts |
 | Production system | Generic Functions | Better performance, control |
 | Quick prototype in known domain | Domain Functions | Faster development |
 
@@ -216,7 +216,7 @@ Both give the same result! Choose based on your needs.
 
 ## 📚 **Examples Gallery**
 
-OptimSPath includes comprehensive examples demonstrating real-world applications across multiple domains:
+OptimShortestPaths includes comprehensive examples demonstrating real-world applications across multiple domains:
 
 ### 1. 🌟 **Comprehensive Demo** (`examples/comprehensive_demo/`)
 Complete framework demonstration showcasing:
@@ -228,7 +228,7 @@ Complete framework demonstration showcasing:
 
 **Quick Usage:**
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 # Example: Supply chain optimization
 # Transform locations into vertices, routes into edges
@@ -259,7 +259,7 @@ Pharmaceutical network optimization demonstrating:
 
 **Quick Usage:**
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 # Define drugs and targets with binding affinities
 drugs = ["Aspirin", "Ibuprofen", "Celecoxib"]
@@ -297,7 +297,7 @@ Systems biology application featuring:
 
 **Quick Usage:**
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 # Define metabolites and enzymatic reactions
 metabolites = ["Glucose", "G6P", "F6P", "Pyruvate", "Lactate", "ATP"]
@@ -342,7 +342,7 @@ Healthcare pathway optimization including:
 
 **Quick Usage:**
 ```julia
-using OptimSPath
+using OptimShortestPaths
 
 # Define treatment options and costs (in $1000s)
 treatments = [
@@ -433,7 +433,7 @@ The implementation follows the STOC 2025 paper structure:
 5. Domain-specific applications
 6. Performance benchmarks
 
-## 🔄 **The OptimSPath Casting Paradigm**
+## 🔄 **The OptimShortestPaths Casting Paradigm**
 
 ### How to Cast Problems to Graphs
 
@@ -514,14 +514,14 @@ Contributions welcome! Please:
 
 ## 📝 **Citation**
 
-If you use OptimSPath in your research, please cite:
+If you use OptimShortestPaths in your research, please cite:
 
 ```bibtex
 @software{optimspath2025,
-  title = {OptimSPath: Optimization via Shortest Paths},
+  title = {OptimShortestPaths: Optimization via Shortest Paths},
   author = {Tianchi Chen},
   year = {2025},
-  url = {https://github.com/danielchen26/OptimSPath.jl}
+  url = {https://github.com/danielchen26/OptimShortestPaths.jl}
 }
 
 @inproceedings{dmy2025,

@@ -3,14 +3,14 @@
 """
 Generic Utilities Demonstration
 ================================
-This example shows how OptimSPath's generic utility functions can be applied
+This example shows how OptimShortestPaths's generic utility functions can be applied
 to ANY domain. We'll demonstrate with a simple logistics network, but
 these same functions work for ANY graph-based problem!
 """
 
-using OptimSPath
+using OptimShortestPaths
 
-println("🌐 OptimSPath Generic Utilities Demonstration")
+println("🌐 OptimShortestPaths Generic Utilities Demonstration")
 println("=" ^ 60)
 
 # Example 1: Supply Chain Network
@@ -51,7 +51,7 @@ warehouses = [2, 3, 4]
 store6_costs = compare_sources(supply_graph, warehouses, 6)
 for (warehouse, cost) in store6_costs
     wh_name = "Warehouse $(warehouse-1)"
-    if cost < OptimSPath.INF
+    if cost < OptimShortestPaths.INF
         println("   $wh_name → Store 6: \$$(round(cost, digits=2))")
     else
         println("   $wh_name → Store 6: No route")
@@ -123,7 +123,7 @@ Simply:
 2. Map relationships to weighted edges
 3. Use the generic functions for analysis!
 
-No domain-specific code needed - OptimSPath handles it all!
+No domain-specific code needed - OptimShortestPaths handles it all!
 """)
 
 println("\n✅ Generic utilities demonstration complete!")

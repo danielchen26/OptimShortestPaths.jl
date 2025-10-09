@@ -5,22 +5,22 @@ using DataStructures: OrderedSet
     
     @testset "Edge Construction" begin
         # Valid edge
-        edge = OptimSPath.Edge(1, 2, 1)
+        edge = OptimShortestPaths.Edge(1, 2, 1)
         @test edge.source == 1
         @test edge.target == 2
         @test edge.index == 1
         
         # Invalid edges
-        @test_throws ArgumentError OptimSPath.Edge(0, 2, 1)  # Invalid source
-        @test_throws ArgumentError OptimSPath.Edge(1, 0, 1)  # Invalid target
-        @test_throws ArgumentError OptimSPath.Edge(1, 2, 0)  # Invalid index
+        @test_throws ArgumentError OptimShortestPaths.Edge(0, 2, 1)  # Invalid source
+        @test_throws ArgumentError OptimShortestPaths.Edge(1, 0, 1)  # Invalid target
+        @test_throws ArgumentError OptimShortestPaths.Edge(1, 2, 0)  # Invalid index
     end
     
     @testset "DMYGraph Construction" begin
         # Valid graph
-        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2)]
+        edges = [OptimShortestPaths.Edge(1, 2, 1), OptimShortestPaths.Edge(2, 3, 2)]
         weights = [1.0, 2.0]
-        graph = OptimSPath.DMYGraph(3, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(3, edges, weights)
         
         @test graph.n_vertices == 3
         @test length(graph.edges) == 2
@@ -33,17 +33,17 @@ using DataStructures: OrderedSet
         @test isempty(graph.adjacency_list[3])  # No outgoing edges from vertex 3
         
         # Invalid graphs
-        @test_throws ArgumentError OptimSPath.DMYGraph(0, edges, weights)  # Zero vertices
-        @test_throws ArgumentError OptimSPath.DMYGraph(3, edges, [1.0])    # Mismatched weights
-        @test_throws ArgumentError OptimSPath.DMYGraph(3, edges, [-1.0, 2.0])  # Negative weight
+        @test_throws ArgumentError OptimShortestPaths.DMYGraph(0, edges, weights)  # Zero vertices
+        @test_throws ArgumentError OptimShortestPaths.DMYGraph(3, edges, [1.0])    # Mismatched weights
+        @test_throws ArgumentError OptimShortestPaths.DMYGraph(3, edges, [-1.0, 2.0])  # Negative weight
         
         # Invalid edge vertices
-        invalid_edges = [OptimSPath.Edge(1, 4, 1)]  # Vertex 4 doesn't exist
-        @test_throws ArgumentError OptimSPath.DMYGraph(3, invalid_edges, [1.0])
+        invalid_edges = [OptimShortestPaths.Edge(1, 4, 1)]  # Vertex 4 doesn't exist
+        @test_throws ArgumentError OptimShortestPaths.DMYGraph(3, invalid_edges, [1.0])
         
         # Invalid edge index
-        wrong_index_edges = [OptimSPath.Edge(1, 2, 2)]  # Index should be 1
-        @test_throws ArgumentError OptimSPath.DMYGraph(3, wrong_index_edges, [1.0])
+        wrong_index_edges = [OptimShortestPaths.Edge(1, 2, 2)]  # Index should be 1
+        @test_throws ArgumentError OptimShortestPaths.DMYGraph(3, wrong_index_edges, [1.0])
     end
     
     @testset "Block Structure" begin
@@ -51,7 +51,7 @@ using DataStructures: OrderedSet
         frontier = OrderedSet([1])
         bound = 5.0
         
-        block = OptimSPath.Block(vertices, frontier, bound)
+        block = OptimShortestPaths.Block(vertices, frontier, bound)
         @test block.vertices == vertices
         @test block.frontier == frontier
         @test block.upper_bound == bound

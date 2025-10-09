@@ -4,9 +4,9 @@
 Simple test to verify Pareto front computation works correctly
 """
 
-using OptimSPath
+using OptimShortestPaths
 
-using OptimSPath.MultiObjective
+using OptimShortestPaths.MultiObjective
 
 println("Testing Simple Pareto Front Computation")
 println("=" ^ 40)

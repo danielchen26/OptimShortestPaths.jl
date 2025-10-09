@@ -1,5 +1,5 @@
 module Pharma
-using ..OptimSPath: Edge, DMYGraph, INF, dmy_sssp!, dmy_sssp_with_parents!, reconstruct_path,
+using ..OptimShortestPaths: Edge, DMYGraph, INF, dmy_sssp!, dmy_sssp_with_parents!, reconstruct_path,
                PharmaNetwork, DrugTargetNetwork, MetabolicPathway, TreatmentProtocol
 export create_drug_target_network, find_drug_target_paths, analyze_drug_connectivity,
        create_metabolic_pathway, find_metabolic_pathway, create_treatment_protocol,

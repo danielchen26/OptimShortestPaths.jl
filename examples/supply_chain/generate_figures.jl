@@ -8,14 +8,14 @@
 # This script constructs a layered supply chain network (Factories → Warehouses →
 # Distribution Centers → Customers), assigns transport costs based on Euclidean
 # distance with noise, adds per-unit production costs via a super-source, and
-# then uses OptimSPath DMY shortest paths to compute optimal paths for each customer.
+# then uses OptimShortestPaths DMY shortest paths to compute optimal paths for each customer.
 #
-# Requirements: using the supply_chain Project.toml (Plots, Colors) and OptimSPath.
+# Requirements: using the supply_chain Project.toml (Plots, Colors) and OptimShortestPaths.
 
 using Random
 using Plots
 using Colors
-using OptimSPath
+using OptimShortestPaths
 using Statistics
 
 # Palette (10 colors)
@@ -86,41 +86,41 @@ function transport_cost(i::Int, j::Int)
 end
 
 # Build graph edges and weights
-edges = OptimSPath.Edge[]
+edges = OptimShortestPaths.Edge[]
 weights = Float64[]
 
 # Super source → Factories (production cost)
 for f in FACTORIES
-    push!(edges, OptimSPath.Edge(SUPER_SRC, f, length(edges)+1))
+    push!(edges, OptimShortestPaths.Edge(SUPER_SRC, f, length(edges)+1))
     push!(weights, production_cost[f])
 end
 
 # Factories → Warehouses
 for f in FACTORIES, w in WAREHOUSES
-    push!(edges, OptimSPath.Edge(f, w, length(edges)+1))
+    push!(edges, OptimShortestPaths.Edge(f, w, length(edges)+1))
     push!(weights, transport_cost(f, w))
 end
 
 # Warehouses → DCs
 for w in WAREHOUSES, d in DCS
-    push!(edges, OptimSPath.Edge(w, d, length(edges)+1))
+    push!(edges, OptimShortestPaths.Edge(w, d, length(edges)+1))
     push!(weights, transport_cost(w, d))
 end
 
 # DCs → Customers
 for d in DCS, c in CUSTOMERS
-    push!(edges, OptimSPath.Edge(d, c, length(edges)+1))
+    push!(edges, OptimShortestPaths.Edge(d, c, length(edges)+1))
     push!(weights, transport_cost(d, c))
 end
 
 n_vertices = maximum(keys(coords))
-G = OptimSPath.DMYGraph(n_vertices, edges, weights)
+G = OptimShortestPaths.DMYGraph(n_vertices, edges, weights)
 
 # -----------------------------
 # Shortest paths from super source
 # -----------------------------
 # Use parents to reconstruct optimal paths to each customer
-D, parent = OptimSPath.dmy_sssp_with_parents!(G, SUPER_SRC)
+D, parent = OptimShortestPaths.dmy_sssp_with_parents!(G, SUPER_SRC)
 
 # Reconstruct path from source to a target node
 function reconstruct_path(parent::Vector{Int}, target::Int)
@@ -329,7 +329,7 @@ annotate!(p3, 0.05, 0.50, text("Transport cost: \$$(round(transport_cost_total, 
 prod_pct = round(100*production_cost_total/(production_cost_total+transport_cost_total),digits=1)
 trans_pct = round(100*transport_cost_total/(production_cost_total+transport_cost_total),digits=1)
 annotate!(p3, 0.05, 0.40, text("Cost split: $(prod_pct)% production / $(trans_pct)% transport", 10, :left), subplot=4)
-annotate!(p3, 0.05, 0.25, text("Algorithm: OptimSPath DMY", 10, :italic, :left), subplot=4)
+annotate!(p3, 0.05, 0.25, text("Algorithm: OptimShortestPaths DMY", 10, :italic, :left), subplot=4)
 
 savefig(p3, joinpath(FIG_DIR, "cost_analysis.png"))
 println("✓ Saved: $(joinpath(FIG_DIR, "cost_analysis.png"))")

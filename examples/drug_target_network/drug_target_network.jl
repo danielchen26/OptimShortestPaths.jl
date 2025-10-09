@@ -7,7 +7,7 @@ applied to pharmaceutical networks.
 
 IMPORTANT: Using Generic Functions for Your Domain
 ===================================================
-This example demonstrates how to use OptimSPath's GENERIC utility functions
+This example demonstrates how to use OptimShortestPaths's GENERIC utility functions
 that work with ANY domain, not just pharmaceuticals:
 
 1. calculate_distance_ratio(graph, source, target1, target2)
@@ -34,12 +34,12 @@ metabolic networks, transportation systems, etc. Simply map your
 domain entities to vertices and relationships to edges!
 """
 
-using OptimSPath
-using OptimSPath.MultiObjective
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
 using Plots
 
-# Multi-objective optimization tools from OptimSPath
-using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimShortestPaths
+using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
@@ -264,12 +264,12 @@ performance_results = []
 
 for n in test_sizes
     # Create sparse graph
-    edges = OptimSPath.Edge[]
+    edges = OptimShortestPaths.Edge[]
     local weights = Float64[]
     
     # Create connected path
     for i in 1:n-1
-        push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
+        push!(edges, OptimShortestPaths.Edge(i, i+1, length(edges)+1))
         push!(weights, rand() * 2.0 + 0.5)
     end
     
@@ -278,17 +278,17 @@ for n in test_sizes
         u = rand(1:n)
         v = rand(1:n)
         if u != v && !any(e -> (e.source == u && e.target == v), edges)
-            push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+            push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
             push!(weights, rand() * 5.0 + 0.5)
         end
     end
     
-    graph = OptimSPath.DMYGraph(n, edges, weights)
+    graph = OptimShortestPaths.DMYGraph(n, edges, weights)
     k = max(1, ceil(Int, n^(1/3)))
     
     # Time algorithms
-    t_dmy = @elapsed OptimSPath.dmy_sssp!(graph, 1)
-    t_dijkstra = @elapsed OptimSPath.simple_dijkstra(graph, 1)
+    t_dmy = @elapsed OptimShortestPaths.dmy_sssp!(graph, 1)
+    t_dijkstra = @elapsed OptimShortestPaths.simple_dijkstra(graph, 1)
     speedup = t_dijkstra / t_dmy
     
     push!(performance_results, (n, k, speedup))

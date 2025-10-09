@@ -8,17 +8,17 @@ include(joinpath(@__DIR__, "..", "dev", "dmy_algorithm_debug.jl"))
 using .DMYAlgorithmDebug
 ```
 
-The helpers expect `using OptimSPath` to have succeeded already and are meant purely
+The helpers expect `using OptimShortestPaths` to have succeeded already and are meant purely
 for ad-hoc debugging sessions—they are not part of the public API.
 """
 module DMYAlgorithmDebug
 
-using OptimSPath
+using OptimShortestPaths
 using DataStructures: OrderedSet
 
-const INF = OptimSPath.INF
+const INF = OptimShortestPaths.INF
 
-function debug_recursive_layer!(graph::OptimSPath.DMYGraph, dist::Vector{Float64}, parent::Vector{Int},
+function debug_recursive_layer!(graph::OptimShortestPaths.DMYGraph, dist::Vector{Float64}, parent::Vector{Int},
                                 U::Vector{Int}, S::OrderedSet{Int}, B::Float64, depth::Int=0)
 
     indent = "  " ^ depth
@@ -34,7 +34,7 @@ function debug_recursive_layer!(graph::OptimSPath.DMYGraph, dist::Vector{Float64
     end
 
     # Calculate k
-    k = OptimSPath.calculate_pivot_threshold(length(U))
+    k = OptimShortestPaths.calculate_pivot_threshold(length(U))
     println("$(indent)k = ceil($(length(U))^(1/3)) = $k")
 
     # Filter U_tilde
@@ -59,7 +59,7 @@ function debug_recursive_layer!(graph::OptimSPath.DMYGraph, dist::Vector{Float64
             end
         end
 
-        final_frontier = OptimSPath.bmssp!(graph, dist, parent, S, B, k)
+        final_frontier = OptimShortestPaths.bmssp!(graph, dist, parent, S, B, k)
 
         println("$(indent)After BMSSP:")
         if depth <= 1
@@ -79,11 +79,11 @@ function debug_recursive_layer!(graph::OptimSPath.DMYGraph, dist::Vector{Float64
         end
     else
         println("$(indent)|U_tilde| > k*|S|: using pivot selection")
-        P = OptimSPath.select_pivots(U_tilde, S, k, dist)
+        P = OptimShortestPaths.select_pivots(U_tilde, S, k, dist)
         println("$(indent)Selected $(length(P)) pivots")
 
         P_set = OrderedSet(sort(P))
-        final_frontier = OptimSPath.bmssp!(graph, dist, parent, P_set, B, k)
+        final_frontier = OptimShortestPaths.bmssp!(graph, dist, parent, P_set, B, k)
 
         empty!(S)
         for v in final_frontier
@@ -92,10 +92,10 @@ function debug_recursive_layer!(graph::OptimSPath.DMYGraph, dist::Vector{Float64
     end
 
     # Partition into blocks
-    t = length(U) > 1 ? OptimSPath.calculate_partition_parameter(length(U)) : 1
+    t = length(U) > 1 ? OptimShortestPaths.calculate_partition_parameter(length(U)) : 1
     println("$(indent)Partitioning into 2^$t = $(2^t) blocks")
 
-    blocks = OptimSPath.partition_blocks(U, dist, t, B)
+    blocks = OptimShortestPaths.partition_blocks(U, dist, t, B)
     println("$(indent)Created $(length(blocks)) blocks")
 
     # Process each block

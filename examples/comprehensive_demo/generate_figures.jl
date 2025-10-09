@@ -1,13 +1,13 @@
 #!/usr/bin/env julia
 
 """
-OptimSPath Framework Visualization Suite
+OptimShortestPaths Framework Visualization Suite
 Comprehensive figure generation with high-quality, informative visualizations
 All figures address domain-agnostic problem transformation methodology
 """
 
-# Import OptimSPath for real benchmark data generation
-using OptimSPath
+# Import OptimShortestPaths for real benchmark data generation
+using OptimShortestPaths
 # Inline benchmark loader - reads from canonical benchmark_results.txt
 function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark_results.txt"))
     isfile(path) || error("Benchmark results not found at $path")
@@ -68,22 +68,22 @@ const COLORS = [
 # Create figures directory
 mkpath("figures")
 
-println("🎯 OptimSPath Framework Visualization Suite")
+println("🎯 OptimShortestPaths Framework Visualization Suite")
 println("="^80)
 
 # ==============================================================================
-# Figure 1: OptimSPath Philosophy - Domain-Agnostic Problem Transformation
+# Figure 1: OptimShortestPaths Philosophy - Domain-Agnostic Problem Transformation
 # ==============================================================================
-println("\n📐 Creating OptimSPath Philosophy Figure...")
+println("\n📐 Creating OptimShortestPaths Philosophy Figure...")
 
 fig1 = plot(size=(1600, 900), dpi=300, layout=@layout([a{0.6h}; b{0.4h}]))
 
-# Top Panel: The OptimSPath Transformation Philosophy
+# Top Panel: The OptimShortestPaths Transformation Philosophy
 plot!(subplot=1, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 6))
 
 # Title with clear spacing and professional font size
 annotate!(subplot=1, 5, 5.5,
-    text("OptimSPath: Domain-Agnostic Problem Transformation", 18, :center, :bold))
+    text("OptimShortestPaths: Domain-Agnostic Problem Transformation", 18, :center, :bold))
 
 # Step 1: Any optimization problem - increased box height
 plot!(subplot=1, [0.5, 2.5, 2.5, 0.5, 0.5], [2.8, 2.8, 4.7, 4.7, 2.8],
@@ -167,7 +167,7 @@ println("\n📋 Creating Problem Casting Methodology Figure...")
 
 fig2 = plot(size=(1400, 1000), showaxis=false, grid=false, 
     xlims=(0, 14), ylims=(0, 11), dpi=300,
-    title="OptimSPath Problem Casting Methodology", titlefontsize=18)
+    title="OptimShortestPaths Problem Casting Methodology", titlefontsize=18)
 
 # Define methodology steps with proper spacing
 steps = [
@@ -246,14 +246,14 @@ println("\n🌍 Creating Multi-Domain Applications Figure...")
 
 fig3 = plot(size=(1600, 1000), showaxis=false, grid=false,
     xlims=(0, 16), ylims=(0, 10), dpi=300,
-    title="OptimSPath: Multi-Domain Problem Casting Examples", titlefontsize=18)
+    title="OptimShortestPaths: Multi-Domain Problem Casting Examples", titlefontsize=18)
 
-# Central OptimSPath hub - larger circle to fit full text
+# Central OptimShortestPaths hub - larger circle to fit full text
 scatter!([8], [5], ms=45, color=COLORS[1], markerstrokewidth=3.5,
     markerstrokecolor=:white, label="")
-# Use two lines for better readability
-annotate!(8, 5.15, text("Optim", 11, :white, :bold))
-annotate!(8, 4.85, text("SPath", 11, :white, :bold))
+# Use two lines for better readability of long package name
+annotate!(8, 5.15, text("OptimShortest", 9, :white, :bold))
+annotate!(8, 4.85, text("Paths", 9, :white, :bold))
 
 # Domain examples with specific casting details
 domains = [
@@ -290,7 +290,7 @@ for (x, y, domain, color, casting) in domains
     # Casting details (smaller font to avoid overlap)
     annotate!(x, y-0.15, text(casting, 8, :center))
     
-    # Connect to OptimSPath
+    # Connect to OptimShortestPaths
     dx, dy = 8-x, 5-y
     len = sqrt(dx^2 + dy^2)
     start_x = x + (width/2-0.1) * dx/len
@@ -407,14 +407,14 @@ total_capacity = 1000 + 800 + 600 + 500 + 700 + 600 + 400  # Factory + warehouse
 avg_utilization = (total_flow / total_capacity) * 100
 
 # Run actual DMY on supply chain network
-supply_edges = OptimSPath.Edge[]
+supply_edges = OptimShortestPaths.Edge[]
 supply_weights = Float64[]
 for (i, j, flow, cost) in flows
-    push!(supply_edges, OptimSPath.Edge(i, j, length(supply_edges)+1))
+    push!(supply_edges, OptimShortestPaths.Edge(i, j, length(supply_edges)+1))
     push!(supply_weights, parse(Float64, replace(cost, r"[\$/unit]" => "")))
 end
-supply_graph = OptimSPath.DMYGraph(14, supply_edges, supply_weights)
-t_supply = @elapsed OptimSPath.dmy_sssp!(supply_graph, 1)
+supply_graph = OptimShortestPaths.DMYGraph(14, supply_edges, supply_weights)
+t_supply = @elapsed OptimShortestPaths.dmy_sssp!(supply_graph, 1)
 
 # Move results box to bottom-left to avoid overlap with data source annotation
 plot!([0.2, 3.5, 3.5, 0.2, 0.2], [0, 0, 1.8, 1.8, 0],
@@ -530,7 +530,7 @@ Best Values (Pareto set):
 • Min Time: $(round(minimum(time[pareto_indices]), digits=1)) days
 • Max Quality: $(round(maximum(quality[pareto_indices]), digits=2))
 
-Algorithm: OptimSPath-DMY
+Algorithm: OptimShortestPaths-DMY
 Runtime: 0.089 ms
 """
 
@@ -550,7 +550,7 @@ fig6 = plot(size=(1400, 800), dpi=300, layout=(1,2))
 domains = ["Supply\nChain", "Healthcare", "Finance", "Manufacturing", "Energy\nGrid", "Transport"]
 metrics = ["Speed", "Memory", "Accuracy", "Scalability", "Robustness"]
 
-# Performance scores (0-100) - OptimSPath vs Traditional methods
+# Performance scores (0-100) - OptimShortestPaths vs Traditional methods
 optimspath_scores = [
     92 85 98 94 90;  # Supply Chain
     88 82 96 91 89;  # Healthcare
@@ -576,7 +576,7 @@ improvements = round.((optimspath_scores .- traditional_scores) ./ traditional_s
 heatmap!(metrics, domains, improvements, subplot=1,
     color=cgrad([RGB(0.9,0.9,0.9), RGB(0.6,0.8,0.6), RGB(0.2,0.6,0.2)]),
     clims=(0, 40), colorbar_title="Improvement (%)",
-    title="OptimSPath Performance Improvement vs Traditional Methods",
+    title="OptimShortestPaths Performance Improvement vs Traditional Methods",
     xlabel="Performance Metrics", ylabel="Application Domains")
 
 # Add percentage annotations
@@ -600,7 +600,7 @@ Baseline: Traditional Methods
 • Energy Grid: Load flow analysis
 • Transport: Classical routing
 
-OptimSPath Advantages:
+OptimShortestPaths Advantages:
 ━━━━━━━━━━━━━━━━━━
 Speed: 15-30% faster execution
   DMY algorithm O(m log^(2/3) n) complexity
@@ -644,7 +644,7 @@ fig7 = plot(size=(1400, 700), dpi=300, layout=(1,2))
 
 # Left: Log-log performance plot with proper margins
 plot!(sizes, dmy_times, subplot=1,
-    label="OptimSPath-DMY: O(m log^(2/3) n)",
+    label="OptimShortestPaths-DMY: O(m log^(2/3) n)",
     marker=:circle, ms=8, color=COLORS[1], lw=3,
     xlabel="Number of Vertices (n)", ylabel="Runtime (milliseconds)",
     title="Algorithm Performance Comparison",
@@ -663,7 +663,7 @@ plot!(sizes, bellman_times, subplot=1,
 
 # Add crossover annotations
 vspan!([150, 15000], subplot=1, alpha=0.03, color=COLORS[1], label="")
-annotate!(subplot=1, 1000, 0.01, text("OptimSPath-DMY\nOptimal Region", 9, :center, COLORS[1]))
+annotate!(subplot=1, 1000, 0.01, text("OptimShortestPaths-DMY\nOptimal Region", 9, :center, COLORS[1]))
 annotate!(subplot=1, 80, 0.02, text("Dijkstra\nOptimal", 8, :center, COLORS[2]))
 
 # Right: Speedup analysis with properly grouped bars (using bar! with offsets)
@@ -673,7 +673,7 @@ speedup_bell = bellman_times ./ dmy_times
 # Create subplot 2 with proper settings
 plot!(subplot=2, grid=true, gridlinewidth=0.3,
     xlabel="Graph Size (vertices)", ylabel="Speedup Factor (×)",
-    title="OptimSPath-DMY Speedup Analysis",
+    title="OptimShortestPaths-DMY Speedup Analysis",
     xticks=(1:length(sizes), string.(sizes)),
     legend=:topleft,
     ylims=(0, maximum([speedup_dij; speedup_bell]) * 1.15),
@@ -708,7 +708,7 @@ println("  $(benchmark_summary(results_fig7))")
 # Final Summary
 # ==============================================================================
 println("\n" * "="^80)
-println("✅ OptimSPath Visualization Suite Complete!")
+println("✅ OptimShortestPaths Visualization Suite Complete!")
 println("\nGenerated Figures:")
 println("  1. optimspath_philosophy.png - Clear domain-agnostic transformation explanation")
 println("  2. problem_casting_methodology.png - Non-overlapping workflow with proper spacing")

@@ -4,7 +4,7 @@
 Simple performance benchmark comparing DMY vs Dijkstra
 """
 
-using OptimSPath
+using OptimShortestPaths
 using Random
 Random.seed!(42)
 
@@ -15,13 +15,13 @@ println("=" ^ 60)
 
 # Create sparse random graph
 function create_sparse_graph(n::Int)
-    edges = OptimSPath.Edge[]
+    edges = OptimShortestPaths.Edge[]
     weights = Float64[]
     
     # Create spanning tree for connectivity
     for i in 2:n
         parent = rand(1:(i-1))
-        push!(edges, OptimSPath.Edge(parent, i, length(edges)+1))
+        push!(edges, OptimShortestPaths.Edge(parent, i, length(edges)+1))
         push!(weights, rand() * 10 + 1)
     end
     
@@ -30,12 +30,12 @@ function create_sparse_graph(n::Int)
         u = rand(1:n)
         v = rand(1:n)
         if u != v
-            push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
+            push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
             push!(weights, rand() * 10 + 1)
         end
     end
     
-    return OptimSPath.DMYGraph(n, edges, weights)
+    return OptimShortestPaths.DMYGraph(n, edges, weights)
 end
 
 println("\nTesting on SPARSE GRAPHS (m ≈ 2n)")
@@ -53,8 +53,8 @@ for n in [50, 100, 200, 500, 1000, 2000]
     end
     
     # Warm-up to amortize JIT/alloc setup
-    OptimSPath.dmy_sssp!(graph, 1)
-    OptimSPath.simple_dijkstra(graph, 1)
+    OptimShortestPaths.dmy_sssp!(graph, 1)
+    OptimShortestPaths.simple_dijkstra(graph, 1)
 
     # Run multiple times and average
     runs = 6
@@ -62,14 +62,14 @@ for n in [50, 100, 200, 500, 1000, 2000]
     # DMY timing
     t_dmy_total = 0.0
     for _ in 1:runs
-        t_dmy_total += @elapsed OptimSPath.dmy_sssp!(graph, 1)
+        t_dmy_total += @elapsed OptimShortestPaths.dmy_sssp!(graph, 1)
     end
     t_dmy = t_dmy_total / runs
     
     # Dijkstra timing
     t_dijkstra_total = 0.0
     for _ in 1:runs
-        t_dijkstra_total += @elapsed OptimSPath.simple_dijkstra(graph, 1)
+        t_dijkstra_total += @elapsed OptimShortestPaths.simple_dijkstra(graph, 1)
     end
     t_dijkstra = t_dijkstra_total / runs
     
@@ -105,8 +105,8 @@ println("CORRECTNESS VERIFICATION")
 println(repeat("=", 60))
 
 test_graph = create_sparse_graph(100)
-dmy_dist = OptimSPath.dmy_sssp!(test_graph, 1)
-dijkstra_dist = OptimSPath.simple_dijkstra(test_graph, 1)
+dmy_dist = OptimShortestPaths.dmy_sssp!(test_graph, 1)
+dijkstra_dist = OptimShortestPaths.simple_dijkstra(test_graph, 1)
 
 differences = count(i -> abs(dmy_dist[i] - dijkstra_dist[i]) > 1e-10, 1:100)
 

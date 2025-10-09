@@ -3,9 +3,9 @@ Test scenarios with multiple equal-length shortest paths
 """
 
 using Test
-using OptimSPath
+using OptimShortestPaths
 
-const INF = OptimSPath.INF
+const INF = OptimShortestPaths.INF
 
 @testset "Multiple Equal-Length Paths Tests" begin
     
@@ -13,13 +13,13 @@ const INF = OptimSPath.INF
         # Diamond structure: 1 -> {2,3} -> 4
         # Two paths of equal length from 1 to 4
         edges = [
-            OptimSPath.Edge(1, 2, 1),  # 1 -> 2 (weight 1)
-            OptimSPath.Edge(1, 3, 2),  # 1 -> 3 (weight 1)
-            OptimSPath.Edge(2, 4, 3),  # 2 -> 4 (weight 1)
-            OptimSPath.Edge(3, 4, 4),  # 3 -> 4 (weight 1)
+            OptimShortestPaths.Edge(1, 2, 1),  # 1 -> 2 (weight 1)
+            OptimShortestPaths.Edge(1, 3, 2),  # 1 -> 3 (weight 1)
+            OptimShortestPaths.Edge(2, 4, 3),  # 2 -> 4 (weight 1)
+            OptimShortestPaths.Edge(3, 4, 4),  # 3 -> 4 (weight 1)
         ]
         weights = [1.0, 1.0, 1.0, 1.0]
-        graph = OptimSPath.DMYGraph(4, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(4, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -45,20 +45,20 @@ const INF = OptimSPath.INF
         # 1 -> {2,3,4} -> {5,6} -> 7
         edges = [
             # First layer
-            OptimSPath.Edge(1, 2, 1),  # Path A
-            OptimSPath.Edge(1, 3, 2),  # Path B
-            OptimSPath.Edge(1, 4, 3),  # Path C
+            OptimShortestPaths.Edge(1, 2, 1),  # Path A
+            OptimShortestPaths.Edge(1, 3, 2),  # Path B
+            OptimShortestPaths.Edge(1, 4, 3),  # Path C
             # Second layer
-            OptimSPath.Edge(2, 5, 4),  # A -> 5
-            OptimSPath.Edge(3, 5, 5),  # B -> 5
-            OptimSPath.Edge(3, 6, 6),  # B -> 6
-            OptimSPath.Edge(4, 6, 7),  # C -> 6
+            OptimShortestPaths.Edge(2, 5, 4),  # A -> 5
+            OptimShortestPaths.Edge(3, 5, 5),  # B -> 5
+            OptimShortestPaths.Edge(3, 6, 6),  # B -> 6
+            OptimShortestPaths.Edge(4, 6, 7),  # C -> 6
             # Final convergence
-            OptimSPath.Edge(5, 7, 8),  # 5 -> 7
-            OptimSPath.Edge(6, 7, 9),  # 6 -> 7
+            OptimShortestPaths.Edge(5, 7, 8),  # 5 -> 7
+            OptimShortestPaths.Edge(6, 7, 9),  # 6 -> 7
         ]
         weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        graph = OptimSPath.DMYGraph(7, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(7, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -89,7 +89,7 @@ const INF = OptimSPath.INF
     @testset "Grid Graph - Many Equal Paths" begin
         # Create 3x3 grid where many equal-length paths exist
         function create_grid(size)
-            edges = OptimSPath.Edge[]
+            edges = OptimShortestPaths.Edge[]
             weights = Float64[]
             edge_id = 1
             
@@ -98,20 +98,20 @@ const INF = OptimSPath.INF
                     v = (i-1) * size + j
                     # Right edge
                     if j < size
-                        push!(edges, OptimSPath.Edge(v, v+1, edge_id))
+                        push!(edges, OptimShortestPaths.Edge(v, v+1, edge_id))
                         push!(weights, 1.0)
                         edge_id += 1
                     end
                     # Down edge
                     if i < size
-                        push!(edges, OptimSPath.Edge(v, v+size, edge_id))
+                        push!(edges, OptimShortestPaths.Edge(v, v+size, edge_id))
                         push!(weights, 1.0)
                         edge_id += 1
                     end
                 end
             end
             
-            return OptimSPath.DMYGraph(size*size, edges, weights)
+            return OptimShortestPaths.DMYGraph(size*size, edges, weights)
         end
         
         grid = create_grid(3)
@@ -147,16 +147,16 @@ const INF = OptimSPath.INF
         # Create graph where multiple vertices have equal-cost paths to a parent
         # Structure: {1,2,3} -> 4 -> 5 with equal costs
         edges = [
-            OptimSPath.Edge(1, 4, 1),  # 1 -> 4 (weight 2)
-            OptimSPath.Edge(2, 4, 2),  # 2 -> 4 (weight 2)
-            OptimSPath.Edge(3, 4, 3),  # 3 -> 4 (weight 2)
-            OptimSPath.Edge(4, 5, 4),  # 4 -> 5 (weight 1)
+            OptimShortestPaths.Edge(1, 4, 1),  # 1 -> 4 (weight 2)
+            OptimShortestPaths.Edge(2, 4, 2),  # 2 -> 4 (weight 2)
+            OptimShortestPaths.Edge(3, 4, 3),  # 3 -> 4 (weight 2)
+            OptimShortestPaths.Edge(4, 5, 4),  # 4 -> 5 (weight 1)
             # Add alternative longer paths
-            OptimSPath.Edge(1, 5, 5),  # 1 -> 5 (weight 4, suboptimal)
-            OptimSPath.Edge(2, 5, 6),  # 2 -> 5 (weight 4, suboptimal)
+            OptimShortestPaths.Edge(1, 5, 5),  # 1 -> 5 (weight 4, suboptimal)
+            OptimShortestPaths.Edge(2, 5, 6),  # 2 -> 5 (weight 4, suboptimal)
         ]
         weights = [2.0, 2.0, 2.0, 1.0, 4.0, 4.0]
-        graph = OptimSPath.DMYGraph(5, edges, weights)
+        graph = OptimShortestPaths.DMYGraph(5, edges, weights)
         
         # Test from multiple sources
         for source in 1:3
