@@ -48,7 +48,7 @@ Performance metrics across different application domains:
 
 ![Real-World Applications](figures/real_world_applications.png)
 
-The dashboard shows consistent high performance (85-95%) across all metrics including cost reduction, speed improvements, coverage, and efficiency for various domains.
+The heatmap reports +15-32% improvements over traditional baselines, while the underlying OptimSPath scores remain in the high 80s and 90s for cost, speed, coverage, and efficiency across every domain.
 
 ---
 
@@ -77,7 +77,7 @@ OptimSPath successfully transforms problems across diverse domains:
 
 **DMY Algorithm Performance (Actual Measurements):**
 - ✅ Theoretical complexity: **O(m log^(2/3) n)** for sparse graphs
-- ✅ Break-even near 2,000 vertices: **~1.9x faster** on sparse random graphs
+- ✅ Break-even near 2,000 vertices: **~1.8× faster** on sparse random graphs
 - ✅ At 5,000 vertices: **~4.8× faster** than Dijkstra
 - ✅ Best suited for sparse graphs (density < 10%)
 
@@ -109,9 +109,10 @@ OptimSPath transforms supply chain networks into solvable shortest-path problems
 - **Solution**: Optimal distribution path
 
 ### Measured Results
-- Total optimal cost: **$285.4**
-- Solution time: **0.03ms**
-- Average delivery cost: **$99.22**
+- Total optimal cost: **$34.2k**
+- OptimSPath runtime: **~0.011 ms** (single SSSP solve)
+- Average cost per unit shipped: **$9.1**
+- Network utilization: **~82% capacity**
 
 ---
 
@@ -122,17 +123,17 @@ OptimSPath handles competing objectives through Pareto optimization:
 ![Pareto Front](figures/multi_objective_optimization.png)
 
 ### Benchmark Results
-- **100 solutions evaluated**
-- **57 Pareto optimal solutions** identified
-- Trade-offs between cost ($100-$1100) and time (50-150 hours)
-- Quality scores ranging 0.3-0.9
+- **150 solutions evaluated**
+- **22 Pareto optimal solutions** identified
+- Trade-offs between cost (50-100 k$) and time (20-100 days)
+- Quality scores ranging 0.5-1.0
 
 ### Sample Pareto Optimal Trade-offs
-| Cost | Time | Quality |
-|------|------|---------|
-| $101 | 138.2h | 0.34 |
-| $142 | 120.8h | 0.33 |
-| $155 | 120.7h | 0.34 |
+| Cost (k$) | Time (days) | Quality |
+|-----------|-------------|---------|
+| 54.7 | 45.6 | 0.76 |
+| 67.4 | 28.0 | 0.87 |
+| 77.1 | 34.0 | 1.00 |
 
 ---
 

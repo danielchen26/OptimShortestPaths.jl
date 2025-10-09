@@ -22,7 +22,7 @@ export MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution
 export compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach
 export lexicographic_approach, get_knee_point, compute_path_objectives
 
-# OPUS transformation exports
+# OptimSPath transformation exports
 export OptimizationProblem, optimize_to_graph, objectives_to_weights, cast_problem
 
 # Pharmaceutical network exports
@@ -61,7 +61,7 @@ include("dmy_algorithm.jl")
 include("utilities.jl")
 include("pharma_networks.jl")
 include("multi_objective.jl")
-# Bring MultiObjective symbols into OPUS scope
+# Bring MultiObjective symbols into OptimSPath scope
 import .MultiObjective: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
@@ -70,7 +70,7 @@ import .MultiObjective: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     OptimizationProblem(::Symbol, data, source)
 
 Container for problem instances that can be transformed into a graph using
-the OPUS casting helpers. `data` is the argument tuple that will be splatted
+the OptimSPath casting helpers. `data` is the argument tuple that will be splatted
 into the corresponding constructor (e.g. `create_drug_target_network`).
 """
 struct OptimizationProblem{T}
@@ -85,10 +85,10 @@ function OptimizationProblem(problem_type::Symbol, data, source::Integer)
     return OptimizationProblem{typeof(data)}(problem_type, data, converted_source)
 end
 
-# OPUS-specific transformation functions
+# OptimSPath-specific transformation functions
 """
 Cast an optimization problem to a graph representation.
-This is the core innovation of OPUS: transforming optimization into shortest paths.
+This is the core innovation of OptimSPath: transforming optimization into shortest paths.
 """
 function cast_problem(problem_type::Symbol, data)
     args = data isa Tuple ? data : (data,)
@@ -116,7 +116,7 @@ function objectives_to_weights(objectives::Vector{Function}, edge_data::Any)
 end
 
 """
-Main OPUS interface: optimize by casting to shortest path.
+Main OptimSPath interface: optimize by casting to shortest path.
 """
 function optimize_to_graph(problem::OptimizationProblem; solver=:dmy)
     # Cast the optimization problem to a graph
@@ -143,7 +143,7 @@ function optimize_to_graph(problem; solver = :dmy)
     )
 end
 
-# Bring Pharma (pharmaceutical networks) symbols into OPUS scope
+# Bring Pharma (pharmaceutical networks) symbols into OptimSPath scope
 import .Pharma: create_drug_target_network, find_drug_target_paths, analyze_drug_connectivity,
                  create_metabolic_pathway, find_metabolic_pathway, create_treatment_protocol,
                  optimize_treatment_sequence
