@@ -7,7 +7,7 @@ applied to metabolic networks and biochemical pathway optimization.
 
 IMPORTANT: Two Approaches Available
 ====================================
-This example demonstrates BOTH approaches for using OPUS:
+This example demonstrates BOTH approaches for using OptimSPath:
 
 1. GENERIC FUNCTIONS (Recommended for new domains):
    - analyze_connectivity(graph, vertex) - Analyze reachability from any vertex
@@ -28,8 +28,8 @@ using OptimSPath.MultiObjective
 using Plots
 using Printf
 
-# Multi-objective optimization tools from OPUS
-using OPUS: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimSPath
+using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 

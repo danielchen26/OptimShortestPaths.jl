@@ -32,8 +32,8 @@ function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark
 end
 benchmark_summary(results) = "DMY achieves $(round(results.speedup[end], digits=2))× speedup at n=$(results.sizes[end]) vertices (sparse graph)"
 
-# Multi-objective optimization tools from OPUS
-using OPUS: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimSPath
+using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 

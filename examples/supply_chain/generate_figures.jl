@@ -8,7 +8,7 @@
 # This script constructs a layered supply chain network (Factories → Warehouses →
 # Distribution Centers → Customers), assigns transport costs based on Euclidean
 # distance with noise, adds per-unit production costs via a super-source, and
-# then uses OPUS DMY shortest paths to compute optimal paths for each customer.
+# then uses OptimSPath DMY shortest paths to compute optimal paths for each customer.
 #
 # Requirements: using the supply_chain Project.toml (Plots, Colors) and OptimSPath.
 
@@ -329,7 +329,7 @@ annotate!(p3, 0.05, 0.50, text("Transport cost: \$$(round(transport_cost_total, 
 prod_pct = round(100*production_cost_total/(production_cost_total+transport_cost_total),digits=1)
 trans_pct = round(100*transport_cost_total/(production_cost_total+transport_cost_total),digits=1)
 annotate!(p3, 0.05, 0.40, text("Cost split: $(prod_pct)% production / $(trans_pct)% transport", 10, :left), subplot=4)
-annotate!(p3, 0.05, 0.25, text("Algorithm: OPUS DMY", 10, :italic, :left), subplot=4)
+annotate!(p3, 0.05, 0.25, text("Algorithm: OptimSPath DMY", 10, :italic, :left), subplot=4)
 
 savefig(p3, joinpath(FIG_DIR, "cost_analysis.png"))
 println("✓ Saved: $(joinpath(FIG_DIR, "cost_analysis.png"))")

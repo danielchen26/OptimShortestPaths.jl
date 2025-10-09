@@ -3,14 +3,14 @@
 """
 Generic Utilities Demonstration
 ================================
-This example shows how OPUS's generic utility functions can be applied
+This example shows how OptimSPath's generic utility functions can be applied
 to ANY domain. We'll demonstrate with a simple logistics network, but
 these same functions work for ANY graph-based problem!
 """
 
 using OptimSPath
 
-println("🌐 OPUS Generic Utilities Demonstration")
+println("🌐 OptimSPath Generic Utilities Demonstration")
 println("=" ^ 60)
 
 # Example 1: Supply Chain Network
@@ -123,7 +123,7 @@ Simply:
 2. Map relationships to weighted edges
 3. Use the generic functions for analysis!
 
-No domain-specific code needed - OPUS handles it all!
+No domain-specific code needed - OptimSPath handles it all!
 """)
 
 println("\n✅ Generic utilities demonstration complete!")

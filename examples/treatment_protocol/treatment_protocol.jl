@@ -42,8 +42,8 @@ benchmark_summary(results) = "DMY achieves $(round(results.speedup[end], digits=
 
 using OptimSPath.MultiObjective
 
-# Multi-objective optimization tools from OPUS
-using OPUS: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimSPath
+using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 

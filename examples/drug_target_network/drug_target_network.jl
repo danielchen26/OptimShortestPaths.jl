@@ -7,7 +7,7 @@ applied to pharmaceutical networks.
 
 IMPORTANT: Using Generic Functions for Your Domain
 ===================================================
-This example demonstrates how to use OPUS's GENERIC utility functions
+This example demonstrates how to use OptimSPath's GENERIC utility functions
 that work with ANY domain, not just pharmaceuticals:
 
 1. calculate_distance_ratio(graph, source, target1, target2)
@@ -38,8 +38,8 @@ using OptimSPath
 using OptimSPath.MultiObjective
 using Plots
 
-# Multi-objective optimization tools from OPUS
-using OPUS: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
+# Multi-objective optimization tools from OptimSPath
+using OptimSPath: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 

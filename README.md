@@ -1,11 +1,12 @@
 ```
-   ___  ____  _   _ ____  
-  / _ \|  _ \| | | / ___| 
- | | | | |_) | | | \___ \ 
- | |_| |  __/| |_| |___) |
-  \___/|_|    \___/|____/ 
-                          
-  Optimization Problems Unified as Shortest-paths
+   ___        _   _           ____  ____       _   _
+  / _ \ _ __ | |_(_)_ __ ___ / ___||  _ \ __ _| |_| |__
+ | | | | '_ \| __| | '_ ` _ \\___ \| |_) / _` | __| '_ \
+ | |_| | |_) | |_| | | | | | |___) |  __/ (_| | |_| | | |
+  \___/| .__/ \__|_|_| |_| |_|____/|_|   \__,_|\__|_| |_|
+       |_|
+
+  Optimization via Shortest Paths
 ```
 
 # OptimSPath Framework
@@ -516,11 +517,11 @@ Contributions welcome! Please:
 If you use OptimSPath in your research, please cite:
 
 ```bibtex
-@software{opus2025,
-  title = {OptimSPath: Optimization Problems Unified as Shortest-paths},
-  author = {[Tianchi Chen]},
+@software{optimspath2025,
+  title = {OptimSPath: Optimization via Shortest Paths},
+  author = {Tianchi Chen},
   year = {2025},
-  url = {https://github.com/danielchen26/OptimSPath}
+  url = {https://github.com/danielchen26/OptimSPath.jl}
 }
 
 @inproceedings{dmy2025,

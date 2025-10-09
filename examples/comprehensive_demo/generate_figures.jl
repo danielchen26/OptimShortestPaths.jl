@@ -1,12 +1,12 @@
 #!/usr/bin/env julia
 
 """
-OPUS Framework Visualization Suite
+OptimSPath Framework Visualization Suite
 Comprehensive figure generation with high-quality, informative visualizations
 All figures address domain-agnostic problem transformation methodology
 """
 
-# Import OPUS for real benchmark data generation
+# Import OptimSPath for real benchmark data generation
 using OptimSPath
 # Inline benchmark loader - reads from canonical benchmark_results.txt
 function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark_results.txt"))
@@ -67,22 +67,22 @@ const COLORS = [
 # Create figures directory
 mkpath("figures")
 
-println("🎯 OPUS Framework Visualization Suite")
+println("🎯 OptimSPath Framework Visualization Suite")
 println("="^80)
 
 # ==============================================================================
-# Figure 1: OPUS Philosophy - Domain-Agnostic Problem Transformation
+# Figure 1: OptimSPath Philosophy - Domain-Agnostic Problem Transformation
 # ==============================================================================
-println("\n📐 Creating OPUS Philosophy Figure...")
+println("\n📐 Creating OptimSPath Philosophy Figure...")
 
 fig1 = plot(size=(1600, 900), dpi=300, layout=@layout([a{0.6h}; b{0.4h}]))
 
-# Top Panel: The OPUS Transformation Philosophy
+# Top Panel: The OptimSPath Transformation Philosophy
 plot!(subplot=1, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 6))
 
 # Title with clear spacing
 annotate!(subplot=1, 5, 5.5, 
-    text("OPUS: Domain-Agnostic Problem Transformation", 16, :center, :bold))
+    text("OptimSPath: Domain-Agnostic Problem Transformation", 16, :center, :bold))
 
 # Step 1: Any optimization problem
 plot!(subplot=1, [0.5, 2.5, 2.5, 0.5, 0.5], [3, 3, 4.5, 4.5, 3],
@@ -166,7 +166,7 @@ println("\n📋 Creating Problem Casting Methodology Figure...")
 
 fig2 = plot(size=(1400, 1000), showaxis=false, grid=false, 
     xlims=(0, 14), ylims=(0, 11), dpi=300,
-    title="OPUS Problem Casting Methodology", titlefontsize=16)
+    title="OptimSPath Problem Casting Methodology", titlefontsize=16)
 
 # Define methodology steps with proper spacing
 steps = [
@@ -245,12 +245,12 @@ println("\n🌍 Creating Multi-Domain Applications Figure...")
 
 fig3 = plot(size=(1600, 1000), showaxis=false, grid=false,
     xlims=(0, 16), ylims=(0, 10), dpi=300,
-    title="OPUS: Multi-Domain Problem Casting Examples", titlefontsize=16)
+    title="OptimSPath: Multi-Domain Problem Casting Examples", titlefontsize=16)
 
-# Central OPUS hub
+# Central OptimSPath hub
 scatter!([8], [5], ms=30, color=COLORS[1], markerstrokewidth=3, 
     markerstrokecolor=:white, label="")
-annotate!(8, 5, text("OPUS", 12, :white, :bold))
+annotate!(8, 5, text("OptimSPath", 12, :white, :bold))
 
 # Domain examples with specific casting details
 domains = [
@@ -287,7 +287,7 @@ for (x, y, domain, color, casting) in domains
     # Casting details (smaller font to avoid overlap)
     annotate!(x, y-0.15, text(casting, 8, :center))
     
-    # Connect to OPUS
+    # Connect to OptimSPath
     dx, dy = 8-x, 5-y
     len = sqrt(dx^2 + dy^2)
     start_x = x + (width/2-0.1) * dx/len
@@ -526,7 +526,7 @@ Best Values (Pareto set):
 • Min Time: $(round(minimum(time[pareto_indices]), digits=1)) days
 • Max Quality: $(round(maximum(quality[pareto_indices]), digits=2))
 
-Algorithm: OPUS-DMY
+Algorithm: OptimSPath-DMY
 Runtime: 0.089 ms
 """
 
@@ -546,7 +546,7 @@ fig6 = plot(size=(1400, 800), dpi=300, layout=(1,2))
 domains = ["Supply\nChain", "Healthcare", "Finance", "Manufacturing", "Energy\nGrid", "Transport"]
 metrics = ["Speed", "Memory", "Accuracy", "Scalability", "Robustness"]
 
-# Performance scores (0-100) - OPUS vs Traditional methods
+# Performance scores (0-100) - OptimSPath vs Traditional methods
 opus_scores = [
     92 85 98 94 90;  # Supply Chain
     88 82 96 91 89;  # Healthcare
@@ -572,7 +572,7 @@ improvements = round.((opus_scores .- traditional_scores) ./ traditional_scores 
 heatmap!(metrics, domains, improvements, subplot=1,
     color=cgrad([RGB(0.9,0.9,0.9), RGB(0.6,0.8,0.6), RGB(0.2,0.6,0.2)]),
     clims=(0, 40), colorbar_title="Improvement (%)",
-    title="OPUS Performance Improvement vs Traditional Methods",
+    title="OptimSPath Performance Improvement vs Traditional Methods",
     xlabel="Performance Metrics", ylabel="Application Domains")
 
 # Add percentage annotations
@@ -596,7 +596,7 @@ Baseline: Traditional Methods
 • Energy Grid: Load flow analysis
 • Transport: Classical routing
 
-OPUS Advantages:
+OptimSPath Advantages:
 ━━━━━━━━━━━━━━━━━━
 Speed: 15-30% faster execution
   DMY algorithm O(m log^(2/3) n) complexity
@@ -638,7 +638,7 @@ fig7 = plot(size=(1400, 700), dpi=300, layout=(1,2))
 
 # Left: Log-log performance plot
 plot!(sizes, dmy_times, subplot=1,
-    label="OPUS-DMY: O(m log^(2/3) n)",
+    label="OptimSPath-DMY: O(m log^(2/3) n)",
     marker=:circle, ms=8, color=COLORS[1], lw=3,
     xlabel="Number of Vertices (n)", ylabel="Runtime (milliseconds)",
     title="Algorithm Performance Comparison",
@@ -656,7 +656,7 @@ plot!(sizes, bellman_times, subplot=1,
 
 # Add crossover annotations
 vspan!([150, 15000], subplot=1, alpha=0.03, color=COLORS[1], label="")
-annotate!(subplot=1, 1000, 0.01, text("OPUS-DMY\nOptimal Region", 9, :center, COLORS[1]))
+annotate!(subplot=1, 1000, 0.01, text("OptimSPath-DMY\nOptimal Region", 9, :center, COLORS[1]))
 annotate!(subplot=1, 80, 0.02, text("Dijkstra\nOptimal", 8, :center, COLORS[2]))
 
 # Right: Speedup analysis
@@ -667,7 +667,7 @@ plot!(subplot=2, grid=false)  # Initialize subplot 2
 bar!([1:length(sizes);], [speedup_dij speedup_bell], subplot=2,
     label=["vs Dijkstra" "vs Bellman-Ford"],
     xlabel="Graph Size", ylabel="Speedup Factor (×)",
-    title="OPUS-DMY Speedup Analysis",
+    title="OptimSPath-DMY Speedup Analysis",
     color=[COLORS[4] COLORS[5]], bar_width=0.6,
     xticks=(1:length(sizes), string.(sizes)),
     legend=:topleft, grid=true, gridlinewidth=0.3)
@@ -688,7 +688,7 @@ println("  $(benchmark_summary(results_fig7))")
 # Final Summary
 # ==============================================================================
 println("\n" * "="^80)
-println("✅ OPUS Visualization Suite Complete!")
+println("✅ OptimSPath Visualization Suite Complete!")
 println("\nGenerated Figures:")
 println("  1. opus_philosophy.png - Clear domain-agnostic transformation explanation")
 println("  2. problem_casting_methodology.png - Non-overlapping workflow with proper spacing")

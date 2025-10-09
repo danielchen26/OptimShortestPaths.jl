@@ -1,14 +1,14 @@
 #!/usr/bin/env julia
 
 """
-OPUS: Optimization Problems Unified as Shortest-paths
+OptimSPath: Optimization via Shortest Paths
 ======================================================
 
-A comprehensive demonstration of the OPUS framework showing how to transform
+A comprehensive demonstration of the OptimSPath framework showing how to transform
 ANY optimization problem into a shortest-path problem and solve it efficiently.
 
 This demo covers:
-1. The OPUS Philosophy - Problem transformation framework
+1. The OptimSPath Philosophy - Problem transformation framework
 2. Domain-agnostic problem casting examples
 3. All algorithm capabilities
 4. Multi-objective optimization
@@ -18,21 +18,21 @@ This demo covers:
 using OptimSPath
 
 println("=" ^ 80)
-println(" " ^ 20, "🌟 OPUS FRAMEWORK DEMONSTRATION 🌟")
+println(" " ^ 20, "🌟 OptimSPath FRAMEWORK DEMONSTRATION 🌟")
 println("=" ^ 80)
 println("\n    Optimization Problems Unified as Shortest-paths")
 println("    Transforming Complex Optimization into Graph Problems")
 println()
 
 # ==============================================================================
-# SECTION 1: THE OPUS PHILOSOPHY - HOW TO CAST ANY PROBLEM AS SHORTEST PATH
+# SECTION 1: THE OptimSPath PHILOSOPHY - HOW TO CAST ANY PROBLEM AS SHORTEST PATH
 # ==============================================================================
 
-println("📚 SECTION 1: THE OPUS TRANSFORMATION FRAMEWORK")
+println("📚 SECTION 1: THE OptimSPath TRANSFORMATION FRAMEWORK")
 println("-" ^ 60)
 println("""
 
-The OPUS Framework Philosophy:
+The OptimSPath Framework Philosophy:
 -------------------------------
 ANY optimization problem can be transformed into a shortest-path problem by:
 
@@ -63,7 +63,7 @@ println("""
 # SECTION 2: DOMAIN-AGNOSTIC EXAMPLES - CASTING REAL PROBLEMS
 # ==============================================================================
 
-println("\n🎯 SECTION 2: CASTING REAL-WORLD PROBLEMS INTO OPUS")
+println("\n🎯 SECTION 2: CASTING REAL-WORLD PROBLEMS INTO OptimSPath")
 println("-" ^ 60)
 
 # Example 1: Supply Chain Optimization
@@ -200,7 +200,7 @@ println("  Minimizes changeover times and resource usage")
 # SECTION 3: CORE ALGORITHM CAPABILITIES
 # ==============================================================================
 
-println("\n\n⚡ SECTION 3: OPUS ALGORITHM CAPABILITIES")
+println("\n\n⚡ SECTION 3: OptimSPath ALGORITHM CAPABILITIES")
 println("-" ^ 60)
 
 println("\n3.1 DMY ALGORITHM FEATURES")
@@ -346,7 +346,7 @@ println("\n\n🎯 SECTION 5: MULTI-OBJECTIVE OPTIMIZATION")
 println("-" ^ 60)
 
 println("""
-Multi-Objective Optimization in OPUS:
+Multi-Objective Optimization in OptimSPath:
 --------------------------------------
 Real problems often have multiple competing objectives:
   • Cost vs. Time
@@ -354,7 +354,7 @@ Real problems often have multiple competing objectives:
   • Quality vs. Speed
   • Efficiency vs. Reliability
 
-OPUS handles this through:
+OptimSPath handles this through:
   1. Vector edge weights (multiple objectives per edge)
   2. Pareto front computation
   3. Trade-off analysis
@@ -366,7 +366,7 @@ println("  Objectives: [Cost, Time, Carbon Emissions]")
 println("  • Route A: Low cost, high time, medium emissions")
 println("  • Route B: Medium cost, low time, high emissions")
 println("  • Route C: High cost, medium time, low emissions")
-println("  → OPUS finds Pareto-optimal solutions")
+println("  → OptimSPath finds Pareto-optimal solutions")
 
 # ==============================================================================
 # SECTION 6: ADVANCED PROBLEM CASTING TECHNIQUES
@@ -498,7 +498,7 @@ println("-" ^ 60)
 
 println("""
 
-OPUS Problem Casting Methodology:
+OptimSPath Problem Casting Methodology:
 ==================================
 
 Step 1: IDENTIFY YOUR STATES
@@ -545,7 +545,7 @@ println("-" ^ 60)
 println("""
 Problem: Multi-stop delivery with time windows and vehicle capacity
 
-Step-by-step OPUS transformation:
+Step-by-step OptimSPath transformation:
 """)
 
 println("\n1️⃣ DEFINE STATES (Vertices):")
@@ -592,7 +592,7 @@ end
 
 delivery_graph = DMYGraph(delivery_locations, delivery_edges, delivery_weights)
 
-println("\n5️⃣ SOLVE WITH OPUS:")
+println("\n5️⃣ SOLVE WITH OptimSPath:")
 delivery_dist = dmy_sssp!(delivery_graph, 1)
 
 println("\nOptimal delivery routes found:")
@@ -621,7 +621,7 @@ println("\n\n🔌 SECTION 11: INTEGRATION WITH EXISTING SYSTEMS")
 println("-" ^ 60)
 
 println("""
-How to integrate OPUS into your workflow:
+How to integrate OptimSPath into your workflow:
 
 1. DATA INGESTION
    • CSV/JSON → Parse into states and transitions
@@ -634,7 +634,7 @@ How to integrate OPUS into your workflow:
    • Normalization → Scale weights appropriately
    • Aggregation → Combine multiple data sources
 
-3. OPUS TRANSFORMATION
+3. OptimSPath TRANSFORMATION
    • Apply casting methodology
    • Build graph structure
    • Set appropriate weights
@@ -656,7 +656,7 @@ How to integrate OPUS into your workflow:
 # ==============================================================================
 
 println("\n" * repeat("=", 80))
-println(" " ^ 20 * "🎯 OPUS FRAMEWORK SUMMARY 🎯")
+println(" " ^ 20 * "🎯 OptimSPath FRAMEWORK SUMMARY 🎯")
 println(repeat("=", 80))
 
 println("""
@@ -682,7 +682,7 @@ Applications Demonstrated:
 🧬 Metabolic Pathway Analysis
 ... and many more!
 
-The OPUS Advantage:
+The OptimSPath Advantage:
 -------------------
 • Unified framework for diverse problems
 • State-of-the-art DMY algorithm
@@ -695,7 +695,7 @@ Next Steps:
 1. Identify your optimization problem
 2. Map states, transitions, and costs
 3. Build graph representation
-4. Apply OPUS/DMY algorithm
+4. Apply OptimSPath/DMY algorithm
 5. Interpret shortest path as solution
 
 Resources:
@@ -706,9 +706,9 @@ Resources:
 • Papers: DMY algorithm theoretical foundations
 
 Remember: If you can define states and transitions,
-         OPUS can optimize it!
+         OptimSPath can optimize it!
 
 """)
 
-println("🚀 Thank you for exploring OPUS - Happy Optimizing! 🚀")
+println("🚀 Thank you for exploring OptimSPath - Happy Optimizing! 🚀")
 println(repeat("=", 80))
