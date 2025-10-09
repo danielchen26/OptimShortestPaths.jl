@@ -9,6 +9,12 @@
   OptimShortestPaths.jl — Optimization via Shortest Paths
 ```
 
+[![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/stable)
+[![Dev Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/dev)
+[![Build Status](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml/badge.svg)](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Julia Version](https://img.shields.io/badge/julia-v1.9+-purple.svg)](https://julialang.org/)
+
 # OptimShortestPaths Framework
 
 **OptimShortestPaths** is a practical Julia framework that casts optimization problems as graph shortest-path problems and leverages the breakthrough **2025 DMY algorithm** [1]. It provides multi-objective optimization tooling and domain-specific templates for pharmaceutical, metabolic, and healthcare applications.
