@@ -5,8 +5,8 @@ Generate Figures for Metabolic Pathway Analysis
 Creates visualizations for single and multi-objective optimization results.
 """
 
-using OPUS
-using OPUS.MultiObjective
+using OptimSPath
+using OptimSPath.MultiObjective
 using Plots
 using StatsPlots
 using Random

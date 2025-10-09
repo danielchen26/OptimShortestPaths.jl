@@ -2,7 +2,7 @@
 Comprehensive correctness validation tests comparing DMY with Dijkstra's algorithm.
 """
 
-const INF = OPUS.INF
+const INF = OptimSPath.INF
 
 @testset "Correctness Validation Tests" begin
     
@@ -77,7 +77,7 @@ const INF = OPUS.INF
             # Ensure connectivity by creating a spanning tree first
             for i in 2:n
                 parent = rand(1:(i-1))
-                push!(edges, OPUS.Edge(parent, i, length(edges)+1))
+                push!(edges, OptimSPath.Edge(parent, i, length(edges)+1))
                 push!(weights, rand() * 5.0 + 0.1)
             end
             
@@ -87,12 +87,12 @@ const INF = OPUS.INF
                 u = rand(1:n)
                 v = rand(1:n)
                 if u != v
-                    push!(edges, OPUS.Edge(u, v, length(edges)+1))
+                    push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
                     push!(weights, rand() * 5.0 + 0.1)
                 end
             end
             
-            graph = OPUS.DMYGraph(n, edges, weights)
+            graph = OptimSPath.DMYGraph(n, edges, weights)
             
             # Test from multiple sources
             test_sources = unique([1, rand(1:n), rand(1:n)])
@@ -129,21 +129,21 @@ const INF = OPUS.INF
     
     @testset "Edge Case Correctness" begin
         # Single vertex
-        single_graph = OPUS.DMYGraph(1, Edge[], Float64[])
+        single_graph = OptimSPath.DMYGraph(1, Edge[], Float64[])
         dmy_single = dmy_sssp!(single_graph, 1)
         dijkstra_single = simple_dijkstra(single_graph, 1)
         @test dmy_single == dijkstra_single == [0.0]
         
         # Two vertices, no edges
-        two_graph = OPUS.DMYGraph(2, Edge[], Float64[])
+        two_graph = OptimSPath.DMYGraph(2, Edge[], Float64[])
         dmy_two = dmy_sssp!(two_graph, 1)
         dijkstra_two = simple_dijkstra(two_graph, 1)
         @test dmy_two == dijkstra_two == [0.0, INF]
         
         # Disconnected graph
-        edges_disconnected = [OPUS.Edge(1, 2, 1), OPUS.Edge(3, 4, 2)]
+        edges_disconnected = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(3, 4, 2)]
         weights_disconnected = [1.0, 2.0]
-        disconnected_graph = OPUS.DMYGraph(4, edges_disconnected, weights_disconnected)
+        disconnected_graph = OptimSPath.DMYGraph(4, edges_disconnected, weights_disconnected)
         
         for source in 1:4
             dmy_disc = dmy_sssp!(disconnected_graph, source)
@@ -162,9 +162,9 @@ const INF = OPUS.INF
         end
         
         # Graph with zero weights
-        zero_edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2)]
+        zero_edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2)]
         zero_weights = [0.0, 1.0]
-        zero_graph = OPUS.DMYGraph(3, zero_edges, zero_weights)
+        zero_graph = OptimSPath.DMYGraph(3, zero_edges, zero_weights)
         
         dmy_zero = dmy_sssp!(zero_graph, 1)
         dijkstra_zero = simple_dijkstra(zero_graph, 1)
@@ -174,9 +174,9 @@ const INF = OPUS.INF
         end
         
         # Graph with self-loops
-        self_edges = [OPUS.Edge(1, 1, 1), OPUS.Edge(1, 2, 2), OPUS.Edge(2, 2, 3)]
+        self_edges = [OptimSPath.Edge(1, 1, 1), OptimSPath.Edge(1, 2, 2), OptimSPath.Edge(2, 2, 3)]
         self_weights = [0.5, 1.0, 0.3]
-        self_graph = OPUS.DMYGraph(2, self_edges, self_weights)
+        self_graph = OptimSPath.DMYGraph(2, self_edges, self_weights)
         
         dmy_self = dmy_sssp!(self_graph, 1)
         dijkstra_self = simple_dijkstra(self_graph, 1)
@@ -188,9 +188,9 @@ const INF = OPUS.INF
     
     @testset "Path Reconstruction Correctness" begin
         # Test that reconstructed paths have correct lengths
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(1, 3, 2), OPUS.Edge(2, 4, 3), OPUS.Edge(3, 4, 4)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3), OptimSPath.Edge(3, 4, 4)]
         weights = [1.0, 3.0, 2.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -291,9 +291,9 @@ const INF = OPUS.INF
     
     @testset "Bounded Algorithm Correctness" begin
         # Test bounded version gives correct results within bound
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(3, 4, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3)]
         weights = [1.0, 2.0, 3.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         # Test with various bounds
         bounds = [1.5, 3.5, 6.5, 10.0]
@@ -359,7 +359,7 @@ const INF = OPUS.INF
         # Create a more complex graph structure
         # Chain backbone
         for i in 1:(n-1)
-            push!(edges, OPUS.Edge(i, i+1, length(edges)+1))
+            push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
             push!(weights, rand() * 2.0 + 0.5)
         end
         
@@ -368,7 +368,7 @@ const INF = OPUS.INF
             for j in 1:2
                 target = min(i + 5 + j, n)
                 if target > i
-                    push!(edges, OPUS.Edge(i, target, length(edges)+1))
+                    push!(edges, OptimSPath.Edge(i, target, length(edges)+1))
                     push!(weights, rand() * 3.0 + 1.0)
                 end
             end
@@ -378,11 +378,11 @@ const INF = OPUS.INF
         for i in 10:10:n-5
             source = i
             target = max(1, i - 5)
-            push!(edges, OPUS.Edge(source, target, length(edges)+1))
+            push!(edges, OptimSPath.Edge(source, target, length(edges)+1))
             push!(weights, rand() * 4.0 + 2.0)
         end
         
-        large_graph = OPUS.DMYGraph(n, edges, weights)
+        large_graph = OptimSPath.DMYGraph(n, edges, weights)
         
         # Test on multiple sources
         test_sources = [1, n÷4, n÷2, 3*n÷4, n]
@@ -406,30 +406,30 @@ const INF = OPUS.INF
         for i in 1:n_dense
             for j in 1:n_dense
                 if i != j && rand() < 0.3  # 30% edge probability
-                    push!(dense_edges, OPUS.Edge(i, j, length(dense_edges)+1))
+                    push!(dense_edges, OptimSPath.Edge(i, j, length(dense_edges)+1))
                     push!(dense_weights, rand() * 5.0 + 0.1)
                 end
             end
         end
         
         if !isempty(dense_edges)
-            dense_graph = OPUS.DMYGraph(n_dense, dense_edges, dense_weights)
+            dense_graph = OptimSPath.DMYGraph(n_dense, dense_edges, dense_weights)
             comparison_dense = compare_with_dijkstra(dense_graph, 1)
             @test comparison_dense["results_match"] == true
         end
         
         # Graph with many zero weights
-        zero_edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(3, 4, 3), OPUS.Edge(1, 4, 4)]
+        zero_edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3), OptimSPath.Edge(1, 4, 4)]
         zero_weights = [0.0, 0.0, 1.0, 0.0]
-        zero_graph = OPUS.DMYGraph(4, zero_edges, zero_weights)
+        zero_graph = OptimSPath.DMYGraph(4, zero_edges, zero_weights)
         
         comparison_zero = compare_with_dijkstra(zero_graph, 1)
         @test comparison_zero["results_match"] == true
         
         # Graph with uniform weights
-        uniform_edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(3, 4, 3), OPUS.Edge(1, 3, 4), OPUS.Edge(2, 4, 5)]
+        uniform_edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3), OptimSPath.Edge(1, 3, 4), OptimSPath.Edge(2, 4, 5)]
         uniform_weights = [1.0, 1.0, 1.0, 1.0, 1.0]
-        uniform_graph = OPUS.DMYGraph(4, uniform_edges, uniform_weights)
+        uniform_graph = OptimSPath.DMYGraph(4, uniform_edges, uniform_weights)
         
         comparison_uniform = compare_with_dijkstra(uniform_graph, 1)
         @test comparison_uniform["results_match"] == true

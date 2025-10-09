@@ -12,7 +12,7 @@ The energy landscape of metabolism follows thermodynamic principles: $\Delta G =
 
 ## 🔄 Two Approaches: Generic vs Domain-Specific
 
-This example demonstrates **BOTH** approaches for using OPUS:
+This example demonstrates **BOTH** approaches for using OptimSPath:
 
 ### **Approach 1: Generic Functions (Universal Graph Operations)**
 The example shows these domain-agnostic functions that work with ANY graph:

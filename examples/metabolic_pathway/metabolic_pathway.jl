@@ -23,8 +23,8 @@ This example demonstrates BOTH approaches for using OPUS:
 Both approaches give identical results - choose based on your needs!
 """
 
-using OPUS
-using OPUS.MultiObjective
+using OptimSPath
+using OptimSPath.MultiObjective
 using Plots
 using Printf
 
@@ -117,7 +117,7 @@ reaction_network = [
 # Build network graph
 function create_metabolic_network(metabolites, reactions, reaction_network, costs)
     n_metabolites = length(metabolites)
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     edge_costs = Float64[]
     
     metabolite_indices = Dict(m => i for (i, m) in enumerate(metabolites))
@@ -130,12 +130,12 @@ function create_metabolic_network(metabolites, reactions, reaction_network, cost
             reaction_idx = findfirst(r -> r == reaction, reactions)
             cost = reaction_idx !== nothing ? costs[reaction_idx] : 1.0
             
-            push!(edges, OPUS.Edge(src, dst, length(edges)+1))
+            push!(edges, OptimSPath.Edge(src, dst, length(edges)+1))
             push!(edge_costs, max(0.1, cost + 1.0))  # Ensure positive weights
         end
     end
     
-    return OPUS.DMYGraph(n_metabolites, edges, edge_costs)
+    return OptimSPath.DMYGraph(n_metabolites, edges, edge_costs)
 end
 
 graph = create_metabolic_network(metabolites, reactions, reaction_network, reaction_costs)
@@ -157,8 +157,8 @@ for (start_met, end_met, pathway_name) in pathways
         src = metabolite_indices[start_met]
         dst = metabolite_indices[end_met]
         
-        dist = OPUS.dmy_sssp!(graph, src)
-        if dist[dst] < OPUS.INF
+        dist = OptimSPath.dmy_sssp!(graph, src)
+        if dist[dst] < OptimSPath.INF
             println("$start_met → $end_met ($pathway_name): cost = $(round(dist[dst], digits=2))")
         end
     end
@@ -168,7 +168,7 @@ end
 println("\n⚡ ATP Yield Analysis:")
 glucose_idx = metabolite_indices["Glucose"]
 pyruvate_idx = metabolite_indices["Pyruvate"]
-dist = OPUS.dmy_sssp!(graph, glucose_idx)
+dist = OptimSPath.dmy_sssp!(graph, glucose_idx)
 
 net_atp = 2.0  # Glycolysis produces net 2 ATP
 energy_efficiency = net_atp / dist[pyruvate_idx]
@@ -183,21 +183,21 @@ println("\n📍 Approach 1: Using GENERIC Functions")
 println("   (Works for ANY graph, not just metabolic networks)")
 
 # Use generic analyze_connectivity to understand metabolite reachability
-glucose_connectivity = OPUS.analyze_connectivity(graph, glucose_idx)
+glucose_connectivity = OptimSPath.analyze_connectivity(graph, glucose_idx)
 println("\nGeneric analyze_connectivity() from Glucose:")
 println("  Reachable metabolites: $(glucose_connectivity["reachable_count"])/$(graph.n_vertices)")
 println("  Average path cost: $(round(glucose_connectivity["avg_distance"], digits=2))")
 println("  Max path cost: $(round(glucose_connectivity["max_distance"], digits=2))")
 
 # Use generic find_shortest_path
-distance, path_vertices = OPUS.find_shortest_path(graph, glucose_idx, pyruvate_idx)
+distance, path_vertices = OptimSPath.find_shortest_path(graph, glucose_idx, pyruvate_idx)
 println("\nGeneric find_shortest_path() from Glucose to Pyruvate:")
 println("  Distance: $(round(distance, digits=2))")
 println("  Path length: $(length(path_vertices)) metabolites")
 
 # Use generic find_reachable_vertices for metabolite accessibility
 max_cost = 5.0
-accessible = OPUS.find_reachable_vertices(graph, glucose_idx, max_cost)
+accessible = OptimSPath.find_reachable_vertices(graph, glucose_idx, max_cost)
 println("\nGeneric find_reachable_vertices() with cost ≤ $max_cost:")
 println("  $(length(accessible)) metabolites accessible from Glucose")
 
@@ -450,12 +450,12 @@ performance_results = []
 
 for n in test_sizes
     # Create metabolic-like network (sparse, branching)
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     edge_costs = Float64[]
     
     # Main pathway (linear chain)
     for i in 1:min(n-1, Int(n*0.3))
-        push!(edges, OPUS.Edge(i, i+1, length(edges)+1))
+        push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
         push!(edge_costs, rand() * 2.0 + 0.5)  # Enzyme costs
     end
     
@@ -463,7 +463,7 @@ for n in test_sizes
     for i in 1:min(Int(n*0.3), n-2)
         if rand() < 0.3  # 30% chance of branch
             branch_target = min(n, i + rand(2:5))
-            push!(edges, OPUS.Edge(i, branch_target, length(edges)+1))
+            push!(edges, OptimSPath.Edge(i, branch_target, length(edges)+1))
             push!(edge_costs, rand() * 3.0 + 1.0)  # Higher cost for alternatives
         end
     end
@@ -472,17 +472,17 @@ for n in test_sizes
     for i in 1:min(Int(n*0.1), n-5)
         if rand() < 0.2
             back_target = max(1, i - rand(1:3))
-            push!(edges, OPUS.Edge(i, back_target, length(edges)+1))
+            push!(edges, OptimSPath.Edge(i, back_target, length(edges)+1))
             push!(edge_costs, rand() * 1.5 + 0.5)
         end
     end
     
-    local graph = OPUS.DMYGraph(n, edges, edge_costs)
+    local graph = OptimSPath.DMYGraph(n, edges, edge_costs)
     k = max(1, ceil(Int, n^(1/3)))
     
     # Time algorithms
-    t_dmy = @elapsed OPUS.dmy_sssp!(graph, 1)
-    t_dijkstra = @elapsed OPUS.simple_dijkstra(graph, 1)
+    t_dmy = @elapsed OptimSPath.dmy_sssp!(graph, 1)
+    t_dijkstra = @elapsed OptimSPath.simple_dijkstra(graph, 1)
     speedup = t_dijkstra / t_dmy
     
     push!(performance_results, (n, k, speedup))

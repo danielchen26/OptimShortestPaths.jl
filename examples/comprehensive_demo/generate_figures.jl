@@ -7,7 +7,7 @@ All figures address domain-agnostic problem transformation methodology
 """
 
 # Import OPUS for real benchmark data generation
-using OPUS
+using OptimSPath
 # Inline benchmark loader - reads from canonical benchmark_results.txt
 function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark_results.txt"))
     isfile(path) || error("Benchmark results not found at $path")
@@ -404,14 +404,14 @@ total_capacity = 1000 + 800 + 600 + 500 + 700 + 600 + 400  # Factory + warehouse
 avg_utilization = (total_flow / total_capacity) * 100
 
 # Run actual DMY on supply chain network
-supply_edges = OPUS.Edge[]
+supply_edges = OptimSPath.Edge[]
 supply_weights = Float64[]
 for (i, j, flow, cost) in flows
-    push!(supply_edges, OPUS.Edge(i, j, length(supply_edges)+1))
+    push!(supply_edges, OptimSPath.Edge(i, j, length(supply_edges)+1))
     push!(supply_weights, parse(Float64, replace(cost, r"[\$/unit]" => "")))
 end
-supply_graph = OPUS.DMYGraph(14, supply_edges, supply_weights)
-t_supply = @elapsed OPUS.dmy_sssp!(supply_graph, 1)
+supply_graph = OptimSPath.DMYGraph(14, supply_edges, supply_weights)
+t_supply = @elapsed OptimSPath.dmy_sssp!(supply_graph, 1)
 
 plot!([0.2, 3.5, 3.5, 0.2, 0.2], [8.5, 8.5, 10, 10, 8.5],
     fillcolor=:white, fillalpha=0.95, linecolor=COLORS[1], lw=2, label="")

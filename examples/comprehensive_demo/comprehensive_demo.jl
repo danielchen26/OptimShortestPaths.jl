@@ -15,7 +15,7 @@ This demo covers:
 5. Real-world applications across diverse domains
 """
 
-using OPUS
+using OptimSPath
 
 println("=" ^ 80)
 println(" " ^ 20, "🌟 OPUS FRAMEWORK DEMONSTRATION 🌟")
@@ -598,14 +598,14 @@ delivery_dist = dmy_sssp!(delivery_graph, 1)
 println("\nOptimal delivery routes found:")
 locations = ["Depot", "Store-A", "Store-B", "Store-C", "Store-D", "Store-E", "Store-F", "Return-Depot"]
 for i in 2:delivery_locations
-    if delivery_dist[i] < OPUS.INF
+    if delivery_dist[i] < OptimSPath.INF
         println("  To $(locations[i]): \$$(round(delivery_dist[i], digits=2)) total cost")
     end
 end
 
 # Reconstruct optimal path
 dist_p, parents_p = dmy_sssp_with_parents!(delivery_graph, 1)
-if delivery_dist[8] < OPUS.INF
+if delivery_dist[8] < OptimSPath.INF
     optimal_route = reconstruct_path(parents_p, 1, 8)
     println("\n6️⃣ OPTIMAL ROUTE:")
     route_names = [locations[i] for i in optimal_route]

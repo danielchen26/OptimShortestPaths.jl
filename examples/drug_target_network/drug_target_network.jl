@@ -34,8 +34,8 @@ metabolic networks, transportation systems, etc. Simply map your
 domain entities to vertices and relationships to edges!
 """
 
-using OPUS
-using OPUS.MultiObjective
+using OptimSPath
+using OptimSPath.MultiObjective
 using Plots
 
 # Multi-objective optimization tools from OPUS
@@ -264,12 +264,12 @@ performance_results = []
 
 for n in test_sizes
     # Create sparse graph
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     local weights = Float64[]
     
     # Create connected path
     for i in 1:n-1
-        push!(edges, OPUS.Edge(i, i+1, length(edges)+1))
+        push!(edges, OptimSPath.Edge(i, i+1, length(edges)+1))
         push!(weights, rand() * 2.0 + 0.5)
     end
     
@@ -278,17 +278,17 @@ for n in test_sizes
         u = rand(1:n)
         v = rand(1:n)
         if u != v && !any(e -> (e.source == u && e.target == v), edges)
-            push!(edges, OPUS.Edge(u, v, length(edges)+1))
+            push!(edges, OptimSPath.Edge(u, v, length(edges)+1))
             push!(weights, rand() * 5.0 + 0.5)
         end
     end
     
-    graph = OPUS.DMYGraph(n, edges, weights)
+    graph = OptimSPath.DMYGraph(n, edges, weights)
     k = max(1, ceil(Int, n^(1/3)))
     
     # Time algorithms
-    t_dmy = @elapsed OPUS.dmy_sssp!(graph, 1)
-    t_dijkstra = @elapsed OPUS.simple_dijkstra(graph, 1)
+    t_dmy = @elapsed OptimSPath.dmy_sssp!(graph, 1)
+    t_dijkstra = @elapsed OptimSPath.simple_dijkstra(graph, 1)
     speedup = t_dijkstra / t_dmy
     
     push!(performance_results, (n, k, speedup))

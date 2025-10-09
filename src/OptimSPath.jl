@@ -1,14 +1,14 @@
 """
-OPUS.jl - Optimization Problems Unified as Shortest-paths
+OptimSPath.jl - Optimization via Shortest Paths
 
 A unified framework for solving multi-objective optimization problems by transforming them
-into graph shortest-path problems. OPUS leverages the efficient DMY (Duan-Mao-Yin) algorithm
+into graph shortest-path problems. OptimSPath leverages the efficient DMY (Duan-Mao-Yin) algorithm
 while extending it with Pareto optimization and domain-specific applications.
 
-Key Innovation: OPUS casts complex optimization problems as shortest-path problems,
+Key Innovation: OptimSPath casts complex optimization problems as shortest-path problems,
 enabling efficient solution of pharmaceutical, metabolic, and healthcare optimization challenges.
 """
-module OPUS
+module OptimSPath
 
 using DataStructures: OrderedSet
 
@@ -147,4 +147,4 @@ end
 import .Pharma: create_drug_target_network, find_drug_target_paths, analyze_drug_connectivity,
                  create_metabolic_pathway, find_metabolic_pathway, create_treatment_protocol,
                  optimize_treatment_sequence
-end # module OPUS
+end # module OptimSPath

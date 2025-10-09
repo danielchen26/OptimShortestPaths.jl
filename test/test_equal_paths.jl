@@ -3,9 +3,9 @@ Test scenarios with multiple equal-length shortest paths
 """
 
 using Test
-using OPUS
+using OptimSPath
 
-const INF = OPUS.INF
+const INF = OptimSPath.INF
 
 @testset "Multiple Equal-Length Paths Tests" begin
     
@@ -13,13 +13,13 @@ const INF = OPUS.INF
         # Diamond structure: 1 -> {2,3} -> 4
         # Two paths of equal length from 1 to 4
         edges = [
-            OPUS.Edge(1, 2, 1),  # 1 -> 2 (weight 1)
-            OPUS.Edge(1, 3, 2),  # 1 -> 3 (weight 1)
-            OPUS.Edge(2, 4, 3),  # 2 -> 4 (weight 1)
-            OPUS.Edge(3, 4, 4),  # 3 -> 4 (weight 1)
+            OptimSPath.Edge(1, 2, 1),  # 1 -> 2 (weight 1)
+            OptimSPath.Edge(1, 3, 2),  # 1 -> 3 (weight 1)
+            OptimSPath.Edge(2, 4, 3),  # 2 -> 4 (weight 1)
+            OptimSPath.Edge(3, 4, 4),  # 3 -> 4 (weight 1)
         ]
         weights = [1.0, 1.0, 1.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -45,20 +45,20 @@ const INF = OPUS.INF
         # 1 -> {2,3,4} -> {5,6} -> 7
         edges = [
             # First layer
-            OPUS.Edge(1, 2, 1),  # Path A
-            OPUS.Edge(1, 3, 2),  # Path B
-            OPUS.Edge(1, 4, 3),  # Path C
+            OptimSPath.Edge(1, 2, 1),  # Path A
+            OptimSPath.Edge(1, 3, 2),  # Path B
+            OptimSPath.Edge(1, 4, 3),  # Path C
             # Second layer
-            OPUS.Edge(2, 5, 4),  # A -> 5
-            OPUS.Edge(3, 5, 5),  # B -> 5
-            OPUS.Edge(3, 6, 6),  # B -> 6
-            OPUS.Edge(4, 6, 7),  # C -> 6
+            OptimSPath.Edge(2, 5, 4),  # A -> 5
+            OptimSPath.Edge(3, 5, 5),  # B -> 5
+            OptimSPath.Edge(3, 6, 6),  # B -> 6
+            OptimSPath.Edge(4, 6, 7),  # C -> 6
             # Final convergence
-            OPUS.Edge(5, 7, 8),  # 5 -> 7
-            OPUS.Edge(6, 7, 9),  # 6 -> 7
+            OptimSPath.Edge(5, 7, 8),  # 5 -> 7
+            OptimSPath.Edge(6, 7, 9),  # 6 -> 7
         ]
         weights = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
-        graph = OPUS.DMYGraph(7, edges, weights)
+        graph = OptimSPath.DMYGraph(7, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -89,7 +89,7 @@ const INF = OPUS.INF
     @testset "Grid Graph - Many Equal Paths" begin
         # Create 3x3 grid where many equal-length paths exist
         function create_grid(size)
-            edges = OPUS.Edge[]
+            edges = OptimSPath.Edge[]
             weights = Float64[]
             edge_id = 1
             
@@ -98,20 +98,20 @@ const INF = OPUS.INF
                     v = (i-1) * size + j
                     # Right edge
                     if j < size
-                        push!(edges, OPUS.Edge(v, v+1, edge_id))
+                        push!(edges, OptimSPath.Edge(v, v+1, edge_id))
                         push!(weights, 1.0)
                         edge_id += 1
                     end
                     # Down edge
                     if i < size
-                        push!(edges, OPUS.Edge(v, v+size, edge_id))
+                        push!(edges, OptimSPath.Edge(v, v+size, edge_id))
                         push!(weights, 1.0)
                         edge_id += 1
                     end
                 end
             end
             
-            return OPUS.DMYGraph(size*size, edges, weights)
+            return OptimSPath.DMYGraph(size*size, edges, weights)
         end
         
         grid = create_grid(3)
@@ -147,16 +147,16 @@ const INF = OPUS.INF
         # Create graph where multiple vertices have equal-cost paths to a parent
         # Structure: {1,2,3} -> 4 -> 5 with equal costs
         edges = [
-            OPUS.Edge(1, 4, 1),  # 1 -> 4 (weight 2)
-            OPUS.Edge(2, 4, 2),  # 2 -> 4 (weight 2)
-            OPUS.Edge(3, 4, 3),  # 3 -> 4 (weight 2)
-            OPUS.Edge(4, 5, 4),  # 4 -> 5 (weight 1)
+            OptimSPath.Edge(1, 4, 1),  # 1 -> 4 (weight 2)
+            OptimSPath.Edge(2, 4, 2),  # 2 -> 4 (weight 2)
+            OptimSPath.Edge(3, 4, 3),  # 3 -> 4 (weight 2)
+            OptimSPath.Edge(4, 5, 4),  # 4 -> 5 (weight 1)
             # Add alternative longer paths
-            OPUS.Edge(1, 5, 5),  # 1 -> 5 (weight 4, suboptimal)
-            OPUS.Edge(2, 5, 6),  # 2 -> 5 (weight 4, suboptimal)
+            OptimSPath.Edge(1, 5, 5),  # 1 -> 5 (weight 4, suboptimal)
+            OptimSPath.Edge(2, 5, 6),  # 2 -> 5 (weight 4, suboptimal)
         ]
         weights = [2.0, 2.0, 2.0, 1.0, 4.0, 4.0]
-        graph = OPUS.DMYGraph(5, edges, weights)
+        graph = OptimSPath.DMYGraph(5, edges, weights)
         
         # Test from multiple sources
         for source in 1:3

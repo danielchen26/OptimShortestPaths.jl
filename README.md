@@ -8,13 +8,13 @@
   Optimization Problems Unified as Shortest-paths
 ```
 
-# OPUS Framework
+# OptimSPath Framework
 
-**OPUS** is a practical Julia framework that casts optimization problems as graph shortest-path problems and leverages the breakthrough **2025 DMY algorithm** [1]. It provides multi-objective optimization tooling and domain-specific templates for pharmaceutical, metabolic, and healthcare applications.
+**OptimSPath** is a practical Julia framework that casts optimization problems as graph shortest-path problems and leverages the breakthrough **2025 DMY algorithm** [1]. It provides multi-objective optimization tooling and domain-specific templates for pharmaceutical, metabolic, and healthcare applications.
 
-## 🎯 **What OPUS Is (and Isn't)**
+## 🎯 **What OptimSPath Is (and Isn't)**
 
-### What OPUS Provides (Value Added)
+### What OptimSPath Provides (Value Added)
 - **Domain Casting Framework**: Ready-made templates to transform optimization problems into graphs
 - **Integration of DMY Algorithm**: Implementation of the STOC 2025 Best Paper algorithm [1]
 - **Multi-Objective Tooling**: Standard MCDA approaches (weighted sum, ε-constraint, lexicographic)
@@ -56,9 +56,9 @@
 ## 📁 **Project Structure**
 
 ```
-OPUS/
+OptimSPath/
 ├── src/                          # Source code
-│   ├── OPUS.jl                   # Main module (casting framework)
+│   ├── OptimSPath.jl                   # Main module (casting framework)
 │   ├── core_types.jl             # Data structures
 │   ├── graph_utils.jl            # Graph utilities
 │   ├── bmssp.jl                  # Bounded Multi-Source Shortest Path
@@ -77,8 +77,8 @@ OPUS/
 
 ```bash
 # Clone the repository
-git clone https://github.com/danielchen26/OPUS.git
-cd OPUS
+git clone https://github.com/danielchen26/OptimSPath.git
+cd OptimSPath
 
 # Setup in development mode
 julia --project=. -e "using Pkg; Pkg.develop(path=\".\"); Pkg.instantiate()"
@@ -94,7 +94,7 @@ julia --project=. -e "using Pkg; Pkg.add.(\"Plots\", \"StatsPlots\", \"GraphReci
 
 ### Basic Usage
 ```julia
-using OPUS
+using OptimSPath
 
 # Create a directed graph with non-negative weights
 edges = [Edge(1, 2, 1), Edge(1, 3, 2), Edge(2, 4, 3), Edge(3, 4, 4)]
@@ -108,7 +108,7 @@ println(distances)  # [0.0, 1.0, 2.0, 2.5]
 
 ### Casting a domain problem
 ```julia
-using OPUS
+using OptimSPath
 
 metabolites = ["Glucose", "G6P", "Pyruvate"]
 reactions = ["Hexokinase", "Pyruvate_Kinase"]
@@ -138,7 +138,7 @@ Replace `<example_name>` with `comprehensive_demo`, `drug_target_network`,
 
 ## 🔄 **Two Approaches: Generic vs Domain-Specific Functions**
 
-OPUS provides **TWO ways** to use its shortest-path algorithms, giving you complete flexibility:
+OptimSPath provides **TWO ways** to use its shortest-path algorithms, giving you complete flexibility:
 
 ### **Approach 1: Generic Functions (Recommended for General Use)**
 Use these domain-agnostic functions that work with ANY graph structure:
@@ -187,7 +187,7 @@ cost, sequence = optimize_treatment_sequence(protocol, "Screening", "Remission")
 | New domain not in examples | Generic Functions | No existing domain wrapper |
 | Building a general tool | Generic Functions | Maximum flexibility |
 | Working in pharmaceuticals/healthcare | Either | Domain wrappers available |
-| Learning OPUS | Start with Generic | Understand core concepts |
+| Learning OptimSPath | Start with Generic | Understand core concepts |
 | Production system | Generic Functions | Better performance, control |
 | Quick prototype in known domain | Domain Functions | Faster development |
 
@@ -215,7 +215,7 @@ Both give the same result! Choose based on your needs.
 
 ## 📚 **Examples Gallery**
 
-OPUS includes comprehensive examples demonstrating real-world applications across multiple domains:
+OptimSPath includes comprehensive examples demonstrating real-world applications across multiple domains:
 
 ### 1. 🌟 **Comprehensive Demo** (`examples/comprehensive_demo/`)
 Complete framework demonstration showcasing:
@@ -227,7 +227,7 @@ Complete framework demonstration showcasing:
 
 **Quick Usage:**
 ```julia
-using OPUS
+using OptimSPath
 
 # Example: Supply chain optimization
 # Transform locations into vertices, routes into edges
@@ -258,7 +258,7 @@ Pharmaceutical network optimization demonstrating:
 
 **Quick Usage:**
 ```julia
-using OPUS
+using OptimSPath
 
 # Define drugs and targets with binding affinities
 drugs = ["Aspirin", "Ibuprofen", "Celecoxib"]
@@ -296,7 +296,7 @@ Systems biology application featuring:
 
 **Quick Usage:**
 ```julia
-using OPUS
+using OptimSPath
 
 # Define metabolites and enzymatic reactions
 metabolites = ["Glucose", "G6P", "F6P", "Pyruvate", "Lactate", "ATP"]
@@ -341,7 +341,7 @@ Healthcare pathway optimization including:
 
 **Quick Usage:**
 ```julia
-using OPUS
+using OptimSPath
 
 # Define treatment options and costs (in $1000s)
 treatments = [
@@ -432,7 +432,7 @@ The implementation follows the STOC 2025 paper structure:
 5. Domain-specific applications
 6. Performance benchmarks
 
-## 🔄 **The OPUS Casting Paradigm**
+## 🔄 **The OptimSPath Casting Paradigm**
 
 ### How to Cast Problems to Graphs
 
@@ -513,14 +513,14 @@ Contributions welcome! Please:
 
 ## 📝 **Citation**
 
-If you use OPUS in your research, please cite:
+If you use OptimSPath in your research, please cite:
 
 ```bibtex
 @software{opus2025,
-  title = {OPUS: Optimization Problems Unified as Shortest-paths},
+  title = {OptimSPath: Optimization Problems Unified as Shortest-paths},
   author = {[Tianchi Chen]},
   year = {2025},
-  url = {https://github.com/danielchen26/OPUS}
+  url = {https://github.com/danielchen26/OptimSPath}
 }
 
 @inproceedings{dmy2025,

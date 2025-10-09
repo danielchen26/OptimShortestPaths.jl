@@ -10,12 +10,12 @@
 # distance with noise, adds per-unit production costs via a super-source, and
 # then uses OPUS DMY shortest paths to compute optimal paths for each customer.
 #
-# Requirements: using the supply_chain Project.toml (Plots, Colors) and OPUS.
+# Requirements: using the supply_chain Project.toml (Plots, Colors) and OptimSPath.
 
 using Random
 using Plots
 using Colors
-using OPUS
+using OptimSPath
 using Statistics
 
 # Palette (10 colors)
@@ -86,41 +86,41 @@ function transport_cost(i::Int, j::Int)
 end
 
 # Build graph edges and weights
-edges = OPUS.Edge[]
+edges = OptimSPath.Edge[]
 weights = Float64[]
 
 # Super source → Factories (production cost)
 for f in FACTORIES
-    push!(edges, OPUS.Edge(SUPER_SRC, f, length(edges)+1))
+    push!(edges, OptimSPath.Edge(SUPER_SRC, f, length(edges)+1))
     push!(weights, production_cost[f])
 end
 
 # Factories → Warehouses
 for f in FACTORIES, w in WAREHOUSES
-    push!(edges, OPUS.Edge(f, w, length(edges)+1))
+    push!(edges, OptimSPath.Edge(f, w, length(edges)+1))
     push!(weights, transport_cost(f, w))
 end
 
 # Warehouses → DCs
 for w in WAREHOUSES, d in DCS
-    push!(edges, OPUS.Edge(w, d, length(edges)+1))
+    push!(edges, OptimSPath.Edge(w, d, length(edges)+1))
     push!(weights, transport_cost(w, d))
 end
 
 # DCs → Customers
 for d in DCS, c in CUSTOMERS
-    push!(edges, OPUS.Edge(d, c, length(edges)+1))
+    push!(edges, OptimSPath.Edge(d, c, length(edges)+1))
     push!(weights, transport_cost(d, c))
 end
 
 n_vertices = maximum(keys(coords))
-G = OPUS.DMYGraph(n_vertices, edges, weights)
+G = OptimSPath.DMYGraph(n_vertices, edges, weights)
 
 # -----------------------------
 # Shortest paths from super source
 # -----------------------------
 # Use parents to reconstruct optimal paths to each customer
-D, parent = OPUS.dmy_sssp_with_parents!(G, SUPER_SRC)
+D, parent = OptimSPath.dmy_sssp_with_parents!(G, SUPER_SRC)
 
 # Reconstruct path from source to a target node
 function reconstruct_path(parent::Vector{Int}, target::Int)

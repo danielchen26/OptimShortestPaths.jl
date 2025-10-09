@@ -12,7 +12,7 @@ What makes this particularly elegant is how we encode clinical wisdom into graph
 
 ## 🔄 Two Approaches: Generic vs Domain-Specific
 
-This example demonstrates **BOTH** approaches for using OPUS:
+This example demonstrates **BOTH** approaches for using OptimSPath:
 
 ### **Approach 1: Generic Functions (Direct Graph Manipulation)**
 The example shows how to use domain-agnostic functions:

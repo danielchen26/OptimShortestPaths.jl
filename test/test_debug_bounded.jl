@@ -1,20 +1,20 @@
-using OPUS
+using OptimSPath
 
 # Test case where bound might be 0
-graph = OPUS.DMYGraph(3, [OPUS.Edge(1, 2, 1)], [5.0])
+graph = OptimSPath.DMYGraph(3, [OptimSPath.Edge(1, 2, 1)], [5.0])
 
 source = 1
-dmy_dist = OPUS.dmy_sssp!(graph, source)
+dmy_dist = OptimSPath.dmy_sssp!(graph, source)
 println("DMY distances: ", dmy_dist)
 
 # If only source is reachable at finite distance
-if any(d < OPUS.INF for d in dmy_dist)
-    max_finite_dist = maximum(d for d in dmy_dist if d < OPUS.INF)
+if any(d < OptimSPath.INF for d in dmy_dist)
+    max_finite_dist = maximum(d for d in dmy_dist if d < OptimSPath.INF)
     bound = max_finite_dist / 2
     println("Max finite dist: ", max_finite_dist)
     println("Bound: ", bound)
     
-    bounded_dist = OPUS.dmy_sssp_bounded!(graph, source, bound)
+    bounded_dist = OptimSPath.dmy_sssp_bounded!(graph, source, bound)
     println("Bounded distances: ", bounded_dist)
     
     for i in 1:3

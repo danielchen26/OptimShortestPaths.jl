@@ -4,9 +4,9 @@
 Simple test to verify Pareto front computation works correctly
 """
 
-using OPUS
+using OptimSPath
 
-using OPUS.MultiObjective
+using OptimSPath.MultiObjective
 
 println("Testing Simple Pareto Front Computation")
 println("=" ^ 40)

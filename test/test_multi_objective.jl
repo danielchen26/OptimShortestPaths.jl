@@ -4,7 +4,7 @@ Multi-objective shortest-path regression tests.
 
 using Test
 
-const MO = OPUS.MultiObjective
+const MO = OptimSPath.MultiObjective
 const MultiObjectiveEdge = MO.MultiObjectiveEdge
 const MultiObjectiveGraph = MO.MultiObjectiveGraph
 const ParetoSolution = MO.ParetoSolution
