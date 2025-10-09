@@ -10,7 +10,7 @@
 
 OptimSPath provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.
 
-![OptimSPath Transformation Framework](figures/opus_philosophy.png)
+![OptimSPath Transformation Framework](figures/optimspath_philosophy.png)
 
 ### Key Transformation Principles
 

@@ -84,31 +84,31 @@ plot!(subplot=1, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 6))
 annotate!(subplot=1, 5, 5.5, 
     text("OptimSPath: Domain-Agnostic Problem Transformation", 16, :center, :bold))
 
-# Step 1: Any optimization problem
-plot!(subplot=1, [0.5, 2.5, 2.5, 0.5, 0.5], [3, 3, 4.5, 4.5, 3],
+# Step 1: Any optimization problem - increased box height
+plot!(subplot=1, [0.5, 2.5, 2.5, 0.5, 0.5], [2.8, 2.8, 4.7, 4.7, 2.8],
     fillcolor=COLORS[1], fillalpha=0.2, linecolor=COLORS[1], lw=2, label="")
-annotate!(subplot=1, 1.5, 3.75, text("Any Optimization\nProblem", 11, :center, :bold))
-annotate!(subplot=1, 1.5, 3.2, text("• Scheduling\n• Resource Allocation\n• Network Design", 9, :center))
+annotate!(subplot=1, 1.5, 4.15, text("Any Optimization\nProblem", 10, :center, :bold))
+annotate!(subplot=1, 1.5, 3.45, text("• Scheduling\n• Resource Allocation\n• Network Design", 8, :center))
 
 # Arrow 1
-annotate!(subplot=1, 3, 3.75, text("→", 24, :center, COLORS[3]))
-annotate!(subplot=1, 3, 3.3, text("Identify\nStates", 9, :center, :italic))
+annotate!(subplot=1, 3, 3.75, text("→", 22, :center, COLORS[3]))
+annotate!(subplot=1, 3, 3.3, text("Identify\nStates", 8, :center, :italic))
 
-# Step 2: State Space
-plot!(subplot=1, [3.5, 5.5, 5.5, 3.5, 3.5], [3, 3, 4.5, 4.5, 3],
+# Step 2: State Space - increased box height
+plot!(subplot=1, [3.5, 5.5, 5.5, 3.5, 3.5], [2.8, 2.8, 4.7, 4.7, 2.8],
     fillcolor=COLORS[2], fillalpha=0.2, linecolor=COLORS[2], lw=2, label="")
-annotate!(subplot=1, 4.5, 3.75, text("State Space\nRepresentation", 11, :center, :bold))
-annotate!(subplot=1, 4.5, 3.2, text("• Vertices (V)\n• Feasible configurations\n• Decision points", 9, :center))
+annotate!(subplot=1, 4.5, 4.15, text("State Space\nRepresentation", 10, :center, :bold))
+annotate!(subplot=1, 4.5, 3.45, text("• Vertices (V)\n• Feasible configurations\n• Decision points", 8, :center))
 
 # Arrow 2
-annotate!(subplot=1, 6, 3.75, text("→", 24, :center, COLORS[3]))
-annotate!(subplot=1, 6, 3.3, text("Define\nTransitions", 9, :center, :italic))
+annotate!(subplot=1, 6, 3.75, text("→", 22, :center, COLORS[3]))
+annotate!(subplot=1, 6, 3.3, text("Define\nTransitions", 8, :center, :italic))
 
-# Step 3: Graph Model
-plot!(subplot=1, [6.5, 8.5, 8.5, 6.5, 6.5], [3, 3, 4.5, 4.5, 3],
+# Step 3: Graph Model - increased box height
+plot!(subplot=1, [6.5, 8.5, 8.5, 6.5, 6.5], [2.8, 2.8, 4.7, 4.7, 2.8],
     fillcolor=COLORS[4], fillalpha=0.2, linecolor=COLORS[4], lw=2, label="")
-annotate!(subplot=1, 7.5, 3.75, text("Graph Model\nG = (V, E, w)", 11, :center, :bold))
-annotate!(subplot=1, 7.5, 3.2, text("• Edges (E): transitions\n• Weights (w): costs\n• Shortest path problem", 9, :center))
+annotate!(subplot=1, 7.5, 4.15, text("Graph Model\nG = (V, E, w)", 10, :center, :bold))
+annotate!(subplot=1, 7.5, 3.45, text("• Edges (E): transitions\n• Weights (w): costs\n• Shortest path problem", 8, :center))
 
 # Core principle box - improved spacing
 plot!(subplot=1, [1, 9, 9, 1, 1], [0.3, 0.3, 2.4, 2.4, 0.3],
@@ -125,13 +125,13 @@ plot!(subplot=2, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 4))
 
 annotate!(subplot=2, 5, 3.5, text("Example: Resource Scheduling Problem", 12, :center, :bold))
 
-# Original problem - improved spacing
-plot!(subplot=2, [0.5, 2, 2, 0.5, 0.5], [1.3, 1.3, 3.0, 3.0, 1.3],
+# Original problem - better spacing for multi-line text
+plot!(subplot=2, [0.5, 2, 2, 0.5, 0.5], [1.2, 1.2, 3.1, 3.1, 1.2],
     fillcolor=COLORS[6], fillalpha=0.15, linecolor=COLORS[6], lw=2, label="")
-annotate!(subplot=2, 1.25, 2.5, text("Original:", 10, :center, :bold))
-annotate!(subplot=2, 1.25, 1.95, text("Schedule 5 tasks\nMinimize time\n3 resources", 9, :center))
+annotate!(subplot=2, 1.25, 2.6, text("Original:", 10, :center, :bold))
+annotate!(subplot=2, 1.25, 1.9, text("Schedule 5 tasks\nMinimize time\n3 resources", 8, :center))
 
-# Transformation steps with improved spacing
+# Transformation steps with better spacing for multi-line text
 for (i, (x, title, desc)) in enumerate([
     (3.25, "States:", "Time slots\n× Resources\n× Task status"),
     (5, "Edges:", "Valid task\nassignments\n& transitions"),
@@ -139,10 +139,10 @@ for (i, (x, title, desc)) in enumerate([
     (8.5, "Solution:", "Shortest path\n= Optimal\nschedule")
 ])
     color = COLORS[mod(i+5, 10)+1]
-    plot!(subplot=2, [x-0.6, x+0.6, x+0.6, x-0.6, x-0.6], [1.3, 1.3, 3.0, 3.0, 1.3],
+    plot!(subplot=2, [x-0.6, x+0.6, x+0.6, x-0.6, x-0.6], [1.2, 1.2, 3.1, 3.1, 1.2],
         fillcolor=color, fillalpha=0.15, linecolor=color, lw=2, label="")
-    annotate!(subplot=2, x, 2.5, text(title, 10, :center, :bold))
-    annotate!(subplot=2, x, 1.95, text(desc, 9, :center))
+    annotate!(subplot=2, x, 2.6, text(title, 10, :center, :bold))
+    annotate!(subplot=2, x, 1.9, text(desc, 8, :center))
 end
 
 # Connect with arrows - adjusted for new box positions
@@ -413,7 +413,8 @@ end
 supply_graph = OptimSPath.DMYGraph(14, supply_edges, supply_weights)
 t_supply = @elapsed OptimSPath.dmy_sssp!(supply_graph, 1)
 
-plot!([0.2, 3.5, 3.5, 0.2, 0.2], [8.5, 8.5, 10, 10, 8.5],
+# Move results box to bottom-left to avoid overlap with data source annotation
+plot!([0.2, 3.5, 3.5, 0.2, 0.2], [0, 0, 1.8, 1.8, 0],
     fillcolor=:white, fillalpha=0.95, linecolor=COLORS[1], lw=2, label="")
 
 stats_text = "Optimization Results\n" *
@@ -423,7 +424,7 @@ stats_text = "Optimization Results\n" *
     "DMY Runtime: $(round(t_supply*1000, digits=3))ms\n" *
     "vs Manual: -31% cost"
 
-annotate!(1.85, 9.25, text(stats_text, 9, :center))
+annotate!(1.85, 0.9, text(stats_text, 9, :center))
 
 savefig(fig4, "figures/supply_chain_optimization.png")
 println("✓ Saved: supply_chain_optimization.png")
@@ -632,11 +633,13 @@ dmy_times = results_fig7.dmy_ms
 dijkstra_times = results_fig7.dijkstra_ms
 dmy_ci = results_fig7.dmy_ci_ms
 dijkstra_ci = results_fig7.dijkstra_ci_ms
-bellman_times = dijkstra_times .* (sizes ./ minimum(sizes))  # simple O(n) scaling proxy
+# Bellman-Ford: O(mn) ≈ O(n²) for sparse graphs (m ≈ 2n)
+# Use quadratic scaling from smallest graph size as proxy
+bellman_times = dijkstra_times[1] .* ((sizes ./ sizes[1]) .^ 2)
 
 fig7 = plot(size=(1400, 700), dpi=300, layout=(1,2))
 
-# Left: Log-log performance plot
+# Left: Log-log performance plot with proper margins
 plot!(sizes, dmy_times, subplot=1,
     label="OptimSPath-DMY: O(m log^(2/3) n)",
     marker=:circle, ms=8, color=COLORS[1], lw=3,
@@ -644,7 +647,8 @@ plot!(sizes, dmy_times, subplot=1,
     title="Algorithm Performance Comparison",
     xaxis=:log10, yaxis=:log10, legend=:topleft,
     grid=true, minorgrid=true, gridlinewidth=0.3,
-    xlims=(40, 15000), ylims=(0.008, 500))
+    xlims=(40, 15000), ylims=(0.008, 500),
+    bottom_margin=5Plots.mm, left_margin=5Plots.mm)
 
 plot!(sizes, dijkstra_times, subplot=1,
     label="Dijkstra: O((m+n)log n)",
@@ -659,25 +663,38 @@ vspan!([150, 15000], subplot=1, alpha=0.03, color=COLORS[1], label="")
 annotate!(subplot=1, 1000, 0.01, text("OptimSPath-DMY\nOptimal Region", 9, :center, COLORS[1]))
 annotate!(subplot=1, 80, 0.02, text("Dijkstra\nOptimal", 8, :center, COLORS[2]))
 
-# Right: Speedup analysis
+# Right: Speedup analysis with properly grouped bars (using bar! with offsets)
 speedup_dij = dijkstra_times ./ dmy_times
 speedup_bell = bellman_times ./ dmy_times
 
-plot!(subplot=2, grid=false)  # Initialize subplot 2
-bar!([1:length(sizes);], [speedup_dij speedup_bell], subplot=2,
-    label=["vs Dijkstra" "vs Bellman-Ford"],
-    xlabel="Graph Size", ylabel="Speedup Factor (×)",
+# Create subplot 2 with proper settings
+plot!(subplot=2, grid=true, gridlinewidth=0.3,
+    xlabel="Graph Size (vertices)", ylabel="Speedup Factor (×)",
     title="OptimSPath-DMY Speedup Analysis",
-    color=[COLORS[4] COLORS[5]], bar_width=0.6,
     xticks=(1:length(sizes), string.(sizes)),
-    legend=:topleft, grid=true, gridlinewidth=0.3)
+    legend=:topleft,
+    ylims=(0, maximum([speedup_dij; speedup_bell]) * 1.15),
+    bottom_margin=5Plots.mm, left_margin=5Plots.mm)
 
+# Draw bars manually with offsets for grouping
+bar_width = 0.35
+offset = bar_width / 2
+
+# Plot Dijkstra speedup bars
+bar!((1:length(sizes)) .- offset, speedup_dij, subplot=2,
+    label="vs Dijkstra", color=COLORS[4], bar_width=bar_width, alpha=0.8)
+
+# Plot Bellman-Ford speedup bars
+bar!((1:length(sizes)) .+ offset, speedup_bell, subplot=2,
+    label="vs Bellman-Ford", color=COLORS[5], bar_width=bar_width, alpha=0.8)
+
+# Add break-even line
 hline!([1], subplot=2, color=:black, lw=1.5, linestyle=:dash, label="Break-even")
 
-# Add speedup values on bars
+# Add speedup values on bars with proper positioning for grouped bars
 for (i, (sd, sb)) in enumerate(zip(speedup_dij, speedup_bell))
-    annotate!(subplot=2, i-0.15, sd+0.5, text("$(round(sd, digits=1))×", 7, :center))
-    annotate!(subplot=2, i+0.15, sb+0.5, text("$(round(sb, digits=1))×", 7, :center))
+    annotate!(subplot=2, i-offset, sd+max(0.5, sd*0.06), text("$(round(sd, digits=1))×", 8, :center, :bold))
+    annotate!(subplot=2, i+offset, sb+max(0.5, sb*0.06), text("$(round(sb, digits=1))×", 8, :center, :bold))
 end
 
 savefig(fig7, "figures/algorithm_performance_comparison.png")
