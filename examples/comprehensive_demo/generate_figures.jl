@@ -36,32 +36,33 @@ using Statistics
 using Dates
 Random.seed!(42)
 
-# Professional publication settings
-gr(dpi=300, 
-   fontfamily="Helvetica", 
-   guidefontsize=12, 
-   tickfontsize=10, 
-   legendfontsize=10, 
-   titlefontsize=14, 
-   linewidth=2.5, 
-   markersize=7, 
+# Professional publication settings - Nature/Science journal quality
+gr(dpi=300,
+   fontfamily="Bookman", # Professional serif font for publications
+   guidefontsize=14,     # Increased for better readability
+   tickfontsize=11,      # Larger tick labels
+   legendfontsize=11,    # Larger legend text
+   titlefontsize=16,     # Prominent titles
+   linewidth=2.8,        # Thicker lines for clarity
+   markersize=8,         # Larger markers
    framestyle=:box,
    foreground_color_legend=nothing,
-   background_color_legend=RGBA(1,1,1,0.95),
-   legend_font_pointsize=10)
+   background_color_legend=RGBA(1,1,1,0.98),
+   legend_font_pointsize=11)
 
-# Professional color palette optimized for clarity
+# Publication-quality color palette (inspired by Nature journal standards)
+# Using distinct, colorblind-friendly colors with good contrast
 const COLORS = [
-    RGB(0.00, 0.45, 0.74),  # Deep Blue
-    RGB(0.90, 0.40, 0.00),  # Orange
-    RGB(0.00, 0.60, 0.50),  # Teal
-    RGB(0.80, 0.00, 0.35),  # Crimson
-    RGB(0.60, 0.20, 0.80),  # Purple
-    RGB(0.95, 0.60, 0.00),  # Gold
-    RGB(0.40, 0.40, 0.40),  # Gray
-    RGB(0.00, 0.70, 0.90),  # Sky Blue
-    RGB(0.70, 0.20, 0.50),  # Magenta
-    RGB(0.50, 0.70, 0.00)   # Lime
+    RGB(0.12, 0.47, 0.71),  # Professional Blue
+    RGB(1.00, 0.50, 0.05),  # Vibrant Orange
+    RGB(0.17, 0.63, 0.17),  # Forest Green
+    RGB(0.84, 0.15, 0.16),  # Crimson Red
+    RGB(0.58, 0.40, 0.74),  # Royal Purple
+    RGB(0.55, 0.34, 0.29),  # Earth Brown
+    RGB(0.89, 0.47, 0.76),  # Rose Pink
+    RGB(0.50, 0.50, 0.50),  # Neutral Gray
+    RGB(0.74, 0.74, 0.13),  # Golden Yellow
+    RGB(0.09, 0.75, 0.81)   # Cyan
 ]
 
 # Create figures directory
@@ -80,9 +81,9 @@ fig1 = plot(size=(1600, 900), dpi=300, layout=@layout([a{0.6h}; b{0.4h}]))
 # Top Panel: The OptimSPath Transformation Philosophy
 plot!(subplot=1, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 6))
 
-# Title with clear spacing
-annotate!(subplot=1, 5, 5.5, 
-    text("OptimSPath: Domain-Agnostic Problem Transformation", 16, :center, :bold))
+# Title with clear spacing and professional font size
+annotate!(subplot=1, 5, 5.5,
+    text("OptimSPath: Domain-Agnostic Problem Transformation", 18, :center, :bold))
 
 # Step 1: Any optimization problem - increased box height
 plot!(subplot=1, [0.5, 2.5, 2.5, 0.5, 0.5], [2.8, 2.8, 4.7, 4.7, 2.8],
@@ -166,7 +167,7 @@ println("\n📋 Creating Problem Casting Methodology Figure...")
 
 fig2 = plot(size=(1400, 1000), showaxis=false, grid=false, 
     xlims=(0, 14), ylims=(0, 11), dpi=300,
-    title="OptimSPath Problem Casting Methodology", titlefontsize=16)
+    title="OptimSPath Problem Casting Methodology", titlefontsize=18)
 
 # Define methodology steps with proper spacing
 steps = [
@@ -245,12 +246,14 @@ println("\n🌍 Creating Multi-Domain Applications Figure...")
 
 fig3 = plot(size=(1600, 1000), showaxis=false, grid=false,
     xlims=(0, 16), ylims=(0, 10), dpi=300,
-    title="OptimSPath: Multi-Domain Problem Casting Examples", titlefontsize=16)
+    title="OptimSPath: Multi-Domain Problem Casting Examples", titlefontsize=18)
 
-# Central OptimSPath hub
-scatter!([8], [5], ms=30, color=COLORS[1], markerstrokewidth=3, 
+# Central OptimSPath hub - larger circle to fit full text
+scatter!([8], [5], ms=45, color=COLORS[1], markerstrokewidth=3.5,
     markerstrokecolor=:white, label="")
-annotate!(8, 5, text("OptimSPath", 12, :white, :bold))
+# Use two lines for better readability
+annotate!(8, 5.15, text("Optim", 11, :white, :bold))
+annotate!(8, 4.85, text("SPath", 11, :white, :bold))
 
 # Domain examples with specific casting details
 domains = [
@@ -313,7 +316,7 @@ println("\n📦 Creating Supply Chain Optimization Figure...")
 
 fig4 = plot(size=(1400, 900), showaxis=false, grid=false,
     xlims=(-0.5, 14.5), ylims=(-0.5, 10.5), dpi=300,
-    title="Supply Chain Network Optimization Example", titlefontsize=16)
+    title="Supply Chain Network Optimization Example", titlefontsize=18)
 
 # Data source annotation
 annotate!(7, 9.8, text("Data Source: Manufacturing case study - 3 factories, 4 warehouses, 5 distribution centers", 10, :center, :italic))
