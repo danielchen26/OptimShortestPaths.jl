@@ -1,0 +1,38 @@
+# Claude Code configuration
+CLAUDE.md
+.conductor/
+.vscode/
+
+# Julia
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+Manifest.toml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+*.o
+*.so
+*.dylib
+
+# Temporary files
+*.tmp
+*.log
+FIGURE_DATA_ISSUES.md
+FINAL_CONSISTENCY_REPORT.md
+REGISTRATION_GUIDE.md
