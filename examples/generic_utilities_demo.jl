@@ -8,7 +8,7 @@ to ANY domain. We'll demonstrate with a simple logistics network, but
 these same functions work for ANY graph-based problem!
 """
 
-using OPUS
+using OptimSPath
 
 println("🌐 OPUS Generic Utilities Demonstration")
 println("=" ^ 60)
@@ -51,7 +51,7 @@ warehouses = [2, 3, 4]
 store6_costs = compare_sources(supply_graph, warehouses, 6)
 for (warehouse, cost) in store6_costs
     wh_name = "Warehouse $(warehouse-1)"
-    if cost < OPUS.INF
+    if cost < OptimSPath.INF
         println("   $wh_name → Store 6: \$$(round(cost, digits=2))")
     else
         println("   $wh_name → Store 6: No route")

@@ -11,7 +11,7 @@ if the plotting stack is available.
 
 using BenchmarkTools
 using Dates
-using OPUS
+using OptimSPath
 using Printf
 using Random
 using Statistics
@@ -47,26 +47,26 @@ function run_trials(f::Function; trials::Int = TRIALS)
     return μ, ci
 end
 
-function benchmark_graph(graph::OPUS.DMYGraph, source::Int; trials::Int = TRIALS)
+function benchmark_graph(graph::OptimSPath.DMYGraph, source::Int; trials::Int = TRIALS)
     # Warm-up to make sure compilation cost is excluded.
-    OPUS.dmy_sssp!(graph, source)
-    OPUS.simple_dijkstra(graph, source)
+    OptimSPath.dmy_sssp!(graph, source)
+    OptimSPath.simple_dijkstra(graph, source)
 
-    dmy_mean, dmy_ci = run_trials(() -> OPUS.dmy_sssp!(graph, source); trials = trials)
-    dijkstra_mean, dijkstra_ci = run_trials(() -> OPUS.simple_dijkstra(graph, source); trials = trials)
+    dmy_mean, dmy_ci = run_trials(() -> OptimSPath.dmy_sssp!(graph, source); trials = trials)
+    dijkstra_mean, dijkstra_ci = run_trials(() -> OptimSPath.simple_dijkstra(graph, source); trials = trials)
 
     return dmy_mean, dmy_ci, dijkstra_mean, dijkstra_ci
 end
 
 function sparse_random_graph(n::Int, edge_factor::Float64 = 2.0)
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     weights = Float64[]
     m = max(n - 1, round(Int, edge_factor * n))
 
     # Ensure connectivity with a random spanning tree
     for i in 2:n
         parent = rand(1:(i - 1))
-        push!(edges, OPUS.Edge(parent, i, length(edges) + 1))
+        push!(edges, OptimSPath.Edge(parent, i, length(edges) + 1))
         push!(weights, rand() * 9 + 1) # [1,10]
     end
 
@@ -75,38 +75,38 @@ function sparse_random_graph(n::Int, edge_factor::Float64 = 2.0)
         u = rand(1:n)
         v = rand(1:n)
         u == v && continue
-        push!(edges, OPUS.Edge(u, v, length(edges) + 1))
+        push!(edges, OptimSPath.Edge(u, v, length(edges) + 1))
         push!(weights, rand() * 9 + 1)
     end
 
-    return OPUS.DMYGraph(n, edges, weights)
+    return OptimSPath.DMYGraph(n, edges, weights)
 end
 
 function grid_graph(size::Int)
     n = size * size
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     weights = Float64[]
 
     for i in 1:size
         for j in 1:size
             v = (i - 1) * size + j
             if j < size
-                push!(edges, OPUS.Edge(v, v + 1, length(edges) + 1))
+                push!(edges, OptimSPath.Edge(v, v + 1, length(edges) + 1))
                 push!(weights, rand() * 2 + 1)
             end
             if i < size
-                push!(edges, OPUS.Edge(v, v + size, length(edges) + 1))
+                push!(edges, OptimSPath.Edge(v, v + size, length(edges) + 1))
                 push!(weights, rand() * 2 + 1)
             end
         end
     end
 
-    return OPUS.DMYGraph(n, edges, weights)
+    return OptimSPath.DMYGraph(n, edges, weights)
 end
 
 function layered_graph(layers::Int, layer_size::Int)
     n = layers * layer_size
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     weights = Float64[]
 
     for layer in 1:(layers - 1)
@@ -115,7 +115,7 @@ function layered_graph(layers::Int, layer_size::Int)
                 u = (layer - 1) * layer_size + i
                 v = layer * layer_size + j
                 if rand() < 0.35
-                    push!(edges, OPUS.Edge(u, v, length(edges) + 1))
+                    push!(edges, OptimSPath.Edge(u, v, length(edges) + 1))
                     push!(weights, rand() * 5 + 1)
                 end
             end
@@ -126,11 +126,11 @@ function layered_graph(layers::Int, layer_size::Int)
     for layer in 1:(layers - 1)
         u = (layer - 1) * layer_size + 1
         v = layer * layer_size + 1
-        push!(edges, OPUS.Edge(u, v, length(edges) + 1))
+        push!(edges, OptimSPath.Edge(u, v, length(edges) + 1))
         push!(weights, 1.0)
     end
 
-    return OPUS.DMYGraph(n, edges, weights)
+    return OptimSPath.DMYGraph(n, edges, weights)
 end
 
 function pretty(ci)

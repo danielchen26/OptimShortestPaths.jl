@@ -16,7 +16,7 @@ Problem: Multi-echelon supply chain network optimization
 
 # Add OPUS to load path
 push!(LOAD_PATH, joinpath(@__DIR__, "..", "..", "src"))
-include(joinpath(@__DIR__, "..", "..", "src", "OPUS.jl"))
+include(joinpath(@__DIR__, "..", "..", "src", "OptimSPath.jl"))
 using .OPUS
 
 using Random
@@ -172,7 +172,7 @@ println("\n🔄 TRANSFORMING TO SHORTEST-PATH PROBLEM")
 println("-" ^ 60)
 
 # Build adjacency matrix with costs
-edges = OPUS.Edge[]
+edges = OptimSPath.Edge[]
 weights = Float64[]
 edge_capacity = Float64[]
 edge_id = 0
@@ -185,7 +185,7 @@ for f in factory_ids
         cost = calculate_transport_cost(:factory, :warehouse, distance)
         
         global edge_id += 1
-        push!(edges, OPUS.Edge(f, w, edge_id))
+        push!(edges, OptimSPath.Edge(f, w, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(factory_capacity[f-minimum(factory_ids)+1], 
                                  warehouse_capacity[w-minimum(warehouse_ids)+1]))
@@ -199,7 +199,7 @@ for w in warehouse_ids
         cost = calculate_transport_cost(:warehouse, :distribution, distance)
         
         global edge_id += 1
-        push!(edges, OPUS.Edge(w, d, edge_id))
+        push!(edges, OptimSPath.Edge(w, d, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(warehouse_capacity[w-minimum(warehouse_ids)+1],
                                  dc_capacity[d-minimum(dc_ids)+1]))
@@ -213,7 +213,7 @@ for d in dc_ids
         cost = calculate_transport_cost(:distribution, :customer, distance)
         
         global edge_id += 1
-        push!(edges, OPUS.Edge(d, c, edge_id))
+        push!(edges, OptimSPath.Edge(d, c, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(dc_capacity[d-minimum(dc_ids)+1],
                                  customer_demand[c-minimum(customer_ids)+1]))
@@ -228,7 +228,7 @@ for f in factory_ids[1:2]  # Only first two factories
         cost = calculate_transport_cost(:factory, :distribution, distance) * 1.5  # Premium
         
         global edge_id += 1
-        push!(edges, OPUS.Edge(f, d, edge_id))
+        push!(edges, OptimSPath.Edge(f, d, edge_id))
         push!(weights, cost)
         push!(edge_capacity, min(factory_capacity[f-minimum(factory_ids)+1],
                                  dc_capacity[d-minimum(dc_ids)+1]) * 0.5)  # Limited capacity
@@ -251,7 +251,7 @@ println("\n🚀 SOLVING WITH DMY ALGORITHM")
 println("-" ^ 60)
 
 # Create the graph
-supply_graph = OPUS.DMYGraph(total_nodes, edges, weights)
+supply_graph = OptimSPath.DMYGraph(total_nodes, edges, weights)
 
 # Solve from each factory to find optimal distribution paths
 println("\nFinding optimal paths from each factory...")
@@ -264,7 +264,7 @@ for (idx, factory) in enumerate(factory_ids)
     
     # Run DMY algorithm
     t_dmy = @elapsed begin
-        distances = OPUS.dmy_sssp!(supply_graph, factory)
+        distances = OptimSPath.dmy_sssp!(supply_graph, factory)
     end
     push!(all_times, t_dmy)
     
@@ -396,7 +396,7 @@ Extending to Multi-Objective Optimization:
 """)
 
 # Sample multi-objective edge
-sample_edge = OPUS.MultiObjectiveEdge(
+sample_edge = OptimSPath.MultiObjectiveEdge(
     factory_ids[1], 
     warehouse_ids[1],
     [15.0, 2.5, 0.95, 50.0],  # [cost, time_days, reliability, carbon_kg]

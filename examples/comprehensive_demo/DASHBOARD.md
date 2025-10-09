@@ -1,4 +1,4 @@
-# 🌟 OPUS Framework Comprehensive Dashboard
+# 🌟 OptimSPath Framework Comprehensive Dashboard
 
 ## Optimization Problems Unified as Shortest-paths
 
@@ -6,11 +6,11 @@
 
 ---
 
-## 📚 The OPUS Philosophy
+## 📚 The OptimSPath Philosophy
 
-OPUS provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.
+OptimSPath provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.
 
-![OPUS Transformation Framework](figures/opus_philosophy.png)
+![OptimSPath Transformation Framework](figures/opus_philosophy.png)
 
 ### Key Transformation Principles
 
@@ -27,7 +27,7 @@ OPUS provides a **systematic transformation framework** that converts optimizati
 
 ## 🎯 Problem Casting Methodology
 
-OPUS provides a systematic 6-step approach to transform optimization problems:
+OptimSPath provides a systematic 6-step approach to transform optimization problems:
 
 ![Problem Casting Methodology](figures/problem_casting_methodology.png)
 
@@ -54,7 +54,7 @@ The dashboard shows consistent high performance (85-95%) across all metrics incl
 
 ## 🌍 Multi-Domain Applications
 
-OPUS successfully transforms problems across diverse domains:
+OptimSPath successfully transforms problems across diverse domains:
 
 ![Multi-Domain Applications](figures/multi_domain_applications.png)
 
@@ -98,7 +98,7 @@ OPUS successfully transforms problems across diverse domains:
 
 ## 💡 Real-World Example: Supply Chain Optimization
 
-OPUS transforms supply chain networks into solvable shortest-path problems. For a comprehensive implementation, see the dedicated [Supply Chain Example](../supply_chain/).
+OptimSPath transforms supply chain networks into solvable shortest-path problems. For a comprehensive implementation, see the dedicated [Supply Chain Example](../supply_chain/).
 
 ![Supply Chain Example](figures/supply_chain_optimization.png)
 
@@ -117,7 +117,7 @@ OPUS transforms supply chain networks into solvable shortest-path problems. For 
 
 ## 🎯 Multi-Objective Optimization
 
-OPUS handles competing objectives through Pareto optimization:
+OptimSPath handles competing objectives through Pareto optimization:
 
 ![Pareto Front](figures/multi_objective_optimization.png)
 
@@ -183,7 +183,7 @@ OPUS handles competing objectives through Pareto optimization:
    - Parse data into vertex/edge structure
    - Define transition weights
 
-2. **OPUS Transformation**
+2. **OptimSPath Transformation**
    ```julia
    graph = DMYGraph(n_vertices, edges, weights)
    distances = dmy_sssp!(graph, source)
@@ -221,7 +221,7 @@ The DMY algorithm demonstrates:
 ✅ **Multi-objective Support** - 57% Pareto optimal solutions identified  
 ✅ **Practical Performance** - Sub-millisecond on real problems  
 
-### The OPUS Approach
+### The OptimSPath Approach
 
 > "A systematic method to transform optimization problems into efficient shortest-path problems"
 
@@ -251,4 +251,4 @@ The DMY algorithm demonstrates:
 
 ---
 
-*Based on actual benchmark measurements - OPUS Framework v1.0.0*
+*Based on actual benchmark measurements - OptimSPath Framework v1.0.0*

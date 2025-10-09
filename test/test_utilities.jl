@@ -2,15 +2,15 @@
 Comprehensive tests for utility functions including path reconstruction.
 """
 
-const INF = OPUS.INF
+const INF = OptimSPath.INF
 
 @testset "Utility Functions Tests" begin
     
     @testset "Path Reconstruction" begin
         # Create test graph and run DMY to get parent array
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(1, 3, 3), OPUS.Edge(3, 4, 4)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(1, 3, 3), OptimSPath.Edge(3, 4, 4)]
         weights = [1.0, 1.0, 3.0, 2.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         
@@ -45,9 +45,9 @@ const INF = OPUS.INF
     end
     
     @testset "Shortest Path Tree" begin
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(1, 3, 2), OPUS.Edge(2, 4, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3)]
         weights = [2.0, 3.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         dist, parent = dmy_sssp_with_parents!(graph, 1)
         tree = shortest_path_tree(parent, 1)
@@ -63,9 +63,9 @@ const INF = OPUS.INF
         @test tree[4] == [1, 2, 4]
         
         # Test with disconnected graph
-        edges_disc = [OPUS.Edge(1, 2, 1), OPUS.Edge(3, 4, 2)]
+        edges_disc = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(3, 4, 2)]
         weights_disc = [1.0, 2.0]
-        graph_disc = OPUS.DMYGraph(4, edges_disc, weights_disc)
+        graph_disc = OptimSPath.DMYGraph(4, edges_disc, weights_disc)
         
         dist_disc, parent_disc = dmy_sssp_with_parents!(graph_disc, 1)
         tree_disc = shortest_path_tree(parent_disc, 1)
@@ -77,9 +77,9 @@ const INF = OPUS.INF
     end
     
     @testset "Path Length Calculation" begin
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(3, 4, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(3, 4, 3)]
         weights = [1.5, 2.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         # Valid path
         path = [1, 2, 3, 4]
@@ -107,9 +107,9 @@ const INF = OPUS.INF
     end
     
     @testset "Shortest Path Verification" begin
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(1, 3, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(1, 3, 3)]
         weights = [1.0, 1.0, 3.0]
-        graph = OPUS.DMYGraph(3, edges, weights)
+        graph = OptimSPath.DMYGraph(3, edges, weights)
         
         dist = dmy_sssp!(graph, 1)
         
@@ -134,9 +134,9 @@ const INF = OPUS.INF
     
     @testset "Dijkstra Comparison" begin
         # Create test graph
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(1, 3, 2), OPUS.Edge(2, 4, 3), OPUS.Edge(3, 4, 4), OPUS.Edge(2, 3, 5)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(1, 3, 2), OptimSPath.Edge(2, 4, 3), OptimSPath.Edge(3, 4, 4), OptimSPath.Edge(2, 3, 5)]
         weights = [1.0, 4.0, 2.0, 1.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         comparison = compare_with_dijkstra(graph, 1)
         
@@ -163,9 +163,9 @@ const INF = OPUS.INF
     end
     
     @testset "Simple Dijkstra Implementation" begin
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(1, 3, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(1, 3, 3)]
         weights = [1.0, 1.0, 3.0]
-        graph = OPUS.DMYGraph(3, edges, weights)
+        graph = OptimSPath.DMYGraph(3, edges, weights)
         
         dijkstra_dist = simple_dijkstra(graph, 1)
         
@@ -174,9 +174,9 @@ const INF = OPUS.INF
         @test dijkstra_dist[3] == 2.0  # Via path 1->2->3, not direct 1->3
         
         # Test with unreachable vertices
-        disconnected_edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(3, 4, 2)]
+        disconnected_edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(3, 4, 2)]
         disconnected_weights = [1.0, 1.0]
-        disconnected_graph = OPUS.DMYGraph(4, disconnected_edges, disconnected_weights)
+        disconnected_graph = OptimSPath.DMYGraph(4, disconnected_edges, disconnected_weights)
         
         dijkstra_disconnected = simple_dijkstra(disconnected_graph, 1)
         @test dijkstra_disconnected[1] == 0.0
@@ -185,15 +185,15 @@ const INF = OPUS.INF
         @test dijkstra_disconnected[4] == INF
         
         # Test single vertex graph
-        single_graph = OPUS.DMYGraph(1, Edge[], Float64[])
+        single_graph = OptimSPath.DMYGraph(1, Edge[], Float64[])
         dijkstra_single = simple_dijkstra(single_graph, 1)
         @test dijkstra_single == [0.0]
     end
     
     @testset "Graph Reachability" begin
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(4, 5, 3)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(4, 5, 3)]
         weights = [1.0, 1.0, 1.0]
-        graph = OPUS.DMYGraph(5, edges, weights)
+        graph = OptimSPath.DMYGraph(5, edges, weights)
         
         reachable_from_1 = graph_reachability(graph, 1)
         @test 1 in reachable_from_1
@@ -276,9 +276,9 @@ const INF = OPUS.INF
     
     @testset "Utility Function Integration" begin
         # Test that all utility functions work together
-        edges = [OPUS.Edge(1, 2, 1), OPUS.Edge(2, 3, 2), OPUS.Edge(1, 4, 3), OPUS.Edge(4, 3, 4)]
+        edges = [OptimSPath.Edge(1, 2, 1), OptimSPath.Edge(2, 3, 2), OptimSPath.Edge(1, 4, 3), OptimSPath.Edge(4, 3, 4)]
         weights = [1.0, 2.0, 4.0, 1.0]
-        graph = OPUS.DMYGraph(4, edges, weights)
+        graph = OptimSPath.DMYGraph(4, edges, weights)
         
         # Run DMY algorithm
         dist, parent = dmy_sssp_with_parents!(graph, 1)

@@ -2,7 +2,7 @@
 Comprehensive tests for pharmaceutical network implementations.
 """
 
-const INF = OPUS.INF
+const INF = OptimSPath.INF
 
 @testset "Pharmaceutical Networks Tests" begin
     
@@ -85,8 +85,8 @@ const INF = OPUS.INF
         tgt_high = network.target_indices["HighAffinity"]
         tgt_low = network.target_indices["LowAffinity"]
 
-        w_high = OPUS.get_edge_weight_between(network.graph, src, tgt_high)
-        w_low = OPUS.get_edge_weight_between(network.graph, src, tgt_low)
+        w_high = OptimSPath.get_edge_weight_between(network.graph, src, tgt_high)
+        w_low = OptimSPath.get_edge_weight_between(network.graph, src, tgt_low)
 
         @test w_high !== nothing
         @test w_low !== nothing

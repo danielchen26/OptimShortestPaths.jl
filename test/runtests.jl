@@ -4,10 +4,10 @@ using Test
 push!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
 
 # Load the module
-include("../src/OPUS.jl")
-using .OPUS
+include("../src/OptimSPath.jl")
+using .OptimSPath
 
-@testset "OPUS Framework Tests" begin
+@testset "OptimSPath Framework Tests" begin
     include("test_core_types.jl")
     include("test_graph_utils.jl")
     include("test_bmssp.jl")

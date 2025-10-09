@@ -4,7 +4,7 @@
 Run actual benchmarks to generate real performance data for figures
 """
 
-using OPUS
+using OptimSPath
 using Random
 using Statistics
 using Dates
@@ -160,7 +160,7 @@ println("Supply Chain Network:")
 println("  Nodes: $supply_nodes (1 factory, 5 warehouses, 14 customers)")
 println("  Edges: $(length(supply_edges))")
 println("  Solution time: $(round(supply_time * 1000, digits=3))ms")
-println("  Average delivery cost: \$$(round(mean(filter(x -> x < OPUS.INF, supply_dist)), digits=2))")
+println("  Average delivery cost: \$$(round(mean(filter(x -> x < OptimSPath.INF, supply_dist)), digits=2))")
 
 # Healthcare treatment protocol
 treatment_nodes = 15  # Different treatment stages

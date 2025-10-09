@@ -1,4 +1,4 @@
-name = "OPUS"
+name = "OptimSPath"
 uuid = "665f6718-e944-491c-97a0-bc01f3ed948a"
 authors = ["Tianchi Chen <chentianchi@gmail.com>"]
 version = "1.0.0"

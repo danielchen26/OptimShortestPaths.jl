@@ -5,9 +5,9 @@ Generate all figures for drug-target network analysis
 Includes single-objective, multi-objective, and corrected performance visualizations
 """
 
-using OPUS
+using OptimSPath
 # Bring submodule name into scope for references like MultiObjective.X
-using OPUS.MultiObjective
+using OptimSPath.MultiObjective
 using Plots
 using Random
 Random.seed!(42)

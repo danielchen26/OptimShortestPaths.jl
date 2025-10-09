@@ -17,7 +17,7 @@ The brilliance lies in converting **binding affinity** (how strongly a drug bind
 
 ## 🔄 Two Approaches: Generic vs Domain-Specific
 
-This example demonstrates **BOTH** approaches for using OPUS:
+This example demonstrates **BOTH** approaches for using OptimSPath:
 
 ### **Approach 1: Generic Functions (Recommended for New Users)**
 The example uses these domain-agnostic functions that work with ANY graph:

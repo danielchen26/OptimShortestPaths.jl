@@ -1,12 +1,12 @@
-# 🌟 OPUS Comprehensive Demo
+# 🌟 OptimSPath Comprehensive Demo
 
 ## Complete Framework Demonstration
 
-This comprehensive demo showcases the full power of the OPUS framework, demonstrating how to transform ANY optimization problem into a shortest-path problem and solve it efficiently.
+This comprehensive demo showcases the full power of the OptimSPath framework, demonstrating how to transform ANY optimization problem into a shortest-path problem and solve it efficiently.
 
 ## 📋 Files
 
-- **comprehensive_demo.jl** - Main demonstration script showing all OPUS capabilities
+- **comprehensive_demo.jl** - Main demonstration script showing all OptimSPath capabilities
 - **generate_figures.jl** - Visualization generation script
 - **DASHBOARD.md** - Interactive dashboard with results and analysis
 - **figures/** - Generated visualizations (8 figures)
@@ -106,16 +106,16 @@ The demo includes a full delivery route optimization example showing:
 3. Transition modeling (valid routes)
 4. Weight calculation (travel + time + fuel costs)
 5. Graph construction
-6. OPUS solution
+6. OptimSPath solution
 7. Optimal route interpretation
 
 ## 🔧 Integration Guide
 
-The demo shows how to integrate OPUS:
+The demo shows how to integrate OptimSPath:
 
 1. **Data Ingestion** - CSV/JSON/Database → Graph
 2. **Preprocessing** - Clean and normalize data
-3. **OPUS Transformation** - Apply casting methodology
+3. **OptimSPath Transformation** - Apply casting methodology
 4. **Solution & Output** - Extract and interpret paths
 5. **Monitoring & Feedback** - Track and refine
 
@@ -129,9 +129,9 @@ The demo shows how to integrate OPUS:
 
 ## 🎯 Key Takeaway
 
-> **"If you can define states and transitions, OPUS can optimize it!"**
+> **"If you can define states and transitions, OptimSPath can optimize it!"**
 
-The OPUS framework provides a universal approach to optimization, transforming complex problems into efficiently solvable shortest-path problems using the state-of-the-art DMY algorithm.
+The OptimSPath framework provides a universal approach to optimization, transforming complex problems into efficiently solvable shortest-path problems using the state-of-the-art DMY algorithm.
 
 ## 📖 Further Resources
 
@@ -144,4 +144,4 @@ The OPUS framework provides a universal approach to optimization, transforming c
 
 ---
 
-*OPUS Framework v1.0.0 - Transforming Optimization Through Graph Theory*
+*OptimSPath Framework v1.0.0 - Transforming Optimization Through Graph Theory*

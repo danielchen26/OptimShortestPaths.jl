@@ -18,7 +18,7 @@ The DMY algorithm efficiently finds optimal treatment sequences, which is crucia
 - Evidence-based medicine
 """
 
-using OPUS
+using OptimSPath
 # Inline benchmark loader (for performance demonstration only)
 function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark_results.txt"))
     isfile(path) || error("Benchmark results not found at $path")
@@ -40,7 +40,7 @@ function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark
 end
 benchmark_summary(results) = "DMY achieves $(round(results.speedup[end], digits=2))× speedup at n=$(results.sizes[end]) vertices (sparse graph)"
 
-using OPUS.MultiObjective
+using OptimSPath.MultiObjective
 
 # Multi-objective optimization tools from OPUS
 using OPUS: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
@@ -349,7 +349,7 @@ for decision_point in decision_points
         # Find reachable treatments and their costs
         reachable_options = []
         for (treatment, idx) in protocol.treatment_indices
-            if dist[idx] < OPUS.INF && treatment != decision_point
+            if dist[idx] < OptimSPath.INF && treatment != decision_point
                 push!(reachable_options, (treatment, dist[idx]))
             end
         end

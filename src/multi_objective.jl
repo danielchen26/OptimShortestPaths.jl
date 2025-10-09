@@ -1,11 +1,11 @@
 """
-Multi-Objective Shortest Path (MOSP) extensions for OPUS framework.
+Multi-Objective Shortest Path (MOSP) extensions for OptimSPath framework.
 Handles multiple objectives and Pareto-optimal solutions.
 """
 
 module MultiObjective
 
-using ..OPUS
+using ..OptimSPath
 
 export MultiObjectiveEdge, ParetoSolution, MultiObjectiveGraph,
        compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
@@ -209,23 +209,23 @@ function weighted_sum_approach(graph::MultiObjectiveGraph, source::Int, target::
         "Transform maximize metrics into costs before calling."))
 
     # Create single-objective graph with weighted edges
-    edges = OPUS.Edge[]
+    edges = OptimSPath.Edge[]
     edge_weights = Float64[]
     edge_index_lookup = Int[]
 
     for (idx, medge) in enumerate(graph.edges)
-        push!(edges, OPUS.Edge(medge.source, medge.target, length(edges) + 1))
+        push!(edges, OptimSPath.Edge(medge.source, medge.target, length(edges) + 1))
         weighted_value = sum(medge.weights .* weights)
         push!(edge_weights, weighted_value)
         push!(edge_index_lookup, idx)
     end
 
-    single_obj_graph = OPUS.DMYGraph(graph.n_vertices, edges, edge_weights)
+    single_obj_graph = OptimSPath.DMYGraph(graph.n_vertices, edges, edge_weights)
 
     # Run DMY algorithm
-    dist, parent = OPUS.dmy_sssp_with_parents!(single_obj_graph, source)
+    dist, parent = OptimSPath.dmy_sssp_with_parents!(single_obj_graph, source)
 
-    if dist[target] == OPUS.INF
+    if dist[target] == OptimSPath.INF
         return ParetoSolution(fill(Inf, graph.n_objectives), Int[], parent)
     end
 
@@ -335,26 +335,26 @@ function lexicographic_approach(graph::MultiObjectiveGraph, source::Int, target:
     # Maintain the subset of edge indices that remain feasible after each priority.
     active_edge_indices = collect(1:length(graph.edges))
     best_parent = fill(0, graph.n_vertices)
-    dist_to_target = OPUS.INF
+    dist_to_target = OptimSPath.INF
 
     for (level, obj_idx) in enumerate(priority_order)
         isempty(active_edge_indices) && return ParetoSolution(fill(Inf, graph.n_objectives), Int[], zeros(Int, graph.n_vertices))
 
-        edges = OPUS.Edge[]
+        edges = OptimSPath.Edge[]
         weights = Float64[]
         edge_index_lookup = Int[]  # Map new edge position -> original edge index
 
         for idx in active_edge_indices
             medge = graph.edges[idx]
-            push!(edges, OPUS.Edge(medge.source, medge.target, length(edges) + 1))
+            push!(edges, OptimSPath.Edge(medge.source, medge.target, length(edges) + 1))
             push!(weights, medge.weights[obj_idx])
             push!(edge_index_lookup, idx)
         end
 
-        single_obj_graph = OPUS.DMYGraph(graph.n_vertices, edges, weights)
-        dist, parent = OPUS.dmy_sssp_with_parents!(single_obj_graph, source)
+        single_obj_graph = OptimSPath.DMYGraph(graph.n_vertices, edges, weights)
+        dist, parent = OptimSPath.dmy_sssp_with_parents!(single_obj_graph, source)
 
-        if dist[target] == OPUS.INF
+        if dist[target] == OptimSPath.INF
             return ParetoSolution(fill(Inf, graph.n_objectives), Int[], parent)
         end
 
@@ -363,7 +363,7 @@ function lexicographic_approach(graph::MultiObjectiveGraph, source::Int, target:
         tolerance = 1e-10
         for (local_idx, original_idx) in enumerate(edge_index_lookup)
             medge = graph.edges[original_idx]
-            if dist[medge.source] < OPUS.INF &&
+            if dist[medge.source] < OptimSPath.INF &&
                abs(dist[medge.source] + weights[local_idx] - dist[medge.target]) <= tolerance
                 push!(new_active, original_idx)
             end
@@ -384,7 +384,7 @@ function lexicographic_approach(graph::MultiObjectiveGraph, source::Int, target:
         end
     end
 
-    if dist_to_target == OPUS.INF
+    if dist_to_target == OptimSPath.INF
         return ParetoSolution(fill(Inf, graph.n_objectives), Int[], best_parent)
     end
 

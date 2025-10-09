@@ -1,8 +1,8 @@
 # 📦 Supply Chain Optimization Dashboard
 
-## OPUS Framework Applied to Multi-Echelon Supply Chain Networks
+## OptimSPath Framework Applied to Multi-Echelon Supply Chain Networks
 
-This dashboard presents results from applying the DMY shortest-path algorithm to supply chain optimization, demonstrating how OPUS transforms logistics problems into efficient graph shortest-path solutions.
+This dashboard presents results from applying the DMY shortest-path algorithm to supply chain optimization, demonstrating how OptimSPath transforms logistics problems into efficient graph shortest-path solutions.
 
 **Key Findings**:
 1. **Network**: 22 nodes (3 factories, 4 warehouses, 5 distribution centers, 10 customers)
@@ -85,7 +85,7 @@ Detailed breakdown of production and transportation costs:
 ### **Problem Statement**
 Find minimum-cost distribution paths from factories through warehouses and distribution centers to customers.
 
-### **OPUS Transformation**
+### **OptimSPath Transformation**
 - **Vertices**: Facilities (factories, warehouses, DCs, customers)
 - **Edges**: Shipping routes between facilities
 - **Weights**: Transport costs (distance-based) + production costs
@@ -119,12 +119,12 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 
 | Method | Complexity | Time (22 nodes) | Optimality |
 |--------|-----------|-----------------|------------|
-| **OPUS DMY** | O(m log^(2/3) n) | 0.05ms | Global optimal |
+| **OptimSPath DMY** | O(m log^(2/3) n) | 0.05ms | Global optimal |
 | Linear Programming | O(n³) | ~1ms | Global optimal |
 | Greedy Heuristic | O(n²) | ~2ms | ~85% optimal |
 | Manual Planning | N/A | Hours | Unknown |
 
-**Advantage**: OPUS provides guaranteed optimal solutions with superior performance on large networks.
+**Advantage**: OptimSPath provides guaranteed optimal solutions with superior performance on large networks.
 
 ---
 
@@ -164,8 +164,8 @@ This example can be extended to include:
 - **Main Script**: [supply_chain.jl](supply_chain.jl)
 - **Figure Generation**: [generate_figures.jl](generate_figures.jl)
 - **Documentation**: [README.md](README.md)
-- **OPUS Framework**: [../../README.md](../../README.md)
+- **OptimSPath Framework**: [../../README.md](../../README.md)
 
 ---
 
-*OPUS Framework - Transforming Supply Chain Optimization Through Graph Theory*
+*OptimSPath Framework - Transforming Supply Chain Optimization Through Graph Theory*
