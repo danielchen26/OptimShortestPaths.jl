@@ -1,12 +1,15 @@
 ```
-   ___        _   _           ____  ____       _   _
-  / _ \ _ __ | |_(_)_ __ ___ / ___||  _ \ __ _| |_| |__
- | | | | '_ \| __| | '_ ` _ \\___ \| |_) / _` | __| '_ \
- | |_| | |_) | |_| | | | | | |___) |  __/ (_| | |_| | | |
-  \___/| .__/ \__|_|_| |_| |_|____/|_|   \__,_|\__|_| |_|
-       |_|
-
-  Optimization via Shortest Paths
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                                                                           ║
+ ║   ████████╗ OptimShortestPaths.jl                                         ║
+ ║   ╚══██╔══╝                                                               ║
+ ║      ██║    Optimization via Shortest Paths                               ║
+ ║      ██║                                                                   ║
+ ║      ██║    Transform ANY optimization problem → Shortest path problem    ║
+ ║   ████████╗ Solve efficiently with DMY algorithm O(m log^(2/3) n)         ║
+ ║   ╚═══════╝                                                               ║
+ ║                                                                           ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
 # OptimShortestPaths Framework
