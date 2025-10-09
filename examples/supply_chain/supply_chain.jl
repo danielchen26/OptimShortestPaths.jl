@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 """
-Supply Chain Optimization using OPUS Framework
+Supply Chain Optimization using OptimSPath Framework
 ==============================================
 
 This example demonstrates how to transform complex supply chain optimization problems
@@ -14,10 +14,10 @@ Problem: Multi-echelon supply chain network optimization
 - Handle multi-modal transportation options
 """
 
-# Add OPUS to load path
+# Add OptimSPath to load path
 push!(LOAD_PATH, joinpath(@__DIR__, "..", "..", "src"))
 include(joinpath(@__DIR__, "..", "..", "src", "OptimSPath.jl"))
-using .OPUS
+using .OptimSPath
 
 using Random
 using LinearAlgebra
@@ -26,7 +26,7 @@ using Statistics
 Random.seed!(42)
 
 println("=" ^ 80)
-println(" " ^ 15, "📦 SUPPLY CHAIN OPTIMIZATION WITH OPUS")
+println(" " ^ 15, "📦 SUPPLY CHAIN OPTIMIZATION WITH OptimSPath")
 println("=" ^ 80)
 
 # ==============================================================================
@@ -358,7 +358,7 @@ greedy_time_estimate = (n^2) * 5e-6
 println("""
 Algorithm Performance Comparison:
   
-  DMY (OPUS):
+  DMY (OptimSPath):
     • Complexity: O(m log^(2/3) n)
     • Actual Time: $(round(avg_time*1000, digits=3))ms
     • Optimality: Guaranteed for shortest paths
@@ -428,7 +428,7 @@ Key Results:
 ✅ Demand Met: $(round(100*satisfied_demand/total_demand, digits=1))%
 ✅ Cost Reduction: ~25% vs manual planning
 
-Benefits of OPUS Approach:
+Benefits of OptimSPath Approach:
 ─────────────────────────
 • Transforms complex supply chain into graph problem
 • Finds optimal paths in O(m log^(2/3) n) time
