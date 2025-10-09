@@ -20,8 +20,15 @@ makedocs(;
             "Multi-Objective Optimization" => "manual/multiobjective.md",
             "Domain Applications" => "manual/domains.md",
         ],
+        "Examples" => [
+            "Overview" => "examples.md",
+            "Comprehensive Demo" => "examples/comprehensive_demo.md",
+            "Drug-Target Networks" => "examples/drug_target_network.md",
+            "Metabolic Pathways" => "examples/metabolic_pathway.md",
+            "Treatment Protocols" => "examples/treatment_protocol.md",
+            "Supply Chain Optimization" => "examples/supply_chain.md",
+        ],
         "API Reference" => "api.md",
-        "Examples" => "examples.md",
         "Benchmarks" => "benchmarks.md",
     ],
     warnonly = [:missing_docs],  # Don't fail on missing docstrings during initial setup
