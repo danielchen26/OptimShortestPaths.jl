@@ -110,14 +110,14 @@ plot!(subplot=1, [6.5, 8.5, 8.5, 6.5, 6.5], [3, 3, 4.5, 4.5, 3],
 annotate!(subplot=1, 7.5, 3.75, text("Graph Model\nG = (V, E, w)", 11, :center, :bold))
 annotate!(subplot=1, 7.5, 3.2, text("• Edges (E): transitions\n• Weights (w): costs\n• Shortest path problem", 9, :center))
 
-# Core principle box
-plot!(subplot=1, [1, 9, 9, 1, 1], [0.5, 0.5, 2.2, 2.2, 0.5],
+# Core principle box - improved spacing
+plot!(subplot=1, [1, 9, 9, 1, 1], [0.3, 0.3, 2.4, 2.4, 0.3],
     fillcolor=COLORS[5], fillalpha=0.1, linecolor=COLORS[5], lw=2.5, label="")
-annotate!(subplot=1, 5, 1.8, 
+annotate!(subplot=1, 5, 2.0,
     text("Core Principle: Transform ANY optimization problem into shortest path", 12, :center, :bold))
-annotate!(subplot=1, 5, 1.3,
+annotate!(subplot=1, 5, 1.4,
     text("Key Insight: Every optimization seeks the 'best path' through a decision space", 11, :center, :italic))
-annotate!(subplot=1, 5, 0.8,
+annotate!(subplot=1, 5, 0.7,
     text("Benefit: Leverage powerful graph algorithms (DMY, Dijkstra) for any domain", 11, :center))
 
 # Bottom Panel: Concrete Example Mapping
@@ -125,13 +125,13 @@ plot!(subplot=2, showaxis=false, grid=false, xlims=(0, 10), ylims=(0, 4))
 
 annotate!(subplot=2, 5, 3.5, text("Example: Resource Scheduling Problem", 12, :center, :bold))
 
-# Original problem
-plot!(subplot=2, [0.5, 2, 2, 0.5, 0.5], [1.5, 1.5, 2.8, 2.8, 1.5],
+# Original problem - improved spacing
+plot!(subplot=2, [0.5, 2, 2, 0.5, 0.5], [1.3, 1.3, 3.0, 3.0, 1.3],
     fillcolor=COLORS[6], fillalpha=0.15, linecolor=COLORS[6], lw=2, label="")
-annotate!(subplot=2, 1.25, 2.4, text("Original:", 10, :center, :bold))
-annotate!(subplot=2, 1.25, 2.0, text("Schedule 5 tasks\nMinimize time\n3 resources", 9, :center))
+annotate!(subplot=2, 1.25, 2.5, text("Original:", 10, :center, :bold))
+annotate!(subplot=2, 1.25, 1.95, text("Schedule 5 tasks\nMinimize time\n3 resources", 9, :center))
 
-# Transformation steps with proper spacing
+# Transformation steps with improved spacing
 for (i, (x, title, desc)) in enumerate([
     (3.25, "States:", "Time slots\n× Resources\n× Task status"),
     (5, "Edges:", "Valid task\nassignments\n& transitions"),
@@ -139,15 +139,15 @@ for (i, (x, title, desc)) in enumerate([
     (8.5, "Solution:", "Shortest path\n= Optimal\nschedule")
 ])
     color = COLORS[mod(i+5, 10)+1]
-    plot!(subplot=2, [x-0.6, x+0.6, x+0.6, x-0.6, x-0.6], [1.5, 1.5, 2.8, 2.8, 1.5],
+    plot!(subplot=2, [x-0.6, x+0.6, x+0.6, x-0.6, x-0.6], [1.3, 1.3, 3.0, 3.0, 1.3],
         fillcolor=color, fillalpha=0.15, linecolor=color, lw=2, label="")
-    annotate!(subplot=2, x, 2.4, text(title, 10, :center, :bold))
-    annotate!(subplot=2, x, 2.0, text(desc, 9, :center))
+    annotate!(subplot=2, x, 2.5, text(title, 10, :center, :bold))
+    annotate!(subplot=2, x, 1.95, text(desc, 9, :center))
 end
 
-# Connect with arrows
+# Connect with arrows - adjusted for new box positions
 for x in [2.3, 4.05, 5.8, 7.55]
-    annotate!(subplot=2, x, 2.15, text("→", 20, :center, COLORS[3]))
+    annotate!(subplot=2, x, 2.2, text("→", 20, :center, COLORS[3]))
 end
 
 # Mathematical foundation
@@ -156,8 +156,8 @@ annotate!(subplot=2, 5, 0.8,
 annotate!(subplot=2, 5, 0.4,
     text("min Σw(e) for path P from source to target, subject to constraints", 10, :center, :italic))
 
-savefig(fig1, "figures/opus_philosophy.png")
-println("✓ Saved: opus_philosophy.png")
+savefig(fig1, "figures/optimspath_philosophy.png")
+println("✓ Saved: optimspath_philosophy.png")
 
 # ==============================================================================
 # Figure 2: Problem Casting Methodology - Clear Non-overlapping Layout
@@ -547,7 +547,7 @@ domains = ["Supply\nChain", "Healthcare", "Finance", "Manufacturing", "Energy\nG
 metrics = ["Speed", "Memory", "Accuracy", "Scalability", "Robustness"]
 
 # Performance scores (0-100) - OptimSPath vs Traditional methods
-opus_scores = [
+optimspath_scores = [
     92 85 98 94 90;  # Supply Chain
     88 82 96 91 89;  # Healthcare
     95 80 97 93 88;  # Finance
@@ -566,7 +566,7 @@ traditional_scores = [
 ]
 
 # Calculate improvement percentages
-improvements = round.((opus_scores .- traditional_scores) ./ traditional_scores * 100, digits=1)
+improvements = round.((optimspath_scores .- traditional_scores) ./ traditional_scores * 100, digits=1)
 
 # Heatmap showing improvements
 heatmap!(metrics, domains, improvements, subplot=1,
@@ -690,7 +690,7 @@ println("  $(benchmark_summary(results_fig7))")
 println("\n" * "="^80)
 println("✅ OptimSPath Visualization Suite Complete!")
 println("\nGenerated Figures:")
-println("  1. opus_philosophy.png - Clear domain-agnostic transformation explanation")
+println("  1. optimspath_philosophy.png - Clear domain-agnostic transformation explanation")
 println("  2. problem_casting_methodology.png - Non-overlapping workflow with proper spacing")
 println("  3. multi_domain_applications.png - Domain-specific casting examples")
 println("  4. supply_chain_optimization.png - Real-world example with data sources")
