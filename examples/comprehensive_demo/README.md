@@ -32,7 +32,7 @@ julia --project=. generate_figures.jl
 
 After running `generate_figures.jl`, you'll have 7 comprehensive figures:
 
-1. **optimspath_philosophy.png** - Framework overview showing problem → graph → solution
+1. **optimshortestpaths_philosophy.png** - Framework overview showing problem → graph → solution
 2. **problem_casting_methodology.png** - 6-step problem transformation process
 3. **multi_domain_applications.png** - Examples across 4 different domains
 4. **supply_chain_optimization.png** - Detailed supply chain optimization

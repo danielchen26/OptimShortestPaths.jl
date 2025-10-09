@@ -157,8 +157,8 @@ annotate!(subplot=2, 5, 0.8,
 annotate!(subplot=2, 5, 0.4,
     text("min Σw(e) for path P from source to target, subject to constraints", 10, :center, :italic))
 
-savefig(fig1, "figures/optimspath_philosophy.png")
-println("✓ Saved: optimspath_philosophy.png")
+savefig(fig1, "figures/optimshortestpaths_philosophy.png")
+println("✓ Saved: optimshortestpaths_philosophy.png")
 
 # ==============================================================================
 # Figure 2: Problem Casting Methodology - Clear Non-overlapping Layout
@@ -551,7 +551,7 @@ domains = ["Supply\nChain", "Healthcare", "Finance", "Manufacturing", "Energy\nG
 metrics = ["Speed", "Memory", "Accuracy", "Scalability", "Robustness"]
 
 # Performance scores (0-100) - OptimShortestPaths vs Traditional methods
-optimspath_scores = [
+optimshortestpaths_scores = [
     92 85 98 94 90;  # Supply Chain
     88 82 96 91 89;  # Healthcare
     95 80 97 93 88;  # Finance
@@ -570,7 +570,7 @@ traditional_scores = [
 ]
 
 # Calculate improvement percentages
-improvements = round.((optimspath_scores .- traditional_scores) ./ traditional_scores * 100, digits=1)
+improvements = round.((optimshortestpaths_scores .- traditional_scores) ./ traditional_scores * 100, digits=1)
 
 # Heatmap showing improvements
 heatmap!(metrics, domains, improvements, subplot=1,
@@ -710,7 +710,7 @@ println("  $(benchmark_summary(results_fig7))")
 println("\n" * "="^80)
 println("✅ OptimShortestPaths Visualization Suite Complete!")
 println("\nGenerated Figures:")
-println("  1. optimspath_philosophy.png - Clear domain-agnostic transformation explanation")
+println("  1. optimshortestpaths_philosophy.png - Clear domain-agnostic transformation explanation")
 println("  2. problem_casting_methodology.png - Non-overlapping workflow with proper spacing")
 println("  3. multi_domain_applications.png - Domain-specific casting examples")
 println("  4. supply_chain_optimization.png - Real-world example with data sources")

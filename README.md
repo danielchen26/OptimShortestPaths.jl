@@ -57,7 +57,7 @@
 ## 📁 **Project Structure**
 
 ```
-OptimShortestPaths/
+OptimShortestPaths.jl/
 ├── src/                          # Source code
 │   ├── OptimShortestPaths.jl                   # Main module (casting framework)
 │   ├── core_types.jl             # Data structures
@@ -78,8 +78,8 @@ OptimShortestPaths/
 
 ```bash
 # Clone the repository
-git clone https://github.com/danielchen26/OptimShortestPaths.git
-cd OptimShortestPaths
+git clone https://github.com/danielchen26/OptimShortestPaths.jl.git
+cd OptimShortestPaths.jl
 
 # Setup in development mode
 julia --project=. -e "using Pkg; Pkg.develop(path=\".\"); Pkg.instantiate()"
@@ -517,7 +517,7 @@ Contributions welcome! Please:
 If you use OptimShortestPaths in your research, please cite:
 
 ```bibtex
-@software{optimspath2025,
+@software{optimshortestpaths2025,
   title = {OptimShortestPaths: Optimization via Shortest Paths},
   author = {Tianchi Chen},
   year = {2025},

@@ -1,4 +1,4 @@
-# OptimSPath DMY Algorithm Benchmark Results
+# OptimShortestPaths DMY Algorithm Benchmark Results
 # Generated: 2025-10-09T01:57:26Z
 # Fields: Size,Edges,DMY_ms,DMY_CI_ms,Dijkstra_ms,Dijkstra_CI_ms,Speedup
 200,400,0.081111,0.002285,0.024760,0.000604,0.3053
