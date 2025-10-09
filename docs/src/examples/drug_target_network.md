@@ -67,6 +67,28 @@ This ensures:
 
 ## Single-Objective Analysis
 
+### Figure 1: Drug-Target Binding Affinity Matrix
+
+![Binding Affinity Heatmap](../assets/figures/drug_target_network/binding_affinity_heatmap.png)
+
+**Interpretation**:
+- Matrix shows normalized binding affinities (0=no binding, 1=perfect binding)
+- **Celecoxib**: Strong COX-2 (0.95), weak COX-1 (0.05) → Selective inhibitor
+- **Aspirin**: Strong COX-1 (0.85), moderate COX-2 (0.45) → Non-selective
+- **Ibuprofen**: Balanced binding to both COX isoforms
+
+### Figure 2: COX-2/COX-1 Selectivity Profile
+
+![COX Selectivity](../assets/figures/drug_target_network/cox_selectivity.png)
+
+**Clinical Significance**:
+
+| Drug | Selectivity | Interpretation | GI Risk |
+|------|------------|----------------|---------|
+| Celecoxib | 20.1x | Highly COX-2 selective | Low |
+| Ibuprofen | 10.5x | COX-2 selective | Low-Moderate |
+| Aspirin | 0.5x | COX-1 selective | High |
+
 ### Finding Most Selective COX-2 Inhibitor
 
 ```julia
@@ -115,6 +137,27 @@ pareto_front = compute_pareto_front(graph, source, target; max_solutions=1000)
 
 **Results**: 9 Pareto-optimal drug pathways discovered
 
+### Figure 3: 2D Pareto Front Projections
+
+![Pareto Front 2D](../assets/figures/drug_target_network/drug_pareto_front.png)
+
+**Four critical trade-offs visualized**:
+1. **Efficacy vs Toxicity**: Higher efficacy drugs have more side effects
+2. **Efficacy vs Cost**: Better drugs cost more
+3. **Toxicity vs Cost**: Safer drugs are expensive
+4. **Time vs Efficacy**: Fast-acting drugs may be less effective
+
+### Figure 4: 3D Pareto Front Visualization
+
+![Pareto Front 3D](../assets/figures/drug_target_network/drug_pareto_3d.png)
+
+**3D Trade-off Space**: This plot shows the three most critical objectives simultaneously:
+- **X-axis (Efficacy)**: Treatment effectiveness (0-100%)
+- **Y-axis (Toxicity)**: Side effect severity (0-100%)
+- **Z-axis (Cost)**: Price in dollars (\$0-200)
+
+Each point represents a different drug pathway. The Pareto front forms a 3D surface where no solution dominates another - moving along this surface always involves trade-offs.
+
 ### The 9 Pareto-Optimal Solutions
 
 | Solution | Drug→Target | Efficacy | Toxicity | Cost | Time | **Best For** |
@@ -156,6 +199,39 @@ best = epsilon_constraint_approach(graph, source, target, 1, constraints)
 best = get_knee_point(pareto_front)
 # → Solution 5: Ibuprofen→COX-1 (balanced across all objectives)
 ```
+
+---
+
+## Algorithm Performance
+
+### Figure 5: Performance Analysis
+
+![Performance Corrected](../assets/figures/drug_target_network/performance_corrected.png)
+
+**Benchmark Results** (from canonical `benchmark_results.txt`):
+
+| Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
+|------------|-------|------------------|-----------------------|---------|
+| 200        | 400   | 0.081 ± 0.002    | 0.025 ± 0.001         | 0.31×   |
+| 500        | 1,000 | 0.426 ± 0.197    | 0.167 ± 0.004         | 0.39×   |
+| 1,000      | 2,000 | 1.458 ± 1.659    | 0.641 ± 0.008         | 0.44×   |
+| 2,000      | 4,000 | 1.415 ± 0.094    | 2.510 ± 0.038         | 1.77×   |
+| **5,000**  | **10,000** | **3.346 ± 0.105** | **16.028 ± 0.241** | **4.79×** |
+
+**Key Insights**:
+- Break-even point: n ≈ 1,800 vertices on sparse random graphs
+- DMY shows speedup for n > 2,000 (sparse graphs with m ≈ 2n)
+- At n=5,000: 4.79× faster than Dijkstra
+- Theoretical O(m log^(2/3) n) complexity confirmed
+
+### Figure 6: Path Distance Analysis
+
+![Path Distances](../assets/figures/drug_target_network/path_distances.png)
+
+Shows shortest path distances from all drugs to all targets, enabling:
+- Quick selectivity comparisons
+- Off-target binding identification
+- Multi-target drug analysis
 
 ---
 

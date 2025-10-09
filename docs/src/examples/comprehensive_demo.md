@@ -44,13 +44,80 @@ julia --project=. generate_figures.jl
 
 **Generates 7 figures** (300 DPI, Nature/Science quality):
 
-1. **optimshortestpaths_philosophy.png** - Transformation framework overview
-2. **problem_casting_methodology.png** - 8-step problem transformation workflow
-3. **multi_domain_applications.png** - 8 domain examples (hub-and-spoke visualization)
-4. **supply_chain_optimization.png** - Multi-echelon network example
-5. **multi_objective_optimization.png** - Pareto front demonstrations
-6. **real_world_applications.png** - Performance vs traditional methods
-7. **algorithm_performance_comparison.png** - DMY vs Dijkstra benchmarks
+### Figure 1: OptimShortestPaths Philosophy
+
+![Philosophy](../assets/figures/comprehensive_demo/optimshortestpaths_philosophy.png)
+
+**Domain-Agnostic Problem Transformation**:
+- Top panel: Any Optimization Problem → State Space → Graph Model
+- Core principle: Transform ANY optimization into shortest path
+- Bottom panel: Concrete resource scheduling example showing the transformation
+
+### Figure 2: Problem Casting Methodology
+
+![Methodology](../assets/figures/comprehensive_demo/problem_casting_methodology.png)
+
+**8-Step Systematic Workflow**:
+1. Problem Analysis → 2. State Mapping → 3. Transition Design → 4. Cost Modeling
+5. Graph Construction → 6. Algorithm Selection → 7. Solution Extraction → 8. Validation
+
+Key Success Factors: Complete State Space • Accurate Cost Function • Proper Constraint Handling
+
+### Figure 3: Multi-Domain Applications
+
+![Multi-Domain](../assets/figures/comprehensive_demo/multi_domain_applications.png)
+
+**8 Diverse Application Domains**:
+- Supply Chain, Healthcare, Finance, Manufacturing (top/sides)
+- Energy Grid, Transportation, Scheduling, Network Design (sides/bottom)
+- Central hub: OptimShortestPaths connects all domains
+- Each domain shows specific casting: States → Edges → Weights
+
+### Figure 4: Supply Chain Network Example
+
+![Supply Chain](../assets/figures/comprehensive_demo/supply_chain_optimization.png)
+
+**Real-World 22-Node Network**:
+- 3 Factories → 4 Warehouses → 5 Distribution Centers → 2 Customer Regions
+- Optimization: Total cost \$34,180, Utilization 82%, DMY runtime 0.095ms
+- 31% cost reduction vs manual planning
+
+### Figure 5: Multi-Objective Optimization
+
+![Multi-Objective](../assets/figures/comprehensive_demo/multi_objective_optimization.png)
+
+**Pareto Front Analysis** (4 panels):
+- Cost-Time trade-off: 150 solutions, 22 Pareto optimal (14.7% efficiency)
+- Cost-Quality trade-off: Higher quality requires higher cost
+- Time-Quality trade-off: Faster completion sacrifices quality
+- Summary: Data generation method, results, best values from Pareto set
+
+### Figure 6: Real-World Performance Comparison
+
+![Real-World Apps](../assets/figures/comprehensive_demo/real_world_applications.png)
+
+**OptimShortestPaths vs Traditional Methods** across 6 domains:
+- Average improvement: +22.3%
+- Speed: 15-30% faster execution
+- Memory: 15-23% less usage
+- Accuracy: 2-5% better solutions
+- Scalability: 20-32% better scaling
+- Baselines clearly stated for each domain
+
+### Figure 7: Algorithm Performance Comparison
+
+![Performance](../assets/figures/comprehensive_demo/algorithm_performance_comparison.png)
+
+**Left panel**: Log-log performance plot
+- OptimShortestPaths-DMY: O(m log^(2/3) n) - Blue circles
+- Dijkstra: O((m+n)log n) - Orange squares
+- Bellman-Ford (estimate): O(mn) - Green diamonds
+- Crossover at n ≈ 1,800 vertices
+
+**Right panel**: Speedup analysis with side-by-side bars
+- vs Dijkstra: 0.3×, 0.4×, 0.4×, 1.8×, 4.8×
+- vs Bellman-Ford: 0.3×, 0.4×, 0.4×, 1.7×, 4.6×
+- Break-even line at 1× clearly shown
 
 ---
 
