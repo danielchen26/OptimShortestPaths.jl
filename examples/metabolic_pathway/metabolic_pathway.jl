@@ -170,9 +170,9 @@ glucose_idx = metabolite_indices["Glucose"]
 pyruvate_idx = metabolite_indices["Pyruvate"]
 dist = OptimShortestPaths.dmy_sssp!(graph, glucose_idx)
 
-net_atp = 2.0  # Glycolysis produces net 2 ATP
+glycolysis_net_atp = 2.0  # Glycolysis produces net 2 ATP
 glycolysis_cost = dist[pyruvate_idx]
-energy_efficiency = net_atp / glycolysis_cost
+energy_efficiency = glycolysis_net_atp / glycolysis_cost
 println("Glycolysis efficiency: $(round(energy_efficiency, digits=2)) ATP/cost unit")
 
 # DEMONSTRATION: Using BOTH Generic and Domain-Specific Functions
@@ -556,12 +556,14 @@ println("\n" * "=" ^ 60)
 println("KEY FINDINGS")
 println("=" ^ 60)
 
+reachable_count = glucose_connectivity["reachable_count"]
+
 println("\n1. SINGLE-OBJECTIVE:")
 glycolysis_path_summary = isempty(glycolysis_path_names) ? "Path unavailable" : join(glycolysis_path_names, " → ")
-println("   • Glucose → Pyruvate shortest-path cost: $(round(glycolysis_cost, digits=2)) (net ATP=$(round(net_atp, digits=1)))")
+println("   • Glucose → Pyruvate shortest-path cost: $(round(glycolysis_cost, digits=2)) (net ATP=$(round(glycolysis_net_atp, digits=1)))")
 println("   • Pathway sequence: $glycolysis_path_summary")
 println("   • Energy efficiency: $(round(energy_efficiency, digits=2)) ATP/cost unit")
-println("   • Reachability: $(glucose_connectivity[\"reachable_count\"])/$(graph.n_vertices) metabolites reachable; $(accessible_count) within cost ≤ $(round(max_cost, digits=1))")
+println("   • Reachability: $reachable_count/$(graph.n_vertices) metabolites reachable; $(accessible_count) within cost <= $(round(max_cost, digits=1))")
 
 println("\n2. MULTI-OBJECTIVE:")
 if pareto_count > 0 && isfinite(best_atp_time)

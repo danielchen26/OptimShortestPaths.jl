@@ -241,20 +241,23 @@ weights = [0.4, 0.2, 0.2, 0.2]  # Prioritize efficacy
 sol_weighted_summary = nothing
 weighted_sum_error = nothing
 try
-    sol_weighted = MultiObjective.weighted_sum_approach(mo_graph, 1, 9, weights)
-    sol_weighted_summary = sol_weighted
-    println("• Weighted Sum: Efficacy=$(round(sol_weighted.objectives[1]*100, digits=0))%, " *
-            "Toxicity=$(round(sol_weighted.objectives[2]*100, digits=0))%")
+    global sol_weighted_summary = MultiObjective.weighted_sum_approach(mo_graph, 1, 9, weights)
+    println("• Weighted Sum: Efficacy=$(round(sol_weighted_summary.objectives[1]*100, digits=0))%, " *
+            "Toxicity=$(round(sol_weighted_summary.objectives[2]*100, digits=0))%")
 catch err
-    weighted_sum_error = sprint(showerror, err)
+    global weighted_sum_error = sprint(showerror, err)
     println("• Weighted Sum: not applicable ($weighted_sum_error)")
 end
 
 constraints = [Inf, 0.3, Inf, Inf]  # Limit toxicity
 sol_constrained = MultiObjective.epsilon_constraint_approach(mo_graph, 1, 9, 1, constraints)
-println("• ε-Constraint (toxicity≤30%): Efficacy=$(round(sol_constrained.objectives[1]*100, digits=0))%, " *
-        "Toxicity=$(round(sol_constrained.objectives[2]*100, digits=0))%")
 constrained_feasible = all(isfinite, sol_constrained.objectives) && !isempty(sol_constrained.path)
+if constrained_feasible
+    println("• ε-Constraint (toxicity≤30%): Efficacy=$(round(sol_constrained.objectives[1]*100, digits=0))%, " *
+            "Toxicity=$(round(sol_constrained.objectives[2]*100, digits=0))%")
+else
+    println("• ε-Constraint (toxicity≤30%): no feasible pathway under the specified constraint")
+end
 
 knee = MultiObjective.get_knee_point(pareto_front)
 knee_solution = nothing
@@ -317,26 +320,117 @@ end
 
 println("\n✅ DMY shows theoretical O(m log^(2/3) n) advantage for n > 1000")
 
+pareto_count = length(pareto_front)
+if pareto_count > 0
+    efficacy_values = [sol.objectives[1] * 100 for sol in pareto_front]
+    toxicity_values = [sol.objectives[2] * 100 for sol in pareto_front]
+    cost_values = [sol.objectives[3] for sol in pareto_front]
+    time_values = [sol.objectives[4] for sol in pareto_front]
+    efficacy_range = (minimum(efficacy_values), maximum(efficacy_values))
+    toxicity_range = (minimum(toxicity_values), maximum(toxicity_values))
+    best_efficacy_idx = argmax(efficacy_values)
+    best_efficacy = efficacy_values[best_efficacy_idx]
+    best_efficacy_toxicity = toxicity_values[best_efficacy_idx]
+    fastest_idx = argmin(time_values)
+    fastest_time = time_values[fastest_idx]
+    fastest_efficacy = efficacy_values[fastest_idx]
+    lowest_cost_idx = argmin(cost_values)
+    lowest_cost = cost_values[lowest_cost_idx]
+    lowest_cost_time = time_values[lowest_cost_idx]
+else
+    efficacy_range = (NaN, NaN)
+    toxicity_range = (NaN, NaN)
+    best_efficacy = NaN
+    best_efficacy_toxicity = NaN
+    fastest_time = NaN
+    fastest_efficacy = NaN
+    lowest_cost = NaN
+    lowest_cost_time = NaN
+end
+
+performance_count = length(performance_results)
+if performance_count > 0
+    n_values = [res[1] for res in performance_results]
+    largest_idx = argmax(n_values)
+    smallest_idx = argmin(n_values)
+    largest_case = performance_results[largest_idx]
+    smallest_case = performance_results[smallest_idx]
+    speedup_values = [res[3] for res in performance_results]
+    max_speedup_idx = argmax(speedup_values)
+    min_speedup_idx = argmin(speedup_values)
+    max_speedup_case = performance_results[max_speedup_idx]
+    min_speedup_case = performance_results[min_speedup_idx]
+else
+    largest_case = (NaN, NaN, NaN)
+    smallest_case = (NaN, NaN, NaN)
+    max_speedup_case = (NaN, NaN, NaN)
+    min_speedup_case = (NaN, NaN, NaN)
+end
+
+if !isempty(reachability_stats)
+    reachability_range = (minimum(reachability_stats), maximum(reachability_stats))
+    avg_distance_range = (minimum(avg_distance_stats), maximum(avg_distance_stats))
+else
+    reachability_range = (0, 0)
+    avg_distance_range = (NaN, NaN)
+end
+
+celecoxib_selectivity = get(selectivity_metrics, "Celecoxib", NaN)
+best_selectivity = isempty(selectivity_metrics) ? nothing : findmax(selectivity_metrics)
+
 # Summary
 println("\n" * "=" ^ 60)
 println("KEY FINDINGS")
 println("=" ^ 60)
 
 println("\n1. SINGLE-OBJECTIVE:")
-celecoxib_selectivity = selectivity_data[3]  # Celecoxib is 3rd in the list
-println("   • Celecoxib identified as most COX-2 selective ($(round(celecoxib_selectivity, digits=1))x)")
-println("   • DMY efficiently finds optimal drug-target paths")
+if reachability_range[2] > 0 && all(isfinite, avg_distance_range)
+    println("   • Sample drugs reach $(reachability_range[1])–$(reachability_range[2]) of $(length(targets)) targets; avg distance $(round(avg_distance_range[1], digits=2))–$(round(avg_distance_range[2], digits=2))")
+else
+    println("   • Connectivity metrics unavailable for sampled drugs")
+end
+if best_selectivity !== nothing
+    best_value, best_drug = best_selectivity
+    println("   • Highest COX-2 selectivity: $best_drug at $(round(best_value, digits=1))x")
+elseif isfinite(celecoxib_selectivity)
+    println("   • Celecoxib COX-2 selectivity: $(round(celecoxib_selectivity, digits=1))x")
+end
+println("   • DMY efficiently retrieves optimal drug→target pathways")
 
 println("\n2. MULTI-OBJECTIVE:")
-println("   • $(length(pareto_front)) Pareto-optimal solutions found")
-println("   • No single 'best' drug - depends on priorities")
-println("   • Enables personalized medicine decisions")
+if pareto_count > 0 && all(isfinite, efficacy_range)
+    println("   • $pareto_count Pareto-optimal solutions; efficacy span $(round(efficacy_range[1], digits=0))–$(round(efficacy_range[2], digits=0))% with toxicity $(round(toxicity_range[1], digits=0))–$(round(toxicity_range[2], digits=0))%")
+    println("   • Highest efficacy option: $(round(best_efficacy, digits=0))% efficacy at $(round(best_efficacy_toxicity, digits=0))% toxicity")
+    println("   • Fastest option: $(round(fastest_efficacy, digits=0))% efficacy in $(round(fastest_time, digits=1)) h")
+    println("   • Lowest cost option: \$$(round(lowest_cost, digits=0)) in $(round(lowest_cost_time, digits=1)) h")
+else
+    println("   • No Pareto-optimal solutions identified (unexpected)")
+end
+if sol_weighted_summary !== nothing
+    println("   • Weighted sum (0.4/0.2/0.2/0.2): efficacy=$(round(sol_weighted_summary.objectives[1]*100, digits=0))%, toxicity=$(round(sol_weighted_summary.objectives[2]*100, digits=0))%")
+elseif weighted_sum_error !== nothing
+    println("   • Weighted sum unavailable: $weighted_sum_error")
+end
+if constrained_feasible
+    println("   • ε-constraint (toxicity≤30%): efficacy=$(round(sol_constrained.objectives[1]*100, digits=0))%, toxicity=$(round(sol_constrained.objectives[2]*100, digits=0))%")
+else
+    println("   • ε-constraint (toxicity≤30%): no feasible pathway at this threshold")
+end
+if knee_solution !== nothing
+    println("   • Knee point: efficacy=$(round(knee_solution.objectives[1]*100, digits=0))%, toxicity=$(round(knee_solution.objectives[2]*100, digits=0))%")
+end
 
 println("\n3. PERFORMANCE:")
-println("   • Fixed k=n^(1/3) parameter critical for speed")
-if !isempty(performance_results)
-    max_speedup = maximum(x -> x[3], performance_results)
-    println("   • ≈$(round(max_speedup, digits=1))× faster than Dijkstra at n=5000")
+println("   • Fixed k=n^(1/3) parameter remains critical for speed")
+if performance_count > 0 && isfinite(largest_case[1])
+    largest_speedup = largest_case[3]
+    println("   • Largest benchmark (n=$(largest_case[1])): $(round(largest_speedup, digits=2))× $(largest_speedup >= 1 ? "faster" : "(slower)")")
+    max_speedup = max_speedup_case[3]
+    println("   • Greatest observed speedup (n=$(max_speedup_case[1])): $(round(max_speedup, digits=2))× faster")
+    min_speedup = min_speedup_case[3]
+    println("   • Slowest sample (n=$(min_speedup_case[1])): $(round(min_speedup, digits=2))× $(min_speedup >= 1 ? "faster" : "(slower)")")
+else
+    println("   • Performance benchmarks unavailable")
 end
 println("   • Optimal for large sparse networks")
 
