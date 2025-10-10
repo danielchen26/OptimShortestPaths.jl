@@ -117,8 +117,8 @@ Screening → Imaging → Biopsy → {Surgery, Chemotherapy, Radiation} → Remi
 **Example output:**
 ```julia
 # Optimal treatment path (cost-minimizing):
-# Screening → Imaging → Biopsy → Surgery → Remission
-# Total cost: $38.5k, Efficacy: 85%
+# Initial_Screening → Diagnostic_Imaging → Biopsy → Staging → Multidisciplinary_Review → Radiation_Oncology → Follow_up_Monitoring → Remission
+# Total cost: $10.8k (composite efficacy score ≈365)
 ```
 
 ### 5. Supply Chain Optimization (`supply_chain/`)

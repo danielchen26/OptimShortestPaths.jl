@@ -310,18 +310,25 @@ dmy_ci = benchmarks.dmy_ci_ms
 dijkstra_ci = benchmarks.dijkstra_ci_ms
 
 # Performance comparison plot
-p6a = plot(test_sizes, [dmy_times dijkstra_times],
+p6a = plot(test_sizes, dmy_times;
     xlabel = "Number of Vertices",
     ylabel = "Runtime (ms)",
     title = "Corrected Performance: DMY vs Dijkstra",
-    label = ["DMY O(m log^(2/3) n)" "Dijkstra O(n log n)"],
-    marker = [:circle :square],
+    label = "DMY runtime (O(m log^{2/3} n))",
+    marker = :circle,
     markersize = 6,
     linewidth = 2,
     legend = :topleft,
     yscale = :log10,
-    xscale = :log10
-)
+    xscale = :log10,
+    color = :dodgerblue)
+
+plot!(p6a, test_sizes, dijkstra_times;
+    label = "Dijkstra runtime (O(m log n))",
+    marker = :square,
+    markersize = 6,
+    linewidth = 2,
+    color = :darkorange)
 
 # Annotate speedup
 for (n, dmy, dijk) in zip(test_sizes, dmy_times, dijkstra_times)
@@ -409,7 +416,7 @@ println("4. drug_pareto_front.png - 2D Pareto front projections (4 plots)")
 println("5. drug_pareto_3d.png - 3D Pareto front with labeled solutions")
 println("6. performance_corrected.png - Corrected algorithm performance")
 println("\nKey insights:")
-println("• 9 Pareto-optimal drug pathways identified")
+println("• 7 Pareto-optimal drug pathways identified")
 println("$(benchmark_summary(benchmarks))")
 println("• Multiple solutions enable personalized medicine")
 

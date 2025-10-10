@@ -27,6 +27,7 @@ using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 using Plots
 using Printf
+using Random
 
 # Multi-objective optimization tools from OptimShortestPaths
 using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
@@ -222,7 +223,7 @@ for (i, sol) in enumerate(pareto_front[1:min(6, end)])
     println("   ATP: $(round(-sol.objectives[1], digits=1)) net production")
     println("   Time: $(round(sol.objectives[2], digits=1)) minutes")
     println("   Enzyme Load: $(round(sol.objectives[3], digits=1)) units")
-    println("   Byproducts: $(round(sol.objectives[4]*100, digits=0))%")
+    println("   Byproduct load: $(round(sol.objectives[4], digits=2))×")
 end
 
 # Visualise Pareto front (ATP vs Time, color-coded by byproducts)
@@ -231,7 +232,7 @@ if !isempty(pareto_front)
     solutions_sorted = pareto_front[sorted_idx]
     times = [sol.objectives[2] for sol in solutions_sorted]
     net_atp = [-sol.objectives[1] for sol in solutions_sorted]
-    byproducts = [sol.objectives[4] * 100 for sol in solutions_sorted]
+    byproducts = [sol.objectives[4] for sol in solutions_sorted]
     enzyme_load = [sol.objectives[3] for sol in solutions_sorted]
 
     # Generate dense interpolation along Pareto segments for smoother curve
@@ -255,7 +256,7 @@ if !isempty(pareto_front)
         marker = (:circle, 4),
         alpha = 0.6,
         zcolor = interp_byproducts,
-        colorbar_title = "Byproducts (%)",
+        colorbar_title = "Byproduct Load (×)",
         legend = false,
         grid = :on,
     )
@@ -270,12 +271,12 @@ if !isempty(pareto_front)
     table_panel = plot(; xaxis=false, yaxis=false, legend=false, framestyle=:none)
     ranking = sortperm(solutions_sorted; by = x -> -(-x.objectives[1]))
     max_rows = min(6, length(ranking))
-    header = "Rank   ID   Time (min)   Net ATP   Byproducts (%)   Enzyme Load"
+    header = "Rank   ID   Time (min)   Net ATP   Load (×)        Enzyme Load"
     row_space = range(1.0, stop=0.0, length=max_rows+2)
     annotate!(table_panel, (0.0, row_space[1], text(header, 10, :black, :left)))
 
     for (row, idx) in enumerate(ranking[1:max_rows])
-        line = @sprintf("%-5d P%-2d  %-10.2f  %-7.2f  %-15.1f  %-11.2f",
+        line = @sprintf("%-5d P%-2d  %-10.2f  %-7.2f  %-15.2f  %-11.2f",
                         row, idx, times[idx], net_atp[idx], byproducts[idx], enzyme_load[idx])
         annotate!(table_panel, (0.0, row_space[row+1], text(line, 9, :black, :left)))
     end
@@ -302,20 +303,19 @@ sol_clean = MultiObjective.epsilon_constraint_approach(mo_graph, 1, 11, 1, const
 sol_clean = apply_atp_adjustment!(mo_graph, [sol_clean], atp_adjustments)[1]
 clean_feasible = all(isfinite, sol_clean.objectives) && !isempty(sol_clean.path)
 if clean_feasible
-    println("• Clean (byproducts≤30%): ATP=$(round(-sol_clean.objectives[1], digits=1)), " *
-            "Byproducts=$(round(sol_clean.objectives[4]*100, digits=0))%")
+println("• Clean (load≤0.30×): ATP=$(round(-sol_clean.objectives[1], digits=1)), " *
+        "Load=$(round(sol_clean.objectives[4], digits=2))×")
 else
-    println("• Clean (byproducts≤30%): no feasible pathway under the specified constraint")
+println("• Clean (load≤0.30×): no feasible pathway under the specified constraint")
 end
 
 # Knee point
 knee = MultiObjective.get_knee_point(pareto_front)
 if knee !== nothing
-    knee = apply_atp_adjustment!(mo_graph, [knee], atp_adjustments)[1]
-    if all(isfinite, knee.objectives)
-        println("• Knee Point: ATP=$(round(-knee.objectives[1], digits=1)), " *
-                "Time=$(round(knee.objectives[2], digits=1))min")
-        knee_solution = knee
+    knee_solution = knee
+    if all(isfinite, knee_solution.objectives)
+        println("• Knee Point: ATP=$(round(-knee_solution.objectives[1], digits=1)), " *
+                "Time=$(round(knee_solution.objectives[2], digits=1))min")
     else
         println("• Knee Point: no finite knee solution identified")
         knee_solution = nothing
@@ -335,6 +335,8 @@ println("\nPerformance on Metabolic Networks:")
 # Run actual benchmarks on metabolic-like networks
 test_sizes = [100, 1000, 5000, 10000]
 performance_results = []
+
+Random.seed!(42)
 
 for n in test_sizes
     # Create metabolic-like network (sparse, branching)
@@ -389,7 +391,7 @@ pareto_count = length(pareto_front)
 if pareto_count > 0
     pareto_net_atp = [-sol.objectives[1] for sol in pareto_front]
     pareto_times = [sol.objectives[2] for sol in pareto_front]
-    pareto_byproducts = [sol.objectives[4] * 100 for sol in pareto_front]
+    pareto_byproducts = [sol.objectives[4] for sol in pareto_front]
     best_atp_idx = argmax(pareto_net_atp)
     best_atp = pareto_net_atp[best_atp_idx]
     best_atp_time = pareto_times[best_atp_idx]
@@ -440,12 +442,12 @@ println("\n2. MULTI-OBJECTIVE:")
 if pareto_count > 0 && isfinite(best_atp_time)
     println("   • Identified $pareto_count Pareto-optimal pathways (max ATP=$(round(best_atp, digits=1)) at $(round(best_atp_time, digits=1)) min)")
     println("   • Fastest Pareto pathway: $(round(fastest_atp, digits=1)) ATP in $(round(fastest_time, digits=1)) min")
-    println("   • Lowest-byproduct Pareto pathway: $(round(clean_atp_summary, digits=1)) ATP with $(round(clean_byprod_summary, digits=1))% byproducts")
+    println("   • Lowest-load pathway: $(round(clean_atp_summary, digits=1)) ATP with load $(round(clean_byprod_summary, digits=2))×")
 else
     println("   • No Pareto-optimal pathways identified (unexpected)")
 end
 if !clean_feasible
-    println("   • ε-constraint (≤30% byproducts) yields no feasible pathway at current costs")
+    println("   • ε-constraint (≤0.30× load) yields no feasible pathway at current costs")
 end
 
 println("\n3. BIOLOGICAL INSIGHTS:")
@@ -453,12 +455,12 @@ println("   • Weighted blend: ATP=$(round(-sol_balanced.objectives[1], digits=
 if clean_feasible
     println("   • Byproduct-constrained solution: ATP=$(round(-sol_clean.objectives[1], digits=1)), Byproducts=$(round(sol_clean.objectives[4]*100, digits=0))%")
 else
-    println("   • No pathway satisfies the ≤30% byproduct constraint without violating feasibility")
+println("   • No pathway satisfies the ≤0.30× load constraint without violating feasibility")
 end
 if knee_solution !== nothing
-    println("   • Knee point: ATP=$(round(-knee_solution.objectives[1], digits=1)) in $(round(knee_solution.objectives[2], digits=1)) min")
+    println("   • Knee point: ATP=$(round(-knee_solution.objectives[1], digits=1)) in $(round(knee_solution.objectives[2], digits=1)) min with load $(round(knee_solution.objectives[4], digits=2))×")
 end
-println("   • Pareto front illustrates ATP/time/byproduct trade-offs across metabolic strategies")
+println("   • Pareto front illustrates ATP/time/load trade-offs across metabolic strategies")
 
 println("\n4. PERFORMANCE:")
 if performance_count > 0 && isfinite(largest_case[1])

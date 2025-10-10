@@ -137,7 +137,7 @@ For pharmaceutical networks:
 
 The example now includes **Pareto front analysis** for multi-objective optimization:
 - **Objectives**: Efficacy, Toxicity, Cost, Time-to-Effect
-- **Result**: 9 Pareto-optimal drug pathways identified (actual run results)
+- **Result**: 7 Pareto-optimal drug pathways identified (actual run results)
 - **Insight**: No single "best" drug - choice depends on patient-specific priorities
 
 ## 🧪 Biological Interpretation

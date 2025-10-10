@@ -37,6 +37,7 @@ domain entities to vertices and relationships to edges!
 using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 using Plots
+using Random
 
 # Multi-objective optimization tools from OptimShortestPaths
 using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolution,
@@ -191,7 +192,11 @@ println("\nPerformance on Sparse Graphs (m ≈ 2n):")
 test_sizes = [100, 1000, 2000, 5000]
 performance_results = []
 
+Random.seed!(42)
+
 for n in test_sizes
+    rng = MersenneTwister(42 + n)
+    samples = 10
     # Create sparse graph
     edges = OptimShortestPaths.Edge[]
     local weights = Float64[]
@@ -199,25 +204,33 @@ for n in test_sizes
     # Create connected path
     for i in 1:n-1
         push!(edges, OptimShortestPaths.Edge(i, i+1, length(edges)+1))
-        push!(weights, rand() * 2.0 + 0.5)
+        push!(weights, rand(rng) * 2.0 + 0.5)
     end
-    
+
     # Add ~n more edges for sparsity
     for _ in 1:n
-        u = rand(1:n)
-        v = rand(1:n)
+        u = rand(rng, 1:n)
+        v = rand(rng, 1:n)
         if u != v && !any(e -> (e.source == u && e.target == v), edges)
             push!(edges, OptimShortestPaths.Edge(u, v, length(edges)+1))
-            push!(weights, rand() * 5.0 + 0.5)
+            push!(weights, rand(rng) * 5.0 + 0.5)
         end
     end
-    
+
     graph = OptimShortestPaths.DMYGraph(n, edges, weights)
     k = max(1, ceil(Int, n^(1/3)))
-    
+
     # Time algorithms
-    t_dmy = @elapsed OptimShortestPaths.dmy_sssp!(graph, 1)
-    t_dijkstra = @elapsed OptimShortestPaths.simple_dijkstra(graph, 1)
+    t_dmy = (@elapsed begin
+        for _ in 1:samples
+            OptimShortestPaths.dmy_sssp!(graph, 1)
+        end
+    end) / samples
+    t_dijkstra = (@elapsed begin
+        for _ in 1:samples
+            OptimShortestPaths.simple_dijkstra(graph, 1)
+        end
+    end) / samples
     speedup = t_dijkstra / t_dmy
     
     push!(performance_results, (n, k, speedup))
@@ -336,10 +349,10 @@ println("\n3. PERFORMANCE:")
 println("   • Fixed k=n^(1/3) parameter remains critical for speed")
 if performance_count > 0 && isfinite(largest_case[1])
     largest_speedup = largest_case[3]
-    println("   • Largest benchmark (n=$(largest_case[1])): $(round(largest_speedup, digits=2))× $(largest_speedup >= 1 ? "faster" : "(slower)")")
     max_speedup = max_speedup_case[3]
-    println("   • Greatest observed speedup (n=$(max_speedup_case[1])): $(round(max_speedup, digits=2))× faster")
     min_speedup = min_speedup_case[3]
+    println("   • Largest benchmark (n=$(largest_case[1])): $(round(largest_speedup, digits=2))× $(largest_speedup >= 1 ? "faster" : "(slower)")")
+    println("   • Greatest observed speedup (n=$(max_speedup_case[1])): $(round(max_speedup, digits=2))× faster")
     println("   • Slowest sample (n=$(min_speedup_case[1])): $(round(min_speedup, digits=2))× $(min_speedup >= 1 ? "faster" : "(slower)")")
 else
     println("   • Performance benchmarks unavailable")

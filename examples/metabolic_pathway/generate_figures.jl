@@ -101,7 +101,7 @@ pareto_front = apply_atp_adjustment!(mo_graph, pareto_front, atp_adjustments)
 atp_values = [-sol.objectives[1] for sol in pareto_front]  # Negate for ATP production
 time_values = [sol.objectives[2] for sol in pareto_front]
 enzyme_values = [sol.objectives[3] for sol in pareto_front]
-byproduct_values = [sol.objectives[4] * 100 for sol in pareto_front]  # Convert to percentage
+byproduct_values = [sol.objectives[4] for sol in pareto_front]
 
 # Create 2D projections
 p3 = plot(layout=(2, 2), size=(1000, 800))
@@ -128,7 +128,7 @@ scatter!(p3[2], enzyme_values, atp_values,
 
 # Time vs Byproducts
 scatter!(p3[3], byproduct_values, time_values,
-    xlabel="Byproducts (%)",
+    xlabel="Byproduct Load (×)",
     ylabel="Time (min)",
     title="Speed vs Cleanliness",
     label="Pareto Solutions",
@@ -138,7 +138,7 @@ scatter!(p3[3], byproduct_values, time_values,
 
 # Enzyme Load vs Byproducts
 scatter!(p3[4], byproduct_values, enzyme_values,
-    xlabel="Byproducts (%)",
+    xlabel="Byproduct Load (×)",
     ylabel="Enzyme Load",
     title="Efficiency vs Cleanliness",
     label="Pareto Solutions",
@@ -188,7 +188,7 @@ end
 
 if sol_clean !== nothing
     scatter3d!([sol_clean.objectives[2]], [-sol_clean.objectives[1]], [sol_clean.objectives[3]],
-        label="Clean (<30% byproducts)",
+        label="Load ≤0.30×",
         markersize=10,
         color=:green,
         markershape=:diamond)
@@ -211,10 +211,10 @@ println("📊 Creating pathway strategy comparison...")
 strategies = ["Aerobic", "Anaerobic", "PPP", "Balanced", "Clean", "Knee"]
 strategy_atp = [30.0, 2.0, 5.0, 15.0, 10.0, 18.0]
 strategy_time = [8.0, 2.0, 4.0, 5.0, 6.0, 4.5]
-strategy_byproducts = [20.0, 100.0, 50.0, 40.0, 30.0, 35.0]
+strategy_byproducts = [0.2, 1.0, 0.5, 0.4, 0.3, 0.35]
 
 p5 = groupedbar([strategy_atp strategy_time strategy_byproducts],
-    labels=["ATP Yield" "Time (min)" "Byproducts (%)"],
+    labels=["ATP Yield" "Time (min)" "Load (×)"],
     xticks=(1:length(strategies), strategies),
     xrotation=45,
     title="Metabolic Strategy Comparison",

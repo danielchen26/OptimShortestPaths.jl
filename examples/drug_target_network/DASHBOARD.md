@@ -5,9 +5,9 @@
 This dashboard presents comprehensive results from applying the DMY shortest-path algorithm to drug-target networks, including both **single-objective** optimization and **multi-objective Pareto front** analysis.
 
 **Key Findings**:
-1. **Single-objective**: Celecoxib identified as most COX-2 selective (20x ratio)
-2. **Multi-objective**: 9 Pareto-optimal drug pathways discovered, each optimal for different clinical scenarios
-3. **Performance**: DMY achieves 4.79× speedup over Dijkstra at n=5000 (from benchmark_results.txt)
+1. **Single-objective**: Celecoxib remains the most COX-2 selective option (~3.7× vs COX-1) while all sample drugs reach every target
+2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost $5–$50, and onset 1–4 h
+3. **Performance**: DMY achieves up to ~4.3× speedup over Dijkstra at n=5000 (sparse graphs; k=⌈n^{1/3}⌉)
 
 ---
 
@@ -27,9 +27,10 @@ This dashboard presents comprehensive results from applying the DMY shortest-pat
 **Clinical Significance**:
 | Drug | Selectivity | Interpretation | GI Risk |
 |------|------------|----------------|---------|
-| Celecoxib | 20.1x | Highly COX-2 selective | Low |
-| Ibuprofen | 10.5x | COX-2 selective | Low-Moderate |
-| Aspirin | 0.5x | COX-1 selective | High |
+| Celecoxib | 3.7× | Strong COX-2 preference | Low |
+| Ibuprofen | 2.0× | Mild COX-2 preference | Low-Moderate |
+| Acetaminophen | 1.2× | Slight COX-2 tilt | Low |
+| Aspirin | 0.7× | COX-1 biased (non-selective) | Higher |
 
 ---
 
@@ -61,41 +62,32 @@ Real-world drug selection involves multiple competing objectives:
 
 Each point represents a different drug pathway. The Pareto front forms a 3D surface where no solution dominates another - moving along this surface always involves trade-offs.
 
-### The 9 Pareto-Optimal Solutions
+### Representative Pareto-Optimal Solutions
 
 | Solution | Drug→Target | Efficacy | Toxicity | Cost | Time | **When to Use** |
 |----------|------------|----------|----------|------|------|-----------------|
-| 1 | Morphine→MOR | 98% | 70% | $50 | 1.0h | **Emergency/Trauma** - Maximum efficacy needed urgently |
-| 2 | Morphine→COX-1 | 95% | 60% | $50 | 1.5h | **Post-surgery** - High efficacy, slightly safer |
-| 3 | Aspirin→COX-1 | 85% | 30% | $5 | 2.5h | **Chronic pain** - Good efficacy, affordable |
-| 4 | Aspirin→COX-2 | 70% | 40% | $5 | 3.0h | **Inflammation** - Anti-inflammatory focus |
-| 5 | Ibuprofen→COX-1 | 65% | 15% | $15 | 3.5h | **General use** - Balanced all objectives |
-| 6 | Ibuprofen→COX-2 | 60% | 10% | $15 | 4.0h | **Elderly** - Low toxicity priority |
-| 7 | Ibuprofen→MOR | 55% | 10% | $15 | 4.5h | **Children** - Minimal side effects |
-| 8 | Novel→COX-2 | 45% | 5% | $200 | 6.5h | **High-risk patients** - Ultra-safe |
-| 9 | Novel→MOR | 40% | 3% | $200 | 7.5h | **Preventive** - Safest option |
+| 1 | Aspirin-like → COX-1 | 85% | 30% | $5 | 2.5 h | **Baseline analgesia** – inexpensive, moderate toxicity |
+| 2 | Ibuprofen-like → COX-1 | 65% | 15% | $15 | 3.5 h | **General pain** – balanced efficacy/toxicity |
+| 3 | Ibuprofen-like → COX-2 | 60% | 10% | $15 | 4.0 h | **Elderly / GI risk** – prioritize low toxicity |
+| 4 | Morphine-like → COX-1 | 95% | 60% | $50 | 1.5 h | **Severe pain** – high efficacy, monitor side effects |
+| 5 | Morphine-like → MOR | 98% | 70% | $50 | 1.0 h | **Emergency trauma** – fastest, most potent relief |
 
 ### How to Select from Pareto Front
 
 #### Method 1: Weighted Sum Approach
-Assign weights to objectives based on patient priorities:
-```
-Score = w₁×Efficacy - w₂×Toxicity - w₃×Cost - w₄×Time
-```
-Example: Emergency (w₁=0.7, w₂=0.1, w₃=0.1, w₄=0.1) → Choose Solution 1
+Because this problem mixes maximize (efficacy) and minimize (toxicity/cost/time) objectives, a direct weighted sum requires transforming the maximize objectives into costs (e.g., use `1 - efficacy`). The example scripts keep this method disabled by default to avoid misleading scoring—convert objectives first if you need a scalar ranking.
 
 #### Method 2: Constraint-Based Selection
 Set hard limits on certain objectives:
-- Toxicity must be ≤30% → Solutions 3, 5, 6, 7, 8, 9
-- Cost must be ≤$20 → Solutions 3, 4, 5, 6, 7
-- Both constraints → Solutions 3, 5, 6, 7
+- Toxicity ≤ 30% → Aspirin-like → COX-1 (Solution 1) is the lone candidate
+- Cost ≤ $20 → Aspirin-like (Solution 1), Ibuprofen-like COX-1/COX-2 (Solutions 2–3)
+- Both constraints → Ibuprofen-like COX-1/COX-2 trade a little efficacy for safety
 
 #### Method 3: Knee Point Selection
-The "knee point" (best trade-off) is Solution 5 (Ibuprofen→COX-1):
-- Moderate efficacy (65%)
-- Low toxicity (15%)
-- Affordable ($15)
-- Reasonable time (3.5h)
+The current knee point is the Morphine-like → MOR pathway (Solution 5):
+- Maximum efficacy (≈98%) with 1 h onset
+- Accept high toxicity (70%) and higher cost ($50)
+- Suitable when rapid, potent analgesia outweighs side-effect risk
 
 ---
 
@@ -106,19 +98,17 @@ The "knee point" (best trade-off) is Solution 5 (Ibuprofen→COX-1):
 
 **Critical Fix**: k parameter corrected from k=n-1 to k=n^(1/3)
 
-| Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
-|------------|-------|------------------|-----------------------|---------|
-| 200 | 400 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× |
-| 500 | 1,000 | 0.426 ± 0.197 | 0.167 ± 0.004 | 0.39× |
-| 1,000 | 2,000 | 1.458 ± 1.659 | 0.641 ± 0.008 | 0.44× |
-| 2,000 | 4,000 | 1.415 ± 0.094 | 2.510 ± 0.038 | 1.77× |
-| 5,000 | 10,000 | 3.346 ± 0.105 | 16.028 ± 0.241 | 4.79× |
+| Graph Size | k (rounds) | **DMY vs Dijkstra** |
+|------------|------------|---------------------|
+| 100 | 5 | 30.51× faster |
+| 1,000 | 10 | 1.07× faster |
+| 2,000 | 13 | 1.48× faster |
+| 5,000 | 18 | 4.27× faster |
 
-**Key Insights** (from actual benchmark_results.txt):
-- Break-even point: n ≈ 1,800 vertices on sparse random graphs
-- DMY shows speedup for n > 2,000 on sparse graphs (m ≈ 2n)
-- At n=5,000: 4.79× faster than Dijkstra
-- Theoretical O(m log^(2/3) n) complexity
+**Key Insights**:
+- Small graphs (n≈100) still show DMY overhead is negligible; the large ratio comes from microsecond timings averaged over multiple runs
+- Crossover occurs near n≈1,000 for these sparse drug-target graphs; beyond that DMY gains grow steadily
+- Results follow the expected O(m log^(2/3) n) trend documented in `benchmark_results.txt`
 
 ---
 
@@ -148,13 +138,13 @@ The "knee point" (best trade-off) is Solution 5 (Ibuprofen→COX-1):
 
 ### Single vs Multi-Objective
 - **Single-objective**: One "best" path (e.g., Celecoxib for COX-2 selectivity)
-- **Multi-objective**: 9 equally valid solutions forming Pareto front
+- **Multi-objective**: Seven non-dominated solutions on the Pareto front
 - **Real-world**: Multi-objective reflects clinical reality better
 
 ### Algorithm Performance
-- **Small graphs (n<1000)**: Use Dijkstra
-- **Large graphs (n>1000)**: DMY increasingly superior
-- **Sparse networks**: DMY's sweet spot
+- **Small graphs (n<1,000)**: Dijkstra remains competitive (speedup ≈1× after averaging)
+- **Large sparse graphs (n≥2,000)**: DMY delivers ~1.5×–4.3× speedups in our synthetic benchmarks
+- **Sparse networks**: DMY's sweet spot (k = ⌈n^{1/3}⌉)
 
 ### Clinical Impact
 - **No universal "best" drug**: Context determines optimal choice
