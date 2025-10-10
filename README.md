@@ -113,7 +113,7 @@ using Pkg
 Pkg.test("OptimShortestPaths")
 ```
 
-The test suite includes 1,600+ assertions validating algorithm correctness, multi-objective optimization, and domain applications.
+The test suite includes comprehensive assertions (1,725 passing tests) validating algorithm correctness, multi-objective optimization, and domain applications.
 
 ## Documentation
 
@@ -122,7 +122,7 @@ https://danielchen26.github.io/OptimShortestPaths.jl/stable/
 
 ## References
 
-[1] Duan, R., Mao, J., Yin, H., & Zhou, T. (2025). "Breaking the Dijkstra Barrier for Directed Single-Source Shortest-Paths via Structured Distances". *STOC 2025*.
+[1] Duan, R., Mao, J., Yin, H., & Zhou, H. (2025). "Breaking the Dijkstra Barrier for Directed Single-Source Shortest-Paths via Structured Distances". *Proceedings of the 57th Annual ACM Symposium on Theory of Computing (STOC 2025)*.
 
 ## License
 
