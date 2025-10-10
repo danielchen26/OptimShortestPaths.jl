@@ -1,5 +1,4 @@
 # Claude Code configuration
-CLAUDE.md
 .conductor/
 .vscode/
 
@@ -33,29 +32,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.log
-FIGURE_DATA_ISSUES.md
-FINAL_CONSISTENCY_REPORT.md
-REGISTRATION_GUIDE.md
-MULTI_OBJECTIVE_WALKTHROUGH.md
-OPUS_CAPABILITIES_SUMMARY.md
-FINAL_VERIFICATION_REPORT.md
-JULIA_REGISTRY_SUBMISSION_GUIDE.md
+
+# Generated documentation build directory
 docs/build/
-SETUP_DOCS_NOW.md
-GITHUB_PAGES_SETUP_GUIDE.md
-FINAL_PUBLICATION_AUDIT.md
-FIX_DOCUMENTER_KEY.md
-PUBLICATION_APPROVED.md
 
 # Streamlit app (lives on streamlit_app branch)
 streamlit_app/
-
-# Intermediate verification and check files
-BUG_FIXES_SUMMARY.md
-COMPREHENSIVE_VERIFICATION_REPORT.md
-CRITICAL_ISSUES_RESPONSE.md
-FINAL_PACKAGE_STATUS*.md
-OTHER_AI_AGREEMENT.md
-SOLUTION_COMPARISON.md
-WHAT_WE_DID_WRONG.md
-RESULTS_ANALYSIS.md
