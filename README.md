@@ -11,7 +11,9 @@
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/stable)
 [![Dev Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/dev)
-[![Build Status](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml/badge.svg)](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml)
+[![CI Status](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/ci.yml/badge.svg)](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/ci.yml)
+[![Documentation](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml/badge.svg)](https://github.com/danielchen26/OptimShortestPaths.jl/actions/workflows/documentation.yml)
+[![Codecov](https://codecov.io/gh/danielchen26/OptimShortestPaths.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/danielchen26/OptimShortestPaths.jl)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Julia Version](https://img.shields.io/badge/julia-v1.9+-purple.svg)](https://julialang.org/)
 
