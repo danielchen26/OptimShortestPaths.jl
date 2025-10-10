@@ -140,7 +140,7 @@ strategies = compute_pareto_front(graph, glucose_idx, pyruvate_idx)
 **Four critical trade-offs visualized**:
 1. **ATP vs Time**: Faster pathways produce less ATP (fermentation vs aerobic respiration)
 2. **ATP vs Enzyme Load**: High-yield pathways require more enzymes (resource allocation cost)
-3. **Speed vs Cleanliness**: Fast fermentation produces more toxic byproducts
+3. **Speed vs Cleanliness**: Fast fermentation produces higher byproduct load
 4. **Efficiency vs Cleanliness**: Clean pathways need more enzymatic machinery
 
 Each subplot shows a different 2D projection of the 4-dimensional Pareto front, revealing trade-offs that cells must navigate.
@@ -156,7 +156,7 @@ Each subplot shows a different 2D projection of the 4-dimensional Pareto front, 
 
 Special solutions highlighted:
 - **Blue Star (Balanced)**: Weighted optimization across all objectives
-- **Green Diamond (Clean)**: Minimizes byproducts (<30%)
+- **Green Diamond (Clean)**: Minimizes byproduct load (<0.3×)
 - **Red Hexagon (Knee Point)**: Optimal trade-off point - best compromise across all objectives
 
 This 3D surface represents the boundary of achievable metabolic performance. Points inside the surface are dominated (suboptimal), while points on the surface are Pareto-optimal.

@@ -351,7 +351,7 @@ julia --project=. generate_figures.jl  # Generate 9 visualization figures
 
 **Key Insights**:
 - **Critical fix applied**: k parameter corrected from k=n-1 to k=⌈n^(1/3)⌉
-- Crossover point: n ≈ 1,000 protocols for sparse random graphs
+- Crossover point: n ≈ 1,800 protocols for sparse random graphs
 - DMY excels on large hospital protocol libraries (national treatment guidelines)
 - Enables real-time clinical decision support at scale
 - At n=5,000: 4.79× faster than Dijkstra
