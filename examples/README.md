@@ -81,7 +81,7 @@ Biochemical pathway analysis using bipartite graph representation.
 **Network structure:**
 ```
 Metabolites ←→ Reactions (bipartite)
-14 metabolites, 14 enzymatic reactions
+17 metabolites, 15 enzymatic reactions
 Glucose → Pyruvate (with branching to Lactate or Acetyl-CoA)
 ```
 
@@ -89,7 +89,7 @@ Glucose → Pyruvate (with branching to Lactate or Acetyl-CoA)
 ```julia
 # Glycolysis pathway:
 # Net ATP yield: 2 ATP per glucose
-# Optimal path cost: 6.3 ATP equivalents
+# Optimal path cost: 12.7 ATP equivalents
 # Aerobic (Pyruvate → Acetyl-CoA): Higher cost, enters TCA cycle
 # Anaerobic (Pyruvate → Lactate): Lower cost, regenerates NAD+
 ```

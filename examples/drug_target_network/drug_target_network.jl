@@ -93,6 +93,8 @@ println("✓ Network created: $(network.graph.n_vertices) vertices, $(length(net
 
 # Analyze drug connectivity using GENERIC analyze_connectivity function
 println("\n🔍 Drug Connectivity Analysis (using generic functions):")
+reachability_stats = Int[]
+avg_distance_stats = Float64[]
 for drug in drugs[1:4]  # First 4 drugs
     drug_idx = network.drug_indices[drug]
     
@@ -111,6 +113,9 @@ for drug in drugs[1:4]  # First 4 drugs
     println("$drug: $reachable_targets/$n_targets targets reachable, " *
             "connectivity: $(round(analysis["connectivity_ratio"]*100, digits=1))%, " *
             "avg distance: $(round(analysis["avg_distance"], digits=3))")
+    
+    push!(reachability_stats, reachable_targets)
+    push!(avg_distance_stats, analysis["avg_distance"])
 end
 
 # Find specific pathways
@@ -132,6 +137,7 @@ end
 println("\n💊 COX-2 Selectivity Analysis:")
 println("Using generic calculate_distance_ratio function:")
 selectivity_data = Float64[]
+selectivity_metrics = Dict{String, Float64}()
 for drug in ["Aspirin", "Ibuprofen", "Celecoxib", "Acetaminophen"]
     # Use the GENERIC calculate_distance_ratio function
     # Higher ratio = higher COX-1 distance vs COX-2 = more COX-2 selective
@@ -142,6 +148,7 @@ for drug in ["Aspirin", "Ibuprofen", "Celecoxib", "Acetaminophen"]
     # Generic function: ratio of distances from source to two targets
     selectivity = calculate_distance_ratio(network.graph, drug_idx, cox1_idx, cox2_idx)
     push!(selectivity_data, selectivity)
+    selectivity_metrics[drug] = selectivity
     interpretation = selectivity > 10 ? "COX-2 selective" : 
                     selectivity > 1 ? "Slight COX-2 preference" :
                     selectivity < 0.5 ? "COX-1 selective" : "Non-selective"
@@ -231,23 +238,30 @@ end
 # Compare selection methods
 println("\n🔍 Selection Method Comparison:")
 weights = [0.4, 0.2, 0.2, 0.2]  # Prioritize efficacy
+sol_weighted_summary = nothing
+weighted_sum_error = nothing
 try
     sol_weighted = MultiObjective.weighted_sum_approach(mo_graph, 1, 9, weights)
+    sol_weighted_summary = sol_weighted
     println("• Weighted Sum: Efficacy=$(round(sol_weighted.objectives[1]*100, digits=0))%, " *
             "Toxicity=$(round(sol_weighted.objectives[2]*100, digits=0))%")
 catch err
-    println("• Weighted Sum: not applicable (" * sprint(showerror, err) * ")")
+    weighted_sum_error = sprint(showerror, err)
+    println("• Weighted Sum: not applicable ($weighted_sum_error)")
 end
 
 constraints = [Inf, 0.3, Inf, Inf]  # Limit toxicity
 sol_constrained = MultiObjective.epsilon_constraint_approach(mo_graph, 1, 9, 1, constraints)
 println("• ε-Constraint (toxicity≤30%): Efficacy=$(round(sol_constrained.objectives[1]*100, digits=0))%, " *
         "Toxicity=$(round(sol_constrained.objectives[2]*100, digits=0))%")
+constrained_feasible = all(isfinite, sol_constrained.objectives) && !isempty(sol_constrained.path)
 
 knee = MultiObjective.get_knee_point(pareto_front)
+knee_solution = nothing
 if knee !== nothing
     println("• Knee Point: Efficacy=$(round(knee.objectives[1]*100, digits=0))%, " *
             "Toxicity=$(round(knee.objectives[2]*100, digits=0))%")
+    knee_solution = knee
 end
 
 # Part 3: Performance Analysis
@@ -309,7 +323,8 @@ println("KEY FINDINGS")
 println("=" ^ 60)
 
 println("\n1. SINGLE-OBJECTIVE:")
-println("   • Celecoxib identified as most COX-2 selective (20x)")
+celecoxib_selectivity = selectivity_data[3]  # Celecoxib is 3rd in the list
+println("   • Celecoxib identified as most COX-2 selective ($(round(celecoxib_selectivity, digits=1))x)")
 println("   • DMY efficiently finds optimal drug-target paths")
 
 println("\n2. MULTI-OBJECTIVE:")
@@ -319,7 +334,10 @@ println("   • Enables personalized medicine decisions")
 
 println("\n3. PERFORMANCE:")
 println("   • Fixed k=n^(1/3) parameter critical for speed")
-println("   • ≈4.8× faster than Dijkstra at n=5000")
+if !isempty(performance_results)
+    max_speedup = maximum(x -> x[3], performance_results)
+    println("   • ≈$(round(max_speedup, digits=1))× faster than Dijkstra at n=5000")
+end
 println("   • Optimal for large sparse networks")
 
 println("\n✅ Analysis complete!")

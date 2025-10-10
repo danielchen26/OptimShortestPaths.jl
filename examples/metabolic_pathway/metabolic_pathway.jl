@@ -171,7 +171,8 @@ pyruvate_idx = metabolite_indices["Pyruvate"]
 dist = OptimShortestPaths.dmy_sssp!(graph, glucose_idx)
 
 net_atp = 2.0  # Glycolysis produces net 2 ATP
-energy_efficiency = net_atp / dist[pyruvate_idx]
+glycolysis_cost = dist[pyruvate_idx]
+energy_efficiency = net_atp / glycolysis_cost
 println("Glycolysis efficiency: $(round(energy_efficiency, digits=2)) ATP/cost unit")
 
 # DEMONSTRATION: Using BOTH Generic and Domain-Specific Functions
@@ -194,12 +195,15 @@ distance, path_vertices = OptimShortestPaths.find_shortest_path(graph, glucose_i
 println("\nGeneric find_shortest_path() from Glucose to Pyruvate:")
 println("  Distance: $(round(distance, digits=2))")
 println("  Path length: $(length(path_vertices)) metabolites")
+glycolysis_distance = distance
+glycolysis_path_names = [metabolites[v] for v in path_vertices]
 
 # Use generic find_reachable_vertices for metabolite accessibility
 max_cost = 5.0
 accessible = OptimShortestPaths.find_reachable_vertices(graph, glucose_idx, max_cost)
 println("\nGeneric find_reachable_vertices() with cost ≤ $max_cost:")
 println("  $(length(accessible)) metabolites accessible from Glucose")
+accessible_count = length(accessible)
 
 # Convert accessible vertices to metabolite names for display
 accessible_names = String[]
@@ -425,15 +429,28 @@ println("• Balanced: ATP=$(round(-sol_balanced.objectives[1], digits=1)), " *
 constraints = [Inf, Inf, Inf, 0.3]  # Limit byproducts
 sol_clean = MultiObjective.epsilon_constraint_approach(mo_graph, 1, 11, 1, constraints)
 sol_clean = apply_atp_adjustment!(mo_graph, [sol_clean], atp_adjustments)[1]
-println("• Clean (byproducts≤30%): ATP=$(round(-sol_clean.objectives[1], digits=1)), " *
-        "Byproducts=$(round(sol_clean.objectives[4]*100, digits=0))%")
+clean_feasible = all(isfinite, sol_clean.objectives) && !isempty(sol_clean.path)
+if clean_feasible
+    println("• Clean (byproducts≤30%): ATP=$(round(-sol_clean.objectives[1], digits=1)), " *
+            "Byproducts=$(round(sol_clean.objectives[4]*100, digits=0))%")
+else
+    println("• Clean (byproducts≤30%): no feasible pathway under the specified constraint")
+end
 
 # Knee point
 knee = MultiObjective.get_knee_point(pareto_front)
 if knee !== nothing
     knee = apply_atp_adjustment!(mo_graph, [knee], atp_adjustments)[1]
-    println("• Knee Point: ATP=$(round(-knee.objectives[1], digits=1)), " *
-            "Time=$(round(knee.objectives[2], digits=1))min")
+    if all(isfinite, knee.objectives)
+        println("• Knee Point: ATP=$(round(-knee.objectives[1], digits=1)), " *
+                "Time=$(round(knee.objectives[2], digits=1))min")
+        knee_solution = knee
+    else
+        println("• Knee Point: no finite knee solution identified")
+        knee_solution = nothing
+    end
+else
+    knee_solution = nothing
 end
 
 # Part 3: Performance Analysis
@@ -497,29 +514,91 @@ end
 
 println("\n✅ DMY excels on large metabolic networks (>1000 metabolites)")
 
+pareto_count = length(pareto_front)
+if pareto_count > 0
+    pareto_net_atp = [-sol.objectives[1] for sol in pareto_front]
+    pareto_times = [sol.objectives[2] for sol in pareto_front]
+    pareto_byproducts = [sol.objectives[4] * 100 for sol in pareto_front]
+    best_atp_idx = argmax(pareto_net_atp)
+    best_atp = pareto_net_atp[best_atp_idx]
+    best_atp_time = pareto_times[best_atp_idx]
+    fastest_idx = argmin(pareto_times)
+    fastest_time = pareto_times[fastest_idx]
+    fastest_atp = pareto_net_atp[fastest_idx]
+    clean_idx_summary = argmin(pareto_byproducts)
+    clean_byprod_summary = pareto_byproducts[clean_idx_summary]
+    clean_atp_summary = pareto_net_atp[clean_idx_summary]
+else
+    best_atp = NaN
+    best_atp_time = NaN
+    fastest_time = NaN
+    fastest_atp = NaN
+    clean_byprod_summary = NaN
+    clean_atp_summary = NaN
+end
+
+performance_count = length(performance_results)
+if performance_count > 0
+    n_values = [res[1] for res in performance_results]
+    largest_idx = argmax(n_values)
+    smallest_idx = argmin(n_values)
+    largest_case = performance_results[largest_idx]
+    smallest_case = performance_results[smallest_idx]
+    break_even_idx = findfirst(res -> res[3] >= 1.0, performance_results)
+else
+    largest_case = (NaN, NaN, NaN)
+    smallest_case = (NaN, NaN, NaN)
+    break_even_idx = nothing
+end
+
 # Summary
 println("\n" * "=" ^ 60)
 println("KEY FINDINGS")
 println("=" ^ 60)
 
 println("\n1. SINGLE-OBJECTIVE:")
-println("   • Glycolysis: 2 ATP net yield, cost = 6.2 units")
-println("   • Most efficient path: Glucose → Pyruvate")
-println("   • Energy efficiency: 0.32 ATP/cost unit")
+glycolysis_path_summary = isempty(glycolysis_path_names) ? "Path unavailable" : join(glycolysis_path_names, " → ")
+println("   • Glucose → Pyruvate shortest-path cost: $(round(glycolysis_cost, digits=2)) (net ATP=$(round(net_atp, digits=1)))")
+println("   • Pathway sequence: $glycolysis_path_summary")
+println("   • Energy efficiency: $(round(energy_efficiency, digits=2)) ATP/cost unit")
+println("   • Reachability: $(glucose_connectivity[\"reachable_count\"])/$(graph.n_vertices) metabolites reachable; $(accessible_count) within cost ≤ $(round(max_cost, digits=1))")
 
 println("\n2. MULTI-OBJECTIVE:")
-println("   • $(length(pareto_front)) Pareto-optimal pathways found")
-println("   • Trade-offs: ATP yield ↔ Speed ↔ Enzyme cost ↔ Byproducts")
-println("   • Different conditions favor different pathways")
+if pareto_count > 0 && isfinite(best_atp_time)
+    println("   • Identified $pareto_count Pareto-optimal pathways (max ATP=$(round(best_atp, digits=1)) at $(round(best_atp_time, digits=1)) min)")
+    println("   • Fastest Pareto pathway: $(round(fastest_atp, digits=1)) ATP in $(round(fastest_time, digits=1)) min")
+    println("   • Lowest-byproduct Pareto pathway: $(round(clean_atp_summary, digits=1)) ATP with $(round(clean_byprod_summary, digits=1))% byproducts")
+else
+    println("   • No Pareto-optimal pathways identified (unexpected)")
+end
+if !clean_feasible
+    println("   • ε-constraint (≤30% byproducts) yields no feasible pathway at current costs")
+end
 
 println("\n3. BIOLOGICAL INSIGHTS:")
-println("   • Aerobic: High ATP (-30) but slow (8 min)")
-println("   • Anaerobic: Fast (2 min) but low ATP (0)")
-println("   • PPP: Produces NADPH for biosynthesis")
+println("   • Weighted blend: ATP=$(round(-sol_balanced.objectives[1], digits=1)) in $(round(sol_balanced.objectives[2], digits=1)) min")
+if clean_feasible
+    println("   • Byproduct-constrained solution: ATP=$(round(-sol_clean.objectives[1], digits=1)), Byproducts=$(round(sol_clean.objectives[4]*100, digits=0))%")
+else
+    println("   • No pathway satisfies the ≤30% byproduct constraint without violating feasibility")
+end
+if knee_solution !== nothing
+    println("   • Knee point: ATP=$(round(-knee_solution.objectives[1], digits=1)) in $(round(knee_solution.objectives[2], digits=1)) min")
+end
+println("   • Pareto front illustrates ATP/time/byproduct trade-offs across metabolic strategies")
 
 println("\n4. PERFORMANCE:")
-println("   • DMY ≈4.8× faster at 5000 metabolites (sparse random profile)")
-println("   • Near break-even around 2000 metabolites on metabolic-like graphs")
-println("   • Scales well for genome-scale models when graphs remain sparse")
+if performance_count > 0 && isfinite(largest_case[1])
+    largest_speedup = largest_case[3]
+    println("   • Largest benchmark (n=$(largest_case[1])): $(round(largest_speedup, digits=2))× $(largest_speedup >= 1 ? "faster" : "(slower)")")
+    if break_even_idx !== nothing
+        break_even_case = performance_results[break_even_idx]
+        println("   • Speedup ≥1× achieved around n=$(break_even_case[1]) (≈$(round(break_even_case[3], digits=2))×)")
+    end
+    smallest_speedup = smallest_case[3]
+    println("   • Small network (n=$(smallest_case[1])): $(round(smallest_speedup, digits=2))× $(smallest_speedup >= 1 ? "faster" : "(slower)")")
+else
+    println("   • Performance benchmarks not available")
+end
 
 println("\n✅ Analysis complete!")
