@@ -33,6 +33,8 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
+include("common.jl")
+
 println("🧪 Metabolic Pathway Analysis")
 println("=" ^ 60)
 
@@ -40,122 +42,19 @@ println("=" ^ 60)
 println("\n📊 PART 1: SINGLE-OBJECTIVE ANALYSIS")
 println("-" ^ 40)
 
-# Define metabolites
-metabolites = [
-    "Glucose",           # Starting sugar
-    "Glucose-6-P",       # G6P
-    "Fructose-6-P",      # F6P
-    "Fructose-1,6-BP",   # F1,6BP
-    "DHAP",              # Dihydroxyacetone phosphate
-    "G3P",               # Glyceraldehyde-3-phosphate
-    "1,3-BPG",           # 1,3-bisphosphoglycerate
-    "3-PG",              # 3-phosphoglycerate
-    "2-PG",              # 2-phosphoglycerate
-    "PEP",               # Phosphoenolpyruvate
-    "Pyruvate",          # End product of glycolysis
-    "Lactate",           # Anaerobic product
-    "Acetyl-CoA",        # TCA cycle entry
-    "Citrate",           # TCA cycle
-    "α-Ketoglutarate",   # TCA cycle
-    "Succinate",         # TCA cycle
-    "Oxaloacetate"       # TCA cycle
-]
-
-# Define reactions with costs
-reactions = [
-    "Hexokinase",        # Glucose → G6P
-    "G6P_Isomerase",     # G6P → F6P
-    "PFK1",              # F6P → F1,6BP
-    "Aldolase",          # F1,6BP → DHAP + G3P
-    "TPI",               # DHAP ⇌ G3P
-    "GAPDH",             # G3P → 1,3-BPG
-    "PGK",               # 1,3-BPG → 3-PG
-    "PGM",               # 3-PG → 2-PG
-    "Enolase",           # 2-PG → PEP
-    "Pyruvate_Kinase",   # PEP → Pyruvate
-    "LDH",               # Pyruvate → Lactate
-    "PDH",               # Pyruvate → Acetyl-CoA
-    "Citrate_Synthase",  # Acetyl-CoA → Citrate
-]
-
-# Reaction costs (ATP equivalents)
-reaction_costs = [
-    1.0,    # Hexokinase (consumes ATP)
-    0.5,    # G6P Isomerase
-    1.0,    # PFK1 (consumes ATP)
-    0.8,    # Aldolase
-    0.3,    # TPI
-    1.2,    # GAPDH (requires NAD+)
-    -1.0,   # PGK (produces ATP)
-    0.4,    # PGM
-    0.6,    # Enolase
-    -1.0,   # Pyruvate Kinase (produces ATP)
-    0.8,    # LDH
-    2.0,    # PDH (complex)
-    1.5,    # Citrate Synthase
-]
-
-# Create metabolic network
-reaction_network = [
-    ("Glucose", "Hexokinase", "Glucose-6-P"),
-    ("Glucose-6-P", "G6P_Isomerase", "Fructose-6-P"),
-    ("Fructose-6-P", "PFK1", "Fructose-1,6-BP"),
-    ("Fructose-1,6-BP", "Aldolase", "DHAP"),
-    ("Fructose-1,6-BP", "Aldolase", "G3P"),
-    ("DHAP", "TPI", "G3P"),
-    ("G3P", "TPI", "DHAP"),
-    ("G3P", "GAPDH", "1,3-BPG"),
-    ("1,3-BPG", "PGK", "3-PG"),
-    ("3-PG", "PGM", "2-PG"),
-    ("2-PG", "Enolase", "PEP"),
-    ("PEP", "Pyruvate_Kinase", "Pyruvate"),
-    ("Pyruvate", "LDH", "Lactate"),
-    ("Pyruvate", "PDH", "Acetyl-CoA"),
-    ("Acetyl-CoA", "Citrate_Synthase", "Citrate"),
-]
-
-# Build network graph
-function create_metabolic_network(metabolites, reactions, reaction_network, costs)
-    n_metabolites = length(metabolites)
-    edges = OptimShortestPaths.Edge[]
-    edge_costs = Float64[]
-    
-    metabolite_indices = Dict(m => i for (i, m) in enumerate(metabolites))
-    
-    for (substrate, reaction, product) in reaction_network
-        if haskey(metabolite_indices, substrate) && haskey(metabolite_indices, product)
-            src = metabolite_indices[substrate]
-            dst = metabolite_indices[product]
-            
-            reaction_idx = findfirst(r -> r == reaction, reactions)
-            cost = reaction_idx !== nothing ? costs[reaction_idx] : 1.0
-            
-            push!(edges, OptimShortestPaths.Edge(src, dst, length(edges)+1))
-            push!(edge_costs, max(0.1, cost + 1.0))  # Ensure positive weights
-        end
-    end
-    
-    return OptimShortestPaths.DMYGraph(n_metabolites, edges, edge_costs)
-end
-
-graph = create_metabolic_network(metabolites, reactions, reaction_network, reaction_costs)
+graph = build_metabolic_graph()
 println("✓ Network created: $(graph.n_vertices) metabolites, $(length(graph.edges)) reactions")
 
 # Find optimal pathways
 println("\n🔬 Key Metabolic Pathways:")
-pathways = [
-    ("Glucose", "Pyruvate", "Glycolysis"),
-    ("Glucose", "Lactate", "Anaerobic"),
-    ("Glucose", "Citrate", "Aerobic"),
-    ("G3P", "Pyruvate", "Lower glycolysis"),
-]
+pathways = default_metabolic_pathways()
 
-metabolite_indices = Dict(m => i for (i, m) in enumerate(metabolites))
+met_indices = metabolite_indices()
 
 for (start_met, end_met, pathway_name) in pathways
-    if haskey(metabolite_indices, start_met) && haskey(metabolite_indices, end_met)
-        src = metabolite_indices[start_met]
-        dst = metabolite_indices[end_met]
+    if haskey(met_indices, start_met) && haskey(met_indices, end_met)
+        src = met_indices[start_met]
+        dst = met_indices[end_met]
         
         dist = OptimShortestPaths.dmy_sssp!(graph, src)
         if dist[dst] < OptimShortestPaths.INF
@@ -166,8 +65,8 @@ end
 
 # ATP yield analysis
 println("\n⚡ ATP Yield Analysis:")
-glucose_idx = metabolite_indices["Glucose"]
-pyruvate_idx = metabolite_indices["Pyruvate"]
+glucose_idx = met_indices["Glucose"]
+pyruvate_idx = met_indices["Pyruvate"]
 dist = OptimShortestPaths.dmy_sssp!(graph, glucose_idx)
 
 glycolysis_net_atp = 2.0  # Glycolysis produces net 2 ATP
@@ -196,10 +95,10 @@ println("\nGeneric find_shortest_path() from Glucose to Pyruvate:")
 println("  Distance: $(round(distance, digits=2))")
 println("  Path length: $(length(path_vertices)) metabolites")
 glycolysis_distance = distance
-glycolysis_path_names = [metabolites[v] for v in path_vertices]
+glycolysis_path_names = [METABOLITES[v] for v in path_vertices]
 
 # Use generic find_reachable_vertices for metabolite accessibility
-max_cost = 5.0
+max_cost = DEFAULT_MAX_REACH_COST
 accessible = OptimShortestPaths.find_reachable_vertices(graph, glucose_idx, max_cost)
 println("\nGeneric find_reachable_vertices() with cost ≤ $max_cost:")
 println("  $(length(accessible)) metabolites accessible from Glucose")
@@ -208,7 +107,7 @@ accessible_count = length(accessible)
 # Convert accessible vertices to metabolite names for display
 accessible_names = String[]
 for v in accessible
-    for (name, idx) in metabolite_indices
+for (name, idx) in met_indices
         if idx == v
             push!(accessible_names, name)
             break
@@ -308,39 +207,11 @@ mo_graph, atp_adjustments = create_mo_metabolic_network()
 
 println("\n🎯 Computing Pareto Front for Metabolic Pathways...")
 pareto_front = MultiObjective.compute_pareto_front(mo_graph, 1, 11, max_solutions=50)
-function apply_atp_adjustment!(graph::MultiObjective.MultiObjectiveGraph,
-                               solutions::Vector{MultiObjective.ParetoSolution},
-                               adjustments::Dict{Int, Float64})
-    isempty(adjustments) && return solutions
-    for sol in solutions
-        path = sol.path
-        total_adjustment = 0.0
-        if length(path) > 1
-            for i in 1:(length(path)-1)
-                u, v = path[i], path[i+1]
-                edge_id = nothing
-                for idx in graph.adjacency_list[u]
-                    edge = graph.edges[idx]
-                    if edge.target == v
-                        edge_id = edge.edge_id
-                        break
-                    end
-                end
-                if edge_id !== nothing && haskey(adjustments, edge_id)
-                    total_adjustment += adjustments[edge_id]
-                end
-            end
-        end
-        sol.objectives[1] += total_adjustment
-    end
-    return solutions
-end
-
 pareto_front = apply_atp_adjustment!(mo_graph, pareto_front, atp_adjustments)
 println("Found $(length(pareto_front)) Pareto-optimal metabolic pathways")
 
 # Display top solutions
-pathway_names = ["", "Start", "G6P", "F6P", "F16BP", "G3P", "Pyruvate", 
+pathway_names = ["", "Start", "G6P", "F6P", "F16BP", "G3P", "Pyruvate",
                  "PPP", "Lactate", "AcCoA", "ATP", "Alt"]
 
 println("\nTop Pareto-Optimal Metabolic Pathways:")

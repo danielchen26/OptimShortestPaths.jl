@@ -37,46 +37,28 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
+include("common.jl")
+
 println("🎨 Generating Metabolic Pathway Visualizations")
 println("=" ^ 60)
 
 # Create figures directory
-mkpath("figures")
+fig_dir = joinpath(@__DIR__, "figures")
+mkpath(fig_dir)
 
 # Part 1: Metabolic Network Visualization
 println("\n📊 Creating metabolic network diagram...")
 
-# Define metabolites for visualization
-metabolites = [
-    "Glucose", "G6P", "F6P", "F16BP", "DHAP", "G3P", 
-    "13BPG", "3PG", "2PG", "PEP", "Pyruvate", 
-    "Lactate", "AcCoA", "Citrate"
-]
-
-# Create adjacency matrix for pathway visualization
+# Build adjacency matrix directly from the shared reaction network
+metabolites = METABOLITES
 n_met = length(metabolites)
 adj_matrix = zeros(n_met, n_met)
 
-# Glycolysis pathway connections
-connections = [
-    (1, 2),   # Glucose → G6P
-    (2, 3),   # G6P → F6P
-    (3, 4),   # F6P → F16BP
-    (4, 5),   # F16BP → DHAP
-    (4, 6),   # F16BP → G3P
-    (5, 6),   # DHAP → G3P
-    (6, 7),   # G3P → 13BPG
-    (7, 8),   # 13BPG → 3PG
-    (8, 9),   # 3PG → 2PG
-    (9, 10),  # 2PG → PEP
-    (10, 11), # PEP → Pyruvate
-    (11, 12), # Pyruvate → Lactate
-    (11, 13), # Pyruvate → AcCoA
-    (13, 14), # AcCoA → Citrate
-]
-
-for (i, j) in connections
-    adj_matrix[i, j] = 1
+met_indices = metabolite_indices()
+for (substrate, _, product) in REACTION_NETWORK
+    if haskey(met_indices, substrate) && haskey(met_indices, product)
+        adj_matrix[met_indices[substrate], met_indices[product]] = 1
+    end
 end
 
 # Create pathway network heatmap
@@ -90,70 +72,30 @@ p1 = heatmap(adj_matrix,
     color=:viridis,
     clims=(0, 1),
     size=(800, 700))
-savefig(p1, "figures/metabolic_network.png")
+savefig(p1, joinpath(fig_dir, "metabolic_network.png"))
 
 # Part 2: Enzyme Cost Analysis
 println("📊 Creating enzyme cost analysis...")
 
-enzymes = ["HK", "GPI", "PFK", "ALD", "TPI", "GAPDH", "PGK", "PGM", "ENO", "PK", "LDH", "PDH", "CS"]
-atp_costs = [1.0, 0.5, 1.0, 0.8, 0.3, 1.2, -1.0, 0.4, 0.6, -1.0, 0.8, 2.0, 1.5]
-enzyme_loads = [2.0, 1.0, 2.5, 1.5, 0.5, 3.0, 2.0, 1.0, 1.5, 2.0, 1.0, 4.0, 3.0]
+enzyme_data = enzyme_cost_dataframe()
 
-p2 = groupedbar([atp_costs enzyme_loads],
+p2 = groupedbar([enzyme_data.costs enzyme_data.loads],
     labels=["ATP Cost" "Enzyme Load"],
-    xticks=(1:length(enzymes), enzymes),
+    xticks=(1:length(enzyme_data.names), enzyme_data.names),
     xrotation=45,
     title="Enzyme Costs in Metabolic Pathways",
     ylabel="Cost/Load (arbitrary units)",
     xlabel="Enzyme",
     legend=:topright,
     size=(800, 500))
-savefig(p2, "figures/enzyme_costs.png")
+savefig(p2, joinpath(fig_dir, "enzyme_costs.png"))
 
 # Part 3: Multi-Objective Pareto Front
 println("📊 Creating Pareto front visualizations...")
 
-# Create multi-objective metabolic network
-function create_mo_metabolic_network()
-    edges = MultiObjective.MultiObjectiveEdge[]
-    
-    # Objectives: [ATP Cost, Time, Enzyme Load, Byproducts]
-    push!(edges, MultiObjective.MultiObjectiveEdge(1, 2, [0.0, 0.0, 0.0, 0.0], 1))
-    
-    # Glycolysis pathway
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 3, [1.0, 0.5, 2.0, 0.1], 2))
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 4, [0.5, 0.3, 1.0, 0.05], 3))
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 5, [1.0, 0.5, 2.5, 0.2], 4))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 6, [0.8, 0.4, 1.5, 0.1], 5))
-    push!(edges, MultiObjective.MultiObjectiveEdge(6, 7, [-2.0, 1.0, 3.0, 0.3], 6))
-    
-    # Pentose phosphate pathway
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 8, [0.0, 2.0, 3.0, 0.5], 7))
-    push!(edges, MultiObjective.MultiObjectiveEdge(8, 7, [0.5, 1.5, 2.0, 0.4], 8))
-    
-    # Fermentation
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 9, [0.0, 0.5, 1.0, 1.0], 9))
-    
-    # Aerobic respiration
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 10, [2.0, 3.0, 4.0, 0.1], 10))
-    push!(edges, MultiObjective.MultiObjectiveEdge(10, 11, [-30.0, 5.0, 10.0, 0.2], 11))
-    
-    # Alternative pathways
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 12, [0.5, 1.0, 1.5, 0.3], 12))
-    push!(edges, MultiObjective.MultiObjectiveEdge(12, 11, [-25.0, 4.0, 8.0, 0.4], 13))
-    
-    adjacency = [Int[] for _ in 1:12]
-    for (i, edge) in enumerate(edges)
-        push!(adjacency[edge.source], i)
-    end
-    
-    return MultiObjective.MultiObjectiveGraph(12, edges, 4, adjacency,
-                                             ["ATP Cost", "Time(min)", "Enzyme Load", "Byproducts"],
-                                             objective_sense=fill(:min, 4))
-end
-
-mo_graph = create_mo_metabolic_network()
+mo_graph, atp_adjustments = create_mo_metabolic_network()
 pareto_front = MultiObjective.compute_pareto_front(mo_graph, 1, 11, max_solutions=50)
+pareto_front = apply_atp_adjustment!(mo_graph, pareto_front, atp_adjustments)
 
 # Extract objectives for plotting
 atp_values = [-sol.objectives[1] for sol in pareto_front]  # Negate for ATP production
@@ -204,7 +146,7 @@ scatter!(p3[4], byproduct_values, enzyme_values,
     color=:cividis,
     alpha=0.8)
 
-savefig(p3, "figures/metabolic_pareto_2d.png")
+savefig(p3, joinpath(fig_dir, "metabolic_pareto_2d.png"))
 
 # Create 3D Pareto visualization with special solutions highlighted
 println("📊 Creating 3D Pareto visualization...")
@@ -260,7 +202,7 @@ if knee !== nothing
         markershape=:hexagon)
 end
 
-savefig(p4, "figures/metabolic_pareto_3d.png")
+savefig(p4, joinpath(fig_dir, "metabolic_pareto_3d.png"))
 
 # Part 4: Pathway Strategy Comparison
 println("📊 Creating pathway strategy comparison...")
@@ -280,7 +222,7 @@ p5 = groupedbar([strategy_atp strategy_time strategy_byproducts],
     xlabel="Strategy",
     legend=:topright,
     size=(800, 500))
-savefig(p5, "figures/metabolic_strategies.png")
+savefig(p5, joinpath(fig_dir, "metabolic_strategies.png"))
 
 # Part 5: Performance Comparison
 println("📊 Creating performance comparison...")
@@ -320,7 +262,7 @@ for (size, dmy, dmy_err, dijk, dijk_err) in zip(sizes, dmy_times, dmy_ci, dijkst
     end
 end
 
-savefig(p6, "figures/metabolic_performance.png")
+savefig(p6, joinpath(fig_dir, "metabolic_performance.png"))
 println("  $(benchmark_summary(benchmarks))")
 
 # Part 6: ATP Yield Pathways
@@ -341,10 +283,10 @@ p7 = groupedbar([gross_atp atp_cost net_atp],
     legend=:topright,
     color=[:green :red :blue],
     size=(800, 500))
-savefig(p7, "figures/atp_yield.png")
+savefig(p7, joinpath(fig_dir, "atp_yield.png"))
 
 println("\n✅ All figures generated successfully!")
-println("\nFigures created in 'figures/' directory:")
+println("\nFigures created in $(fig_dir):")
 println("  1. metabolic_network.png - Network structure")
 println("  2. enzyme_costs.png - Enzyme cost analysis")
 println("  3. metabolic_pareto_2d.png - 2D Pareto projections")

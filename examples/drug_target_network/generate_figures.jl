@@ -37,6 +37,8 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
+include("common.jl")
+
 # Set plotting defaults for publication quality
 gr()
 default(
@@ -59,19 +61,11 @@ println("Generating Drug-Target Network Figures")
 println("Output directory: $output_dir")
 println("="^60)
 
-# Setup drug-target network
-drugs = ["Aspirin", "Ibuprofen", "Celecoxib", "Naproxen"]
-targets = ["COX-1", "COX-2", "PGE2", "TRPV1"]
-
-# Binding affinity matrix (0-1 scale, higher = stronger binding)
-interactions = [
-    0.85 0.45 0.20 0.10;  # Aspirin
-    0.30 0.90 0.15 0.05;  # Ibuprofen
-    0.05 0.95 0.10 0.02;  # Celecoxib (COX-2 selective)
-    0.40 0.80 0.25 0.08   # Naproxen
-]
-
-network = create_drug_target_network(drugs, targets, interactions)
+# Setup drug-target network using shared dataset for visualizations
+drugs = FIGURE_DRUGS
+targets = FIGURE_TARGETS
+interactions = FIGURE_INTERACTIONS
+network = build_figure_network()
 
 # Figure 1: Binding Affinity Heatmap
 println("\n📊 Figure 1: Binding Affinity Heatmap")
@@ -192,44 +186,7 @@ println("  ✓ Saved: path_distances.png")
 # Figure 4: Multi-Objective Pareto Front Analysis
 println("\n📊 Figure 4: Multi-Objective Pareto Front")
 
-# Create multi-objective graph
-function create_mo_graph()
-    edges = MultiObjective.MultiObjectiveEdge[]
-    
-    # Start to drugs
-    for i in 1:4
-        push!(edges, MultiObjective.MultiObjectiveEdge(1, i+1, [0.0, 0.0, 0.0, 0.0], length(edges)+1))
-    end
-    
-    # Drug edges with [Efficacy, Toxicity, Cost, Time]
-    # NOTE: These are DEMONSTRATION VALUES for illustrating multi-objective optimization
-    # Real values would come from clinical trial data and pharmacological studies
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 6, [0.85, 0.3, 5.0, 2.0], 5))   # Aspirin-like to COX-1
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 7, [0.7, 0.4, 5.0, 2.5], 6))    # Aspirin-like to COX-2
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 6, [0.65, 0.15, 15.0, 3.0], 7)) # Ibuprofen-like to COX-1
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 7, [0.6, 0.1, 15.0, 3.5], 8))   # Ibuprofen-like to COX-2
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 8, [0.55, 0.1, 15.0, 4.0], 9))  # Ibuprofen-like to MOR
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 6, [0.95, 0.6, 50.0, 1.0], 10)) # Morphine-like to COX-1
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 8, [0.98, 0.7, 50.0, 0.5], 11)) # Morphine-like to MOR
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 7, [0.45, 0.05, 200.0, 6.0], 12)) # Novel drug to COX-2
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 8, [0.4, 0.03, 200.0, 7.0], 13))  # Novel drug to MOR
-    
-    # Targets to effect
-    for i in 6:8
-        push!(edges, MultiObjective.MultiObjectiveEdge(i, 9, [0.0, 0.0, 0.0, 0.5], length(edges)+1))
-    end
-    
-    adjacency = [Int[] for _ in 1:9]
-    for (i, edge) in enumerate(edges)
-        push!(adjacency[edge.source], i)
-    end
-    
-    return MultiObjective.MultiObjectiveGraph(9, edges, 4, adjacency,
-                                             ["Efficacy", "Toxicity", "Cost", "Time"],
-                                             objective_sense=[:max, :min, :min, :min])
-end
-
-mo_graph = create_mo_graph()
+mo_graph = create_mo_drug_network()
 pareto_front = MultiObjective.compute_pareto_front(mo_graph, 1, 9, max_solutions=50)
 
 # Extract objectives

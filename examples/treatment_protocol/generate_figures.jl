@@ -37,23 +37,39 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
+include("common.jl")
+
 println("🎨 Generating Treatment Protocol Visualizations")
 println("=" ^ 60)
 
 # Create figures directory
-mkpath("figures")
+fig_dir = joinpath(@__DIR__, "figures")
+mkpath(fig_dir)
 
 # Part 1: Treatment Cost Analysis
 println("\n📊 Creating treatment cost analysis...")
 
-treatments = ["Screening", "Imaging", "Biopsy", "Surgery_Minor", "Surgery_Major", 
-              "Chemo", "Radiation", "Immuno", "Targeted", "Palliative"]
-costs = [0.5, 3.5, 1.5, 15.0, 35.0, 25.0, 30.0, 40.0, 45.0, 10.0]
-efficacy = [100, 95, 98, 85, 90, 75, 85, 70, 80, 60]
+selection = [
+    ("Initial_Screening", "Screening"),
+    ("Diagnostic_Imaging", "Imaging"),
+    ("Biopsy", "Biopsy"),
+    ("Surgery_Minor", "Surgery_Minor"),
+    ("Surgery_Major", "Surgery_Major"),
+    ("Chemotherapy_Neoadjuvant", "Chemo"),
+    ("Radiation_Therapy", "Radiation"),
+    ("Immunotherapy", "Immuno"),
+    ("Targeted_Therapy", "Targeted"),
+    ("Palliative_Care", "Palliative")
+]
 
-p1 = groupedbar([costs efficacy/2],
+index_map = treatment_index_map()
+costs = [TREATMENT_COSTS[index_map[name]] for (name, _) in selection]
+efficacy = [EFFICACY_WEIGHTS[index_map[name]] * 100 for (name, _) in selection]
+labels = [label for (_, label) in selection]
+
+p1 = groupedbar([costs efficacy ./ 2],
     labels=["Cost (\$k)" "Efficacy (%)"],
-    xticks=(1:length(treatments), treatments),
+    xticks=(1:length(labels), labels),
     xrotation=45,
     title="Treatment Cost vs Efficacy",
     ylabel="Value",
@@ -61,33 +77,66 @@ p1 = groupedbar([costs efficacy/2],
     legend=:topright,
     color=[:red :green],
     size=(800, 500))
-savefig(p1, "figures/treatment_cost_efficacy.png")
+savefig(p1, joinpath(fig_dir, "treatment_cost_efficacy.png"))
 
 # Part 2: Treatment Pathway Network
 println("📊 Creating treatment pathway network...")
 
-# Create adjacency matrix for treatment pathways
-n_treatments = 13
-adj_matrix = zeros(n_treatments, n_treatments)
-pathways = [
-    (1, 2), (2, 3), (3, 4), (4, 5),  # Diagnostic pathway
-    (5, 6), (5, 7), (5, 8), (5, 9),  # Treatment options
-    (6, 11), (7, 11), (8, 11), (9, 11),  # To monitoring
-    (5, 10), (5, 11), (5, 12),  # Alternative paths
-    (11, 13), (12, 13)  # To outcome
+# Build adjacency matrix from transition set
+core_labels = [
+    "Initial_Screening",
+    "Diagnostic_Imaging",
+    "Biopsy",
+    "Staging",
+    "Multidisciplinary_Review",
+    "Surgery_Consultation",
+    "Medical_Oncology",
+    "Radiation_Oncology",
+    "Treatment_Option",
+    "Supportive_Care",
+    "Follow_up_Monitoring",
+    "Palliative_Care",
+    "Outcome"
 ]
 
-for (i, j) in pathways
-    adj_matrix[i, j] = 1
+core_map = Dict(name => idx for (idx, name) in enumerate(core_labels))
+adj_matrix = zeros(length(core_labels), length(core_labels))
+
+function collapse_label(name::String)
+    if name in ("Surgery_Minor", "Surgery_Major", "Chemotherapy_Neoadjuvant",
+                "Chemotherapy_Adjuvant", "Radiation_Therapy",
+                "Immunotherapy", "Targeted_Therapy")
+        return "Treatment_Option"
+    elseif name == "Palliative_Care"
+        return "Palliative_Care"
+    elseif name == "Follow_up_Monitoring"
+        return "Follow_up_Monitoring"
+    elseif name == "Remission"
+        return "Outcome"
+    elseif name == "Recurrence_Detection" || name == "Second_Line_Treatment"
+        return "Supportive_Care"
+    else
+        return name
+    end
 end
 
-pathway_labels = ["Start", "Screen", "Image", "Biopsy", "Stage", 
-                 "Surgery", "Chemo", "Radiation", "Immuno", 
-                 "Targeted", "Palliative", "Monitor", "Outcome"]
+for (src, dst, _) in TREATMENT_TRANSITIONS
+    src_label = collapse_label(src)
+    dst_label = collapse_label(dst)
+    if haskey(core_map, src_label) && haskey(core_map, dst_label)
+        adj_matrix[core_map[src_label], core_map[dst_label]] = 1
+    end
+end
+
+pathway_labels = [
+    "Start", "Screen", "Image", "Biopsy", "Stage",
+    "Review", "Surg Consult", "Med Onc", "Treat Opt",
+    "Support", "Follow-up", "Palliative", "Outcome"
+]
 
 p2 = heatmap(adj_matrix,
-    xticks=(1:n_treatments, pathway_labels),
-    yticks=(1:n_treatments, pathway_labels),
+    xticks=(1:length(core_labels), pathway_labels),
+    yticks=(1:length(core_labels), pathway_labels),
     xrotation=45,
     title="Treatment Pathway Network",
     xlabel="Next Step",
@@ -95,57 +144,10 @@ p2 = heatmap(adj_matrix,
     color=:viridis,
     clims=(0, 1),
     size=(800, 700))
-savefig(p2, "figures/treatment_network.png")
+savefig(p2, joinpath(fig_dir, "treatment_network.png"))
 
 # Part 3: Multi-Objective Pareto Front
 println("📊 Creating Pareto front visualizations...")
-
-# Create multi-objective treatment network
-function create_mo_treatment_network()
-    edges = MultiObjective.MultiObjectiveEdge[]
-    
-    # Objectives: [Cost($k), Time(weeks), QoL Impact, Success Rate]
-    push!(edges, MultiObjective.MultiObjectiveEdge(1, 2, [0.0, 0.0, 0.0, 0.0], 1))
-    
-    # Diagnostic phase
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 3, [3.5, 1.0, -5.0, 0.95], 2))
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 4, [8.0, 0.5, -10.0, 0.98], 3))
-    
-    # Staging
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 5, [2.0, 1.0, -8.0, 0.90], 4))
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 5, [1.0, 0.5, -5.0, 0.95], 5))
-    
-    # Treatment options
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 6, [35.0, 2.0, -30.0, 0.85], 6))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 7, [15.0, 1.0, -15.0, 0.90], 7))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 8, [25.0, 12.0, -40.0, 0.75], 8))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 9, [40.0, 16.0, -20.0, 0.70], 9))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 10, [45.0, 8.0, -15.0, 0.80], 10))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 11, [30.0, 6.0, -25.0, 0.85], 11))
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 12, [10.0, 52.0, -10.0, 0.60], 12))
-    
-    # Combination therapies
-    push!(edges, MultiObjective.MultiObjectiveEdge(6, 8, [25.0, 12.0, -35.0, 0.80], 13))
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 11, [30.0, 6.0, -20.0, 0.88], 14))
-    
-    # Post-treatment monitoring
-    push!(edges, MultiObjective.MultiObjectiveEdge(6, 13, [2.0, 52.0, 60.0, 0.85], 15))
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 13, [2.0, 52.0, 70.0, 0.90], 16))
-    push!(edges, MultiObjective.MultiObjectiveEdge(8, 13, [2.0, 52.0, 40.0, 0.75], 17))
-    push!(edges, MultiObjective.MultiObjectiveEdge(9, 13, [2.0, 52.0, 50.0, 0.70], 18))
-    push!(edges, MultiObjective.MultiObjectiveEdge(10, 13, [2.0, 52.0, 65.0, 0.80], 19))
-    push!(edges, MultiObjective.MultiObjectiveEdge(11, 13, [2.0, 52.0, 55.0, 0.85], 20))
-    push!(edges, MultiObjective.MultiObjectiveEdge(12, 13, [2.0, 104.0, 75.0, 0.60], 21))
-    
-    adjacency = [Int[] for _ in 1:13]
-    for (i, edge) in enumerate(edges)
-        push!(adjacency[edge.source], i)
-    end
-    
-    return MultiObjective.MultiObjectiveGraph(13, edges, 4, adjacency,
-                                             ["Cost(\$k)", "Time(weeks)", "QoL", "Success"],
-                                             objective_sense=[:min, :min, :max, :max])
-end
 
 mo_graph = create_mo_treatment_network()
 pareto_front = MultiObjective.compute_pareto_front(mo_graph, 1, 13, max_solutions=50)
@@ -199,7 +201,7 @@ scatter!(p3[4], time_values, success_values,
     color=:cividis,
     alpha=0.8)
 
-savefig(p3, "figures/treatment_pareto_2d.png")
+savefig(p3, joinpath(fig_dir, "treatment_pareto_2d.png"))
 
 # Create 3D Pareto visualization with special solutions highlighted
 println("📊 Creating 3D Pareto visualization...")
@@ -255,7 +257,7 @@ if knee !== nothing
         markershape=:hexagon)
 end
 
-savefig(p4, "figures/treatment_pareto_3d.png")
+savefig(p4, joinpath(fig_dir, "treatment_pareto_3d.png"))
 
 # Part 4: Treatment Strategy Comparison
 println("📊 Creating treatment strategy comparison...")
@@ -274,7 +276,7 @@ p5 = groupedbar([strategy_cost strategy_success strategy_qol],
     xlabel="Strategy",
     legend=:topright,
     size=(800, 500))
-savefig(p5, "figures/treatment_strategies.png")
+savefig(p5, joinpath(fig_dir, "treatment_strategies.png"))
 
 # Part 5: Risk-Benefit Analysis
 println("📊 Creating risk-benefit analysis...")
@@ -309,7 +311,7 @@ annotate!(38, 90, text("High Risk\nHigh Benefit", 8, :yellow))
 annotate!(12, 50, text("Low Risk\nLow Benefit", 8, :blue))
 annotate!(38, 50, text("High Risk\nLow Benefit", 8, :red))
 
-savefig(p6, "figures/risk_benefit.png")
+savefig(p6, joinpath(fig_dir, "risk_benefit.png"))
 
 # Part 6: Performance Comparison
 println("📊 Creating performance comparison...")
@@ -352,7 +354,7 @@ for (n, dmy, ci_dmy, dijk, ci_dij) in zip(sizes, dmy_times, dmy_ci, dijkstra_tim
     end
 end
 
-savefig(p7, "figures/treatment_performance.png")
+savefig(p7, joinpath(fig_dir, "treatment_performance.png"))
 println("  $(benchmark_summary(benchmarks))")
 
 # Part 7: Patient-Specific Protocol Selection
@@ -371,7 +373,7 @@ p8 = groupedbar([profile_cost profile_success profile_qol],
     xlabel="Patient Profile",
     legend=:topright,
     size=(800, 500))
-savefig(p8, "figures/patient_profiles.png")
+savefig(p8, joinpath(fig_dir, "patient_profiles.png"))
 
 # Part 8: Clinical Decision Tree
 println("📊 Creating clinical decision tree visualization...")
@@ -414,10 +416,10 @@ plot!([0.5, 0.2], [1.8, 1.2], arrow=true, color=:gray, label=nothing)
 plot!([0.5, 0.8], [1.8, 1.2], arrow=true, color=:gray, label=nothing)
 plot!([1.5, 1.2], [1.8, 1.2], arrow=true, color=:gray, label=nothing)
 
-savefig(p9, "figures/decision_tree.png")
+savefig(p9, joinpath(fig_dir, "decision_tree.png"))
 
 println("\n✅ All figures generated successfully!")
-println("\nFigures created in 'figures/' directory:")
+println("\nFigures created in $(fig_dir):")
 println("  1. treatment_cost_efficacy.png - Cost vs efficacy analysis")
 println("  2. treatment_network.png - Treatment pathway network")
 println("  3. treatment_pareto_2d.png - 2D Pareto projections")

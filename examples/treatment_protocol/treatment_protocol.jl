@@ -47,142 +47,15 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
     compute_pareto_front, weighted_sum_approach, epsilon_constraint_approach,
     lexicographic_approach, get_knee_point, compute_path_objectives
 
+include("common.jl")
+
 println("🏥 Treatment Protocol Optimization")
 println("=" ^ 55)
 
-# Define a comprehensive cancer treatment protocol
-# Based on typical oncology treatment pathways
-
-treatments = [
-    "Initial_Screening",     # Entry point
-    "Diagnostic_Imaging",    # CT, MRI, PET scans
-    "Biopsy",               # Tissue sampling
-    "Staging",              # Determine cancer stage
-    "Multidisciplinary_Review", # Team consultation
-    "Surgery_Consultation", # Surgical evaluation
-    "Medical_Oncology",     # Chemotherapy planning
-    "Radiation_Oncology",   # Radiation therapy planning
-    "Surgery_Minor",        # Lumpectomy, minor resection
-    "Surgery_Major",        # Mastectomy, major resection
-    "Chemotherapy_Neoadjuvant", # Pre-surgery chemo
-    "Chemotherapy_Adjuvant",    # Post-surgery chemo
-    "Radiation_Therapy",    # External beam radiation
-    "Immunotherapy",        # Checkpoint inhibitors
-    "Targeted_Therapy",     # Precision medicine
-    "Palliative_Care",      # Comfort care
-    "Follow_up_Monitoring", # Surveillance
-    "Remission",            # Treatment success
-    "Recurrence_Detection", # Disease return
-    "Second_Line_Treatment" # Salvage therapy
-]
-
-# Treatment costs (in thousands of dollars, normalized)
-treatment_costs = [
-    0.5,    # Initial_Screening
-    2.0,    # Diagnostic_Imaging
-    1.5,    # Biopsy
-    1.0,    # Staging
-    0.8,    # Multidisciplinary_Review
-    0.5,    # Surgery_Consultation
-    1.0,    # Medical_Oncology
-    1.0,    # Radiation_Oncology
-    15.0,   # Surgery_Minor
-    35.0,   # Surgery_Major
-    25.0,   # Chemotherapy_Neoadjuvant
-    20.0,   # Chemotherapy_Adjuvant
-    30.0,   # Radiation_Therapy
-    40.0,   # Immunotherapy
-    45.0,   # Targeted_Therapy
-    10.0,   # Palliative_Care
-    2.0,    # Follow_up_Monitoring
-    0.0,    # Remission (goal state)
-    3.0,    # Recurrence_Detection
-    50.0    # Second_Line_Treatment
-]
-
-# Treatment efficacy weights (0.0 = no efficacy, 1.0 = perfect efficacy)
-efficacy_weights = [
-    1.0,    # Initial_Screening
-    0.95,   # Diagnostic_Imaging
-    0.98,   # Biopsy
-    0.90,   # Staging
-    0.85,   # Multidisciplinary_Review
-    0.80,   # Surgery_Consultation
-    0.85,   # Medical_Oncology
-    0.85,   # Radiation_Oncology
-    0.85,   # Surgery_Minor
-    0.90,   # Surgery_Major
-    0.75,   # Chemotherapy_Neoadjuvant
-    0.80,   # Chemotherapy_Adjuvant
-    0.85,   # Radiation_Therapy
-    0.70,   # Immunotherapy (variable response)
-    0.75,   # Targeted_Therapy (depends on biomarkers)
-    0.60,   # Palliative_Care (comfort, not cure)
-    0.95,   # Follow_up_Monitoring
-    1.0,    # Remission
-    0.90,   # Recurrence_Detection
-    0.60    # Second_Line_Treatment (lower success rate)
-]
-
-# Define valid treatment transitions with transition costs
-# Transition costs represent coordination, waiting time, and administrative overhead
-treatment_transitions = [
-    # Initial diagnostic pathway
-    ("Initial_Screening", "Diagnostic_Imaging", 0.2),
-    ("Diagnostic_Imaging", "Biopsy", 0.5),
-    ("Biopsy", "Staging", 0.3),
-    ("Staging", "Multidisciplinary_Review", 0.2),
-    
-    # Consultation pathways
-    ("Multidisciplinary_Review", "Surgery_Consultation", 0.1),
-    ("Multidisciplinary_Review", "Medical_Oncology", 0.1),
-    ("Multidisciplinary_Review", "Radiation_Oncology", 0.1),
-    ("Multidisciplinary_Review", "Palliative_Care", 0.5),  # Higher barrier to palliative
-    
-    # Surgical pathways
-    ("Surgery_Consultation", "Surgery_Minor", 0.5),
-    ("Surgery_Consultation", "Surgery_Major", 1.0),  # More complex coordination
-    ("Surgery_Consultation", "Chemotherapy_Neoadjuvant", 0.3),
-    
-    # Neoadjuvant pathway
-    ("Chemotherapy_Neoadjuvant", "Surgery_Minor", 0.8),
-    ("Chemotherapy_Neoadjuvant", "Surgery_Major", 1.2),
-    
-    # Post-surgical pathways
-    ("Surgery_Minor", "Chemotherapy_Adjuvant", 0.5),
-    ("Surgery_Minor", "Radiation_Therapy", 0.4),
-    ("Surgery_Minor", "Follow_up_Monitoring", 0.2),
-    ("Surgery_Major", "Chemotherapy_Adjuvant", 0.6),
-    ("Surgery_Major", "Radiation_Therapy", 0.5),
-    ("Surgery_Major", "Follow_up_Monitoring", 0.3),
-    
-    # Advanced therapy pathways
-    ("Medical_Oncology", "Immunotherapy", 0.4),
-    ("Medical_Oncology", "Targeted_Therapy", 0.3),
-    ("Medical_Oncology", "Chemotherapy_Adjuvant", 0.2),
-    
-    # Radiation pathways
-    ("Radiation_Oncology", "Radiation_Therapy", 0.3),
-    ("Radiation_Therapy", "Follow_up_Monitoring", 0.2),
-    
-    # Advanced treatments to monitoring
-    ("Chemotherapy_Adjuvant", "Follow_up_Monitoring", 0.3),
-    ("Immunotherapy", "Follow_up_Monitoring", 0.4),
-    ("Targeted_Therapy", "Follow_up_Monitoring", 0.3),
-    
-    # Monitoring outcomes
-    ("Follow_up_Monitoring", "Remission", 0.1),
-    ("Follow_up_Monitoring", "Recurrence_Detection", 0.8),
-    
-    # Recurrence pathways
-    ("Recurrence_Detection", "Second_Line_Treatment", 0.5),
-    ("Recurrence_Detection", "Palliative_Care", 1.0),
-    ("Second_Line_Treatment", "Follow_up_Monitoring", 0.4),
-    ("Second_Line_Treatment", "Palliative_Care", 0.8),
-    
-    # Palliative transitions
-    ("Palliative_Care", "Follow_up_Monitoring", 0.2)
-]
+treatments = TREATMENTS
+treatment_costs = TREATMENT_COSTS
+efficacy_weights = EFFICACY_WEIGHTS
+treatment_transitions = TREATMENT_TRANSITIONS
 
 println("\n🏗️  Creating treatment protocol network...")
 
@@ -441,62 +314,6 @@ println("- Evidence-based protocol development")
 println("\n" * "=" ^ 55)
 println("📊 PART 2: MULTI-OBJECTIVE TREATMENT OPTIMIZATION")
 println("-" ^ 50)
-
-# Create multi-objective treatment network
-function create_mo_treatment_network()
-    # Objectives: [Cost($k), Time(weeks), QoL Impact, Success Rate]
-    edges = MultiObjective.MultiObjectiveEdge[]
-    
-    # Start node (Initial diagnosis)
-    push!(edges, MultiObjective.MultiObjectiveEdge(1, 2, [0.0, 0.0, 0.0, 0.0], 1))
-    
-    # Diagnostic phase (Node 2: Diagnostic workup)
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 3, [3.5, 1.0, -5.0, 0.95], 2))   # Basic imaging
-    push!(edges, MultiObjective.MultiObjectiveEdge(2, 4, [8.0, 0.5, -10.0, 0.98], 3))  # Advanced imaging
-    
-    # Staging (Nodes 3,4 → 5: Staging complete)
-    push!(edges, MultiObjective.MultiObjectiveEdge(3, 5, [2.0, 1.0, -8.0, 0.90], 4))   # From basic
-    push!(edges, MultiObjective.MultiObjectiveEdge(4, 5, [1.0, 0.5, -5.0, 0.95], 5))   # From advanced
-    
-    # Treatment decision (Node 5 → multiple options)
-    # Surgery path
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 6, [35.0, 2.0, -30.0, 0.85], 6))  # Major surgery
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 7, [15.0, 1.0, -15.0, 0.90], 7))  # Minor surgery
-    
-    # Medical therapy path
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 8, [25.0, 12.0, -40.0, 0.75], 8))  # Chemotherapy
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 9, [40.0, 16.0, -20.0, 0.70], 9))  # Immunotherapy
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 10, [45.0, 8.0, -15.0, 0.80], 10)) # Targeted therapy
-    
-    # Radiation path
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 11, [30.0, 6.0, -25.0, 0.85], 11)) # Radiation
-    
-    # Conservative path
-    push!(edges, MultiObjective.MultiObjectiveEdge(5, 12, [10.0, 52.0, -10.0, 0.60], 12)) # Watch & wait
-    
-    # Combination therapies (from surgery)
-    push!(edges, MultiObjective.MultiObjectiveEdge(6, 8, [25.0, 12.0, -35.0, 0.80], 13))  # Surgery + chemo
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 11, [30.0, 6.0, -20.0, 0.88], 14))  # Minor + radiation
-    
-    # Post-treatment monitoring (all paths → 13)
-    push!(edges, MultiObjective.MultiObjectiveEdge(6, 13, [2.0, 52.0, 60.0, 0.85], 15))  # From major surgery
-    push!(edges, MultiObjective.MultiObjectiveEdge(7, 13, [2.0, 52.0, 70.0, 0.90], 16))  # From minor surgery
-    push!(edges, MultiObjective.MultiObjectiveEdge(8, 13, [2.0, 52.0, 40.0, 0.75], 17))  # From chemo
-    push!(edges, MultiObjective.MultiObjectiveEdge(9, 13, [2.0, 52.0, 50.0, 0.70], 18))  # From immuno
-    push!(edges, MultiObjective.MultiObjectiveEdge(10, 13, [2.0, 52.0, 65.0, 0.80], 19)) # From targeted
-    push!(edges, MultiObjective.MultiObjectiveEdge(11, 13, [2.0, 52.0, 55.0, 0.85], 20)) # From radiation
-    push!(edges, MultiObjective.MultiObjectiveEdge(12, 13, [2.0, 104.0, 75.0, 0.60], 21)) # From watch & wait
-    
-    # Build adjacency
-    adjacency = [Int[] for _ in 1:13]
-    for (i, edge) in enumerate(edges)
-        push!(adjacency[edge.source], i)
-    end
-    
-    return MultiObjective.MultiObjectiveGraph(13, edges, 4, adjacency,
-                                             ["Cost(\$k)", "Time(weeks)", "QoL", "Success"],
-                                             objective_sense=[:min, :min, :max, :max])
-end
 
 mo_graph = create_mo_treatment_network()
 
