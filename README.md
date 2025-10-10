@@ -1,4 +1,13 @@
-# OptimShortestPaths.jl
+```
+   ___        _   _           ____  _                _            _   ____       _   _
+  / _ \ _ __ | |_(_)_ __ ___ / ___|| |__   ___  _ __| |_ ___  ___| |_|  _ \ __ _| |_| |__  ___
+ | | | | '_ \| __| | '_ ` _ \\___ \| '_ \ / _ \| '__| __/ _ \/ __| __| |_) / _` | __| '_ \/ __|
+ | |_| | |_) | |_| | | | | | |___) | | | | (_) | |  | ||  __/\__ \ |_|  __/ (_| | |_| | | \__ \
+  \___/| .__/ \__|_|_| |_| |_|____/|_| |_|\___/|_|   \__\___||___/\__|_|   \__,_|\__|_| |_|___/
+       |_|
+
+  OptimShortestPaths.jl — Optimization via Shortest Paths
+```
 
 [![Stable Documentation](https://img.shields.io/badge/docs-stable-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/stable)
 [![Dev Documentation](https://img.shields.io/badge/docs-dev-blue.svg)](https://danielchen26.github.io/OptimShortestPaths.jl/dev)
@@ -50,9 +59,24 @@ The package implements the DMY (Duan-Mao-Yin) algorithm from STOC 2025 [1], whic
 - **BMSSP**: Bounded multi-source shortest path subroutine
 - **Recursive decomposition**: Divide-and-conquer on large frontiers
 
-**Requirements**: Non-negative edge weights, directed graphs
+## Model Assumptions & Scope
 
-**Performance**: Theoretical speedup over Dijkstra's O(m log n) is most pronounced on large sparse graphs. Practical crossover point depends on graph structure and implementation constants.
+### Algorithm Requirements
+- **Non-negative edge weights**: Required by DMY algorithm (cannot handle negative weights)
+- **Directed graphs**: Algorithm designed for directed edges
+- **Comparison-addition model**: Theoretical complexity bounds apply in this model
+
+### Performance Characteristics
+- **Theoretical**: O(m log^(2/3) n) vs Dijkstra's O(m log n)
+- **Practical crossover**: Around n ≈ 1,800 vertices for sparse graphs (m ≈ 2n)
+- **Best case**: Large sparse graphs (m = O(n) to O(n log n))
+- **Competitive case**: Small graphs (n < 1,000) or dense graphs where Dijkstra may be faster
+
+### Multi-Objective Limitations
+- Pareto set can grow exponentially in worst case
+- Practical bounds via `max_solutions` parameter
+- ε-dominance pruning for computational tractability
+- Does not guarantee complete Pareto front for large multi-objective problems
 
 ## Multi-Objective Optimization
 
