@@ -206,13 +206,11 @@ So ATP is calculated as: `path_cost + ATP_adjustment`
    ```
 
 2. **Fix performance benchmarks**:
-   ```julia
-   // Use fixed seed:
-   using Random
-   Random.seed!(42)
+   ```bash
+   # Run with a deterministic seed (examples default to 42 if not provided)
+   OPTIM_SP_SEED=42 julia --project=. metabolic_pathway.jl
    
-   // Or average over multiple runs:
-   speedups = []
+   # Or average over multiple runs inside the script:
    for trial in 1:10
        # run benchmark
        push!(speedups, speedup)

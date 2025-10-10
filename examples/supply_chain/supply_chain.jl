@@ -23,7 +23,10 @@ using Random
 using LinearAlgebra
 using Statistics
 
-Random.seed!(42)
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :supply_chain_demo)
 
 println("=" ^ 80)
 println(" " ^ 15, "📦 SUPPLY CHAIN OPTIMIZATION WITH OptimShortestPaths")

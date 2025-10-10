@@ -6,8 +6,10 @@ This dashboard presents results from applying the DMY shortest-path algorithm to
 
 **Key Findings**:
 1. **Network**: 22 nodes (3 factories, 4 warehouses, 5 distribution centers, 10 customers)
-2. **Optimal routing**: All 10 customers served with total cost ~$740
-3. **Performance**: DMY achieves 4.79× speedup at n=5000 vertices (from benchmark_results.txt)
+2. **Optimal routing**: All 10 customers served with total cost ≈$77.9k (production $52.5k + transport $25.4k)
+3. **Performance**: DMY solves the 22-node network in ~0.07 ms (≈14× faster than an LP baseline)
+
+**Reproducibility**: set `OPTIM_SP_SEED=<int>` (or pass `--seed=<int>`) before running `supply_chain.jl` or `generate_figures.jl` to rebuild the identical synthetic network. Default seed is `42` when none is provided.
 
 ---
 
@@ -47,27 +49,28 @@ Detailed breakdown of production and transportation costs:
 
 ![Cost Analysis](figures/cost_analysis.png)
 
-**Cost Summary** (Actual from simulation):
+**Cost Summary** (current simulation):
 - **Customers Served**: 10/10 (100%)
-- **Average Path Cost**: $73.99 per customer
-- **Total Production Cost**: $450.00
-- **Total Transport Cost**: $289.87
-- **Total System Cost**: $739.87
-- **Cost Split**: 60.8% production / 39.2% transport
+- **Average Path Cost**: $7,788 per customer
+- **Total Production Cost**: $52,525.00
+- **Total Transport Cost**: $25,355.76
+- **Total System Cost**: $77,880.76
+- **Cost Split**: 67.5% production / 32.5% transport
+- **Demand Satisfaction**: 110%
 
 **Optimal Allocation**:
-- Factory 1: 0 customers assigned (high production cost)
-- Factory 2: 10 customers assigned (lowest cost facility)
-- Factory 3: 0 customers assigned (high production cost)
+- Factory 1: 350 units produced
+- Factory 2: 350 units produced
+- Factory 3: 350 units produced
 
 ---
 
 ## ⚡ Algorithm Performance
 
-**DMY Algorithm Performance** (from benchmark_results.txt):
+**DMY Algorithm Performance**:
+- ✅ Measured on this 22-node network: **0.074 ms** average runtime (vs ~1.06 ms LP baseline and ~2.42 ms greedy)
 - ✅ Theoretical complexity: **O(m log^(2/3) n)**
-- ✅ At 5,000 vertices: **4.79× speedup** over Dijkstra on sparse random graphs
-- ✅ Average DMY execution time: **0.05ms** on this 22-node network
+- ✅ Benchmarks from `benchmark_results.txt` (sparse random graphs) demonstrate scaling behavior:
 
 **Benchmark Data**:
 | Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
@@ -95,7 +98,7 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 ✅ **All customers served** at minimum total cost
 ✅ **22-node network** solved in **< 0.1ms**
 ✅ **Factory 2** identified as most cost-effective source
-✅ **$739.87 total cost** (60.8% production, 39.2% transport)
+✅ **$77,880.76 total cost** (67.5% production, 32.5% transport)
 
 ---
 

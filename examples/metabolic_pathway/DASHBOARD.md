@@ -9,6 +9,8 @@ This dashboard presents comprehensive analysis of metabolic pathways using the D
 2. **Multi-objective**: Five Pareto-optimal metabolic strategies discovered, trading ATP yield (12–23 molecules) against time (3.9–8.7 min), enzyme load, and metabolic load
 3. **Performance**: DMY reaches up to 35.4× speedup over Dijkstra at n=10,000 metabolites (k=⌈n^{1/3}⌉)
 
+**Reproducibility**: run the scripts with a fixed seed (`OPTIM_SP_SEED=<int>` or `--seed=<int>`) to regenerate the exact same synthetic metabolic networks and benchmarks. Default seed is `42` when left unspecified.
+
 ---
 
 ## Part 1: Single-Objective Analysis
@@ -67,7 +69,7 @@ Real metabolic engineering involves optimizing multiple competing objectives:
 
 **3D Trade-off Space**:
 - **X-axis (Time)**: Pathway completion time (~3.9–8.7 min)
-- **Y-axis (ATP)**: Net ATP production (≈12–33 molecules)
+- **Y-axis (ATP)**: Net ATP production (≈12–23 molecules)
 - **Z-axis (Enzyme Load)**: Total enzyme requirement (≈11–17 units)
 
 Special solutions highlighted:
@@ -91,7 +93,7 @@ Special solutions highlighted:
 **Strategy Analysis**:
 - **Balanced**: 23 ATP in 5.8 min at moderate enzyme cost (default recommendation)
 - **Fastest**: 14.8 ATP in 3.9 min using high enzyme load (short bursts)
-- **High-ATP Knee**: 33.2 ATP in 8.7 min with load ≈0.80× (oxygen-rich)
+- **High-ATP Knee**: 13.2 ATP in 8.7 min with load ≈0.80× (oxygen-rich)
 - **Constraint**: Load ≤0.30× is infeasible in current network topology
 
 ---
@@ -105,14 +107,14 @@ Special solutions highlighted:
 
 | Metabolites | k (rounds) | **DMY vs Dijkstra** |
 |-------------|------------|---------------------|
-| 100 | 5 | 0.21× (slower) |
-| 1000 | 10 | 3.10× faster |
-| 5000 | 18 | 18.40× faster |
-| 10000 | 22 | 33.60× faster |
+| 100 | 5 | 0.22× (slower) |
+| 1000 | 10 | 3.20× faster |
+| 5000 | 18 | 23.40× faster |
+| 10000 | 22 | 32.40× faster |
 
 **Key Insights**:
 - Crossover point: around n ≈ 1,000 metabolites for these sparse metabolic-like graphs
-- DMY shows accelerating gains on large, sparse metabolomes (up to ~34× at n=10,000)
+- DMY shows accelerating gains on large, sparse metabolomes (up to ~32× at n=10,000)
 - Small networks (n≈100) still favor classic Dijkstra due to overhead
 
 ---
@@ -193,7 +195,7 @@ julia --project=. examples/metabolic_pathway/metabolic_pathway.jl
 
 **Model Parameters**:
 - 17 metabolites in central carbon metabolism
-- 13 enzymatic reactions with measured costs
+- 19 enzymatic reactions with measured costs
 - 4 objectives: ATP, time, enzyme load, byproducts
 - Steady-state flux assumptions
 

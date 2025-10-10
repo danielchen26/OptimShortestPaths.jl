@@ -17,6 +17,10 @@ This demo covers:
 
 using OptimShortestPaths
 
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+configure_global_rng()
+
 println("=" ^ 80)
 println(" " ^ 20, "🌟 OptimShortestPaths FRAMEWORK DEMONSTRATION 🌟")
 println("=" ^ 80)

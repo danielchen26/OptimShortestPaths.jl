@@ -46,6 +46,11 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
 
 include("common.jl")
 
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :drug_target_demo)
+
 println("🧬 Drug-Target Interaction Network Analysis")
 println("=" ^ 60)
 
@@ -192,10 +197,10 @@ println("\nPerformance on Sparse Graphs (m ≈ 2n):")
 test_sizes = [100, 1000, 2000, 5000]
 performance_results = []
 
-Random.seed!(42)
+reset_global_rng(BASE_SEED, :performance_analysis)
 
 for n in test_sizes
-    rng = MersenneTwister(42 + n)
+    rng = derived_rng(BASE_SEED, :performance_analysis, n)
     samples = 10
     # Create sparse graph
     edges = OptimShortestPaths.Edge[]

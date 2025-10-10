@@ -36,6 +36,11 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
 
 include("common.jl")
 
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :metabolic_demo)
+
 println("🧪 Metabolic Pathway Analysis")
 println("=" ^ 60)
 
@@ -336,7 +341,7 @@ println("\nPerformance on Metabolic Networks:")
 test_sizes = [100, 1000, 5000, 10000]
 performance_results = []
 
-Random.seed!(42)
+reset_global_rng(BASE_SEED, :metabolic_performance)
 
 for n in test_sizes
     # Create metabolic-like network (sparse, branching)

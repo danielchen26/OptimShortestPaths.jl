@@ -131,7 +131,7 @@ For pharmaceutical networks:
 - n=200: DMY is **0.31×** the speed of Dijkstra (overhead dominates small graphs)
 - n=500: DMY is **0.39×** Dijkstra (still warming up)
 - n=2000: DMY is **1.77× faster** on sparse graphs
-- n=5000: DMY is **4.79× faster** on sparse graphs
+- n=5000: DMY is **~4.0× faster** on sparse graphs
 
 ## 🎯 Multi-Objective Extension
 

@@ -8,7 +8,11 @@ using OptimShortestPaths
 using Random
 using Statistics
 using Dates
-Random.seed!(42)
+
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :benchmarks)
 
 println("🔬 Running Real Performance Benchmarks...")
 println("=" ^ 80)
@@ -91,7 +95,7 @@ println("-" ^ 60)
 
 # Generate realistic Pareto front data
 n_solutions = 100
-Random.seed!(42)
+reset_global_rng(BASE_SEED, :pareto_front)
 
 # Generate correlated objectives (cost vs time vs quality)
 costs = sort(rand(n_solutions) * 1000 .+ 100)  # $100-$1100
@@ -133,6 +137,7 @@ println("\n🌍 Real-World Application Performance")
 println("-" ^ 60)
 
 # Supply chain network (realistic size)
+reset_global_rng(BASE_SEED, :supply_chain_demo)
 supply_nodes = 20  # 1 factory, 5 warehouses, 14 customers
 supply_edges = Edge[]
 supply_weights = Float64[]

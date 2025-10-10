@@ -18,6 +18,11 @@ using Colors
 using OptimShortestPaths
 using Statistics
 
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :supply_chain_figures)
+
 # Palette (10 colors)
 const COLORS = [
     RGB(0.20,0.40,0.80), RGB(0.90,0.50,0.20), RGB(0.20,0.70,0.30), RGB(0.80,0.20,0.50),
@@ -28,9 +33,6 @@ const COLORS = [
 # Ensure output directory exists (relative to this example directory)
 const FIG_DIR = joinpath(@__DIR__, "figures")
 mkpath(FIG_DIR)
-
-# Seed for reproducibility
-Random.seed!(42)
 
 # -----------------------------
 # Network construction

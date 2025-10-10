@@ -14,6 +14,10 @@ julia --project=. <example_name>.jl
 
 Replace `<example_name>` with: `comprehensive_demo`, `drug_target_network`, `metabolic_pathway`, `treatment_protocol`, or `supply_chain`.
 
+### Reproducible random data
+
+Synthetic networks and benchmarks use a shared RNG helper. Provide `--seed=1234` on the command line or export `OPTIM_SP_SEED=1234` before running a script to lock in deterministic results. When neither is supplied, the examples fall back to the project default seed (`42`).
+
 ## Available Examples
 
 ### 1. Comprehensive Demo (`comprehensive_demo/`)
@@ -81,7 +85,7 @@ Biochemical pathway analysis using bipartite graph representation.
 **Network structure:**
 ```
 Metabolites ←→ Reactions (bipartite)
-17 metabolites, 15 enzymatic reactions
+17 metabolites, 19 enzymatic reactions
 Glucose → Pyruvate (with branching to Lactate or Acetyl-CoA)
 ```
 

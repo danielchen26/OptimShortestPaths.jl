@@ -6,6 +6,8 @@
 
 ---
 
+**Reproducibility tip**: all scripts backing this dashboard accept `--seed=<int>` (or `OPTIM_SP_SEED=<int>`) to replay the exact same synthetic datasets and benchmarks. Default seed is `42`.
+
 ## 📚 The OptimShortestPaths Philosophy
 
 OptimShortestPaths provides a **systematic transformation framework** that converts optimization problems into shortest-path problems, enabling efficient solutions using the DMY algorithm with **O(m log^(2/3) n)** complexity.

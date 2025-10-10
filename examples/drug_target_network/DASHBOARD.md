@@ -7,7 +7,17 @@ This dashboard presents comprehensive results from applying the DMY shortest-pat
 **Key Findings**:
 1. **Single-objective**: Celecoxib remains the most COX-2 selective option (~3.7× vs COX-1) while all sample drugs reach every target
 2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost $5–$50, and onset 1–4 h
-3. **Performance**: DMY achieves up to ~4.3× speedup over Dijkstra at n=5000 (sparse graphs; k=⌈n^{1/3}⌉)
+3. **Performance**: DMY achieves up to ~4.0× speedup over Dijkstra at n=5000 (sparse graphs; k=⌈n^{1/3}⌉)
+
+### Reproducibility
+
+All scripts accept a deterministic seed via either `OPTIM_SP_SEED` or a `--seed=` flag. Example:
+
+```bash
+OPTIM_SP_SEED=2024 julia --project=. drug_target_network.jl
+```
+
+If no seed is provided, the default (`42`) is used. Use the same flag when generating figures to ensure the plots and tables align with the narrative below.
 
 ---
 
@@ -100,15 +110,15 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 
 | Graph Size | k (rounds) | **DMY vs Dijkstra** |
 |------------|------------|---------------------|
-| 100 | 5 | 30.51× faster |
-| 1,000 | 10 | 1.07× faster |
-| 2,000 | 13 | 1.48× faster |
-| 5,000 | 18 | 4.27× faster |
+| 100 | 5 | 29.28× faster |
+| 1,000 | 10 | 0.59× (slower) |
+| 2,000 | 13 | 1.36× faster |
+| 5,000 | 18 | 3.97× faster |
 
 **Key Insights**:
-- Small graphs (n≈100) still show DMY overhead is negligible; the large ratio comes from microsecond timings averaged over multiple runs
-- Crossover occurs near n≈1,000 for these sparse drug-target graphs; beyond that DMY gains grow steadily
-- Results follow the expected O(m log^(2/3) n) trend documented in `benchmark_results.txt`
+- Small graphs (n≈1,000) still favour Dijkstra (≈0.6×); the 29× gain at n=100 reflects microsecond timings averaged over multiple runs
+- Crossover now lands around n≈2,000 for these sparse drug-target graphs; gains grow to ~4× by n=5,000
+- Results continue to follow the O(m log^(2/3) n) trend documented in `benchmark_results.txt`
 
 ---
 

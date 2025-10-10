@@ -10,7 +10,11 @@ using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 using Plots
 using Random
-Random.seed!(42)
+
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :drug_target_figures)
 # Inline benchmark loader - reads from canonical benchmark_results.txt
 function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark_results.txt"))
     isfile(path) || error("Benchmark results not found at $path")

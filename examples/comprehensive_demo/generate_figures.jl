@@ -34,7 +34,11 @@ using Colors
 using Random
 using Statistics
 using Dates
-Random.seed!(42)
+
+include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
+using .ExampleSeedUtils
+const BASE_SEED = configure_global_rng()
+reset_global_rng(BASE_SEED, :framework_figures)
 
 # Professional publication settings - Nature/Science journal quality
 gr(dpi=300,
@@ -440,7 +444,7 @@ println("\n🎯 Creating Multi-Objective Optimization Figure...")
 fig5 = plot(layout=(2,2), size=(1400, 1000), dpi=300)
 
 # Generate synthetic Pareto front data
-Random.seed!(42)
+reset_global_rng(BASE_SEED, :multi_objective_figures)
 n_solutions = 150
 
 # Simulated data: Trade-off between cost, time, and quality

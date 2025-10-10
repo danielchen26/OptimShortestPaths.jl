@@ -66,16 +66,16 @@ julia --project=. generate_figures.jl
 ## Results
 
 ### Performance Metrics
-- **Network Size**: 22 nodes, 80+ edges
-- **DMY Runtime**: ~0.05ms average per source
-- **Cost Reduction**: 25% vs manual planning
-- **Demand Satisfaction**: >95%
+- **Network Size**: 22 nodes, 88 edges
+- **DMY Runtime**: ~0.074 ms average per factory source
+- **Total System Cost**: \$77,880.76 (production \$52,525 + transport \$25,355.76)
+- **Demand Satisfaction**: 110 %
 
 ### Algorithm Comparison
 
 | Method | Complexity | Runtime | Optimality |
 |--------|-----------|---------|------------|
-| OptimShortestPaths-DMY | O(m log^(2/3) n) | 0.05ms | Shortest paths |
+| OptimShortestPaths-DMY | O(m log^(2/3) n) | 0.07 ms | Shortest paths |
 | Linear Programming | O(n³) | 15ms | Global optimal |
 | Greedy Heuristic | O(n²) | 2ms | ~85% optimal |
 
