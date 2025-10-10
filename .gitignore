@@ -46,3 +46,6 @@ GITHUB_PAGES_SETUP_GUIDE.md
 FINAL_PUBLICATION_AUDIT.md
 FIX_DOCUMENTER_KEY.md
 PUBLICATION_APPROVED.md
+
+# Streamlit app (lives on streamlit_app branch)
+streamlit_app/
