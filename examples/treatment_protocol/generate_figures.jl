@@ -43,6 +43,18 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
 
 include("common.jl")
 
+# Set plotting defaults for publication quality
+gr(dpi=300)
+default(
+    titlefont = (14, "sans-serif"),
+    guidefont = (12, "sans-serif"),
+    tickfont = (10, "sans-serif"),
+    legendfont = (10, "sans-serif"),
+    framestyle = :box,
+    grid = true,
+    dpi = 300
+)
+
 println("🎨 Generating Treatment Protocol Visualizations")
 println("=" ^ 60)
 
@@ -80,7 +92,8 @@ p1 = groupedbar([costs efficacy],
     xlabel="Treatment",
     legend=:topright,
     color=[:red :green],
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p1, joinpath(fig_dir, "treatment_cost_efficacy.png"))
 
 # Part 2: Treatment Pathway Network
@@ -141,6 +154,7 @@ end
 
 p2 = plot(title="Treatment Pathway Network",
     size=(950, 550),
+    dpi=300,
     xlims=(-0.5, 10.5),
     ylims=(-3.0, 3.0),
     xticks=[],
@@ -215,7 +229,7 @@ qol_values = [sol.objectives[3] for sol in pareto_front]
 success_values = [sol.objectives[4] * 100 for sol in pareto_front]  # Convert to percentage
 
 # Create 2D projections
-p3 = plot(layout=(2, 2), size=(1000, 800))
+p3 = plot(layout=(2, 2), size=(1000, 800), dpi=300)
 
 # Cost vs Success
 scatter!(p3[1], cost_values, success_values,
@@ -286,7 +300,8 @@ p4 = scatter3d(cost_values, success_values, qol_values,
     color=:gray,
     alpha=0.5,
     camera=(30, 30),
-    size=(800, 600))
+    size=(800, 600),
+    dpi=300)
 
 # Highlight special solutions
 if sol_balanced !== nothing
@@ -336,7 +351,8 @@ p5 = groupedbar([strategy_cost strategy_success strategy_qol],
     ylabel="Value",
     xlabel="Strategy",
     legend=:topright,
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p5, joinpath(fig_dir, "treatment_strategies.png"))
 
 # Part 5: Risk-Benefit Analysis
@@ -354,7 +370,8 @@ p6 = scatter(risk_scores, benefit_scores,
     markersize=10,
     color=:viridis,
     alpha=0.8,
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 
 # Add treatment labels
 for (i, txt) in enumerate(treatments_rb)
@@ -400,7 +417,8 @@ p7 = plot(sizes, dmy_times;
     xlims=(100, 10000),
     ylims=(0.01, 50),
     legend=:bottomright,
-    size=(850, 520))
+    size=(850, 520),
+    dpi=300)
 
 plot!(p7, sizes, dijkstra_times;
     label="Dijkstra",
@@ -446,7 +464,8 @@ p8 = groupedbar([profile_cost profile_success profile_qol],
     ylabel="Value",
     xlabel="Patient Profile",
     legend=:topright,
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p8, joinpath(fig_dir, "patient_profiles.png"))
 
 # Part 8: Clinical Decision Tree
@@ -476,7 +495,8 @@ p9 = scatter(x_pos, y_pos,
     label=nothing,
     xlims=(0, 2),
     ylims=(0.5, 3.5),
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 
 # Add labels
 for (i, txt) in enumerate(labels)

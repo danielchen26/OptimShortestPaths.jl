@@ -44,7 +44,7 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
 include("common.jl")
 
 # Set plotting defaults for publication quality
-gr()
+gr(dpi=300)
 default(
     titlefont = (14, "sans-serif"),
     guidefont = (12, "sans-serif"),
@@ -53,7 +53,7 @@ default(
     framestyle = :box,
     grid = true,
     size = (800, 600),
-    dpi = 150
+    dpi = 300
 )
 
 # Create output directory in this example's folder
@@ -239,7 +239,7 @@ p4d = scatter(times, efficacies,
              color=:purple, markerstrokecolor=:indigo,
              grid=true, legend=:topright)
 
-p4_combined = plot(p4a, p4b, p4c, p4d, layout=(2,2), size=(1200, 900),
+p4_combined = plot(p4a, p4b, p4c, p4d, layout=(2,2), size=(1200, 900), dpi=300,
                    plot_title="Multi-Objective Drug Selection: 2D Pareto Front Projections")
 
 savefig(p4_combined, joinpath(output_dir, "drug_pareto_front.png"))
@@ -399,9 +399,10 @@ p6d = bar(["n=200\n(Old)", "n=200\n(New)", "n=2000\n(Old)", "n=2000\n(New)"],
     legend = false
 )
 
-p6_combined = plot(p6a, p6b, p6c, p6d, 
-    layout = (2,2), 
+p6_combined = plot(p6a, p6b, p6c, p6d,
+    layout = (2,2),
     size = (1200, 900),
+    dpi = 300,
     plot_title = "DMY Algorithm: Corrected Performance Analysis"
 )
 

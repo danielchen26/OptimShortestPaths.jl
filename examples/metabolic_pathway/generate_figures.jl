@@ -42,6 +42,18 @@ using OptimShortestPaths: MultiObjectiveEdge, MultiObjectiveGraph, ParetoSolutio
 
 include("common.jl")
 
+# Set plotting defaults for publication quality
+gr(dpi=300)
+default(
+    titlefont = (14, "sans-serif"),
+    guidefont = (12, "sans-serif"),
+    tickfont = (10, "sans-serif"),
+    legendfont = (10, "sans-serif"),
+    framestyle = :box,
+    grid = true,
+    dpi = 300
+)
+
 println("🎨 Generating Metabolic Pathway Visualizations")
 println("=" ^ 60)
 
@@ -74,7 +86,8 @@ p1 = heatmap(adj_matrix,
     ylabel="Substrate",
     color=:viridis,
     clims=(0, 1),
-    size=(800, 700))
+    size=(800, 700),
+    dpi=300)
 savefig(p1, joinpath(fig_dir, "metabolic_network.png"))
 
 # Part 2: Enzyme Cost Analysis
@@ -90,7 +103,8 @@ p2 = groupedbar([enzyme_data.costs enzyme_data.loads],
     ylabel="Cost/Load (arbitrary units)",
     xlabel="Enzyme",
     legend=:topright,
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p2, joinpath(fig_dir, "enzyme_costs.png"))
 
 # Part 3: Multi-Objective Pareto Front
@@ -107,7 +121,7 @@ enzyme_values = [sol.objectives[3] for sol in pareto_front]
 byproduct_values = [sol.objectives[4] for sol in pareto_front]
 
 # Create 2D projections
-p3 = plot(layout=(2, 2), size=(1000, 800))
+p3 = plot(layout=(2, 2), size=(1000, 800), dpi=300)
 
 # ATP vs Time
 scatter!(p3[1], time_values, atp_values,
@@ -178,7 +192,8 @@ p4 = scatter3d(time_values, atp_values, enzyme_values,
     color=:gray,
     alpha=0.5,
     camera=(30, 30),
-    size=(800, 600))
+    size=(800, 600),
+    dpi=300)
 
 # Highlight special solutions
 if sol_balanced !== nothing
@@ -227,7 +242,8 @@ p5 = groupedbar([strategy_atp strategy_time strategy_byproducts],
     ylabel="Value",
     xlabel="Strategy",
     legend=:topright,
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p5, joinpath(fig_dir, "metabolic_strategies.png"))
 
 # Part 5: Performance Comparison
@@ -253,7 +269,8 @@ p6 = plot(sizes, [dmy_times dijkstra_times],
     xlims=(100, 10000),
     ylims=(0.01, 50),
     legend=:topleft,
-    size=(900, 520))
+    size=(900, 520),
+    dpi=300)
 
 for (size, dmy, dmy_err, dijk, dijk_err) in zip(sizes, dmy_times, dmy_ci, dijkstra_times, dijkstra_ci)
     if dmy_err > 0
@@ -288,7 +305,8 @@ p7 = groupedbar([gross_atp atp_cost net_atp],
     xlabel="Pathway",
     legend=:topright,
     color=[:green :red :blue],
-    size=(800, 500))
+    size=(800, 500),
+    dpi=300)
 savefig(p7, joinpath(fig_dir, "atp_yield.png"))
 
 println("\n✅ All figures generated successfully!")
