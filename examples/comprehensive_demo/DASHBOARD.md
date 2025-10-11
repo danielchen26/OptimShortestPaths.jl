@@ -111,10 +111,10 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 - **Solution**: Optimal distribution path
 
 ### Measured Results
-- Total optimal cost: **$34.2k**
-- OptimShortestPaths runtime: **~0.011 ms** (single SSSP solve)
-- Average cost per unit shipped: **$9.1**
-- Network utilization: **~82% capacity**
+- Total optimal cost: **$38.2k**
+- OptimShortestPaths runtime: **~0.13 ms** (single SSSP solve)
+- Average cost per unit shipped: **$8.5**
+- Network utilization: **~97% capacity**
 
 ---
 

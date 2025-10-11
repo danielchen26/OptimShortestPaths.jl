@@ -68,7 +68,7 @@ Detailed breakdown of production and transportation costs:
 ## ⚡ Algorithm Performance
 
 **DMY Algorithm Performance**:
-- ✅ Measured on this 22-node network: **0.074 ms** average runtime (vs ~1.06 ms LP baseline and ~2.42 ms greedy)
+- ✅ Measured on this 22-node network: **0.08 ms** average runtime (vs ~1.06 ms LP baseline and ~2.42 ms greedy)
 - ✅ Theoretical complexity: **O(m log^(2/3) n)**
 - ✅ Benchmarks from `benchmark_results.txt` (sparse random graphs) demonstrate scaling behavior:
 
@@ -98,7 +98,7 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 ✅ **All customers served** at minimum total cost
 ✅ **22-node network** solved in **< 0.1ms**
 ✅ **Factory 2** identified as most cost-effective source
-✅ **$77,880.76 total cost** (67.5% production, 32.5% transport)
+✅ **$79,006.61 total cost** (66.5% production, 33.5% transport)
 
 ---
 
