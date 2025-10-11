@@ -144,24 +144,6 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 ---
 
-## Real-World Performance Comparison
-
-![Performance Improvement](figures/real_world_applications.png)
-
-### Performance Analysis
-
-Micro-benchmarks run on 910 total vertices across 6 domains demonstrate OptimShortestPaths advantages:
-
-- **Speed**: 41.5% average improvement through DMY O(m log^(2/3) n) complexity
-- **Memory**: 13.5% reduction via sparse graph representation
-- **Accuracy**: 3.0% improvement with optimal path guarantees
-- **Scalability**: 23.1% better with subquadratic growth
-- **Robustness**: 11.7% more stable constraint handling
-
-*Performance improvements measured against domain-specific traditional methods (Linear Programming, Monte Carlo, etc.)*
-
----
-
 ## Algorithm Capabilities
 
 ### Core Features Demonstrated
