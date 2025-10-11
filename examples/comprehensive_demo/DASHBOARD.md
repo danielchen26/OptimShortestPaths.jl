@@ -78,15 +78,15 @@ flowchart TD
 
 **Actual Benchmark Measurements** (from benchmark_results.txt):
 
-| Graph Size | Edges | DMY (ms) | Dijkstra (ms) | Speedup |
-|------------|-------|----------|---------------|---------|
-| 200 | 209 | 0.009 | 0.019 | 2.09× |
-| 500 | 509 | 0.076 | 0.120 | 1.58× |
-| 1,000 | 1,009 | 0.025 | 0.427 | 17.4× |
-| 2,000 | 2,008 | 0.038 | 1.583 | 41.2× |
-| 5,000 | 5,009 | 0.093 | 9.268 | 99.9× |
+| Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
+|------------|-------|------------------|-----------------------|---------|
+| 200 | 400 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× |
+| 500 | 1,000 | 0.426 ± 0.197 | 0.167 ± 0.004 | 0.39× |
+| 1,000 | 2,000 | 1.458 ± 1.659 | 0.641 ± 0.008 | 0.44× |
+| 2,000 | 4,000 | 1.415 ± 0.094 | 2.510 ± 0.038 | **1.77×** |
+| 5,000 | 10,000 | 3.346 ± 0.105 | 16.028 ± 0.241 | **4.79×** |
 
-*Results generated via `test/benchmark_performance.jl` using warm trials on sparse random graphs*
+*Results generated via `dev/benchmark_performance.jl` using 40 warm trials on sparse random graphs (m ≈ 2n)*
 
 ### Key Observations
 
@@ -188,7 +188,7 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 ## Key Findings
 
-- DMY algorithm achieves 99.9× speedup on 5,000-vertex sparse graphs
+- DMY algorithm achieves 4.79× speedup on 5,000-vertex sparse graphs
 - Break-even point at ~2,000 vertices vs Dijkstra
 - Multi-objective optimization identifies 53% Pareto optimal solutions
 - Sub-millisecond performance on practical supply chain problems
@@ -231,8 +231,8 @@ Benchmark data is stored in `benchmark_results.txt` with timestamp and seed info
 
 ## References
 
-- Duan, R., Mao, T., & Yin, L. (2025). Breaking the m√n Barrier for Directed Shortest Paths. *STOC 2025*.
-- OptimShortestPaths.jl v1.0.0: [github.com/Tian-Ci/OptimShortestPaths.jl](https://github.com/Tian-Ci/OptimShortestPaths.jl)
+- Duan, R., Mao, J., Yin, H., & Zhou, H. (2025). "Breaking the Dijkstra Barrier for Directed Single-Source Shortest-Paths via Structured Distances". *Proceedings of the 57th Annual ACM Symposium on Theory of Computing (STOC 2025)*.
+- OptimShortestPaths.jl v1.0.3: https://github.com/danielchen26/OptimShortestPaths.jl
 
 ---
 
