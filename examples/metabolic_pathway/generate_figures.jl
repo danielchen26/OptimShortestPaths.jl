@@ -256,32 +256,47 @@ dmy_ci = benchmarks.dmy_ci_ms
 dijkstra_times = benchmarks.dijkstra_ms
 dijkstra_ci = benchmarks.dijkstra_ci_ms
 
-p6 = plot(sizes, [dmy_times dijkstra_times],
+
+p6 = plot(sizes, dmy_times;
     xlabel="Number of Metabolites",
     ylabel="Runtime (ms)",
     title="Performance: DMY vs Dijkstra (k = ⌈n^{1/3}⌉)",
-    label=["DMY" "Dijkstra"],
-    lw=2,
+    label="DMY (k = n^{1/3})",
+    color=:navy,
+    lw=3,
     marker=:circle,
-    markersize=6,
+    markersize=7,
     xscale=:log10,
     yscale=:log10,
     xlims=(100, 10000),
     ylims=(0.01, 50),
-    legend=:topleft,
+    legend=:bottomright,
     size=(900, 520),
-    dpi=300)
+    dpi=300,
+    left_margin=10Plots.mm,
+    bottom_margin=8Plots.mm)
+
+plot!(p6, sizes, dijkstra_times;
+    label="Dijkstra",
+    color=:darkorange,
+    lw=3,
+    marker=:diamond,
+    markersize=7)
 
 for (size, dmy, dmy_err, dijk, dijk_err) in zip(sizes, dmy_times, dmy_ci, dijkstra_times, dijkstra_ci)
     if dmy_err > 0
-        plot!(p6, [size, size], [dmy - dmy_err, dmy + dmy_err]; color=:green, lw=1)
+        lower = max(dmy - dmy_err, 1e-4)
+        upper = dmy + dmy_err
+        plot!(p6, [size, size], [lower, upper]; color=:navy, lw=1, label="")
     end
     if dijk_err > 0
-        plot!(p6, [size, size], [dijk - dijk_err, dijk + dijk_err]; color=:orange, lw=1)
+        lower = max(dijk - dijk_err, 1e-4)
+        upper = dijk + dijk_err
+        plot!(p6, [size, size], [lower, upper]; color=:darkorange, lw=1, label="")
     end
     speedup = dijk / dmy
     if speedup > 1
-        annotate!(size, dmy, text("$(round(speedup, digits=2))x", 8, :green, :bottom))
+        annotate!(p6, size, dmy, text("$(round(speedup, digits=2))x", 8, :black, :bottom))
     end
 end
 

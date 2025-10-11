@@ -154,7 +154,7 @@ Legend highlights:
 
 ### Single vs Multi-Objective
 - **Single**: One "optimal" path minimizing cost
-- **Multi**: 8+ equally valid protocols on Pareto front
+- **Multi**: Six Pareto-optimal protocols provide distinct trade-offs
 - **Reality**: Patients have different priorities and constraints
 
 ### Treatment Personalization
