@@ -9,6 +9,7 @@ using OptimShortestPaths
 # Bring submodule name into scope for references like MultiObjective.X
 using OptimShortestPaths.MultiObjective
 using Plots
+using Plots: mm
 using Random
 
 include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
@@ -346,69 +347,37 @@ for (n, dmy, dijk) in zip(test_sizes, dmy_times, dijkstra_times)
     end
 end
 
-# k values plot
-k_values = ceil.(Int, test_sizes .^ (1/3))
-p6b = plot(test_sizes, k_values,
-    xlabel = "Number of Vertices",
-    ylabel = "k (BMSSP rounds)",
-    title = "Corrected k Values: k = n^(1/3)",
-    marker = :circle,
-    markersize = 6,
-    linewidth = 2,
-    label = "Actual k",
-    legend = :topleft
-)
-
-plot!(test_sizes, test_sizes .^ (1/3), 
-    linestyle = :dash, 
-    linewidth = 2, 
-    label = "Theoretical n^(1/3)",
-    color = :red)
-
-# Complexity comparison
+ # Theoretical complexity comparison
 n_range = 200:200:5000
-p6c = plot(n_range,
-    xlabel = "n (vertices)",
-    ylabel = "Relative Complexity",
-    title = "Theoretical Complexity",
-    legend = :topleft
-)
-
 dmy_complexity = n_range .* log.(n_range).^(2/3)
 dijkstra_complexity = n_range .* log.(n_range)
 
-plot!(p6c, n_range, dmy_complexity,
-    linewidth = 3,
+p6b = plot(n_range, dmy_complexity;
+    xlabel = "n (vertices)",
+    ylabel = "Relative Work",
+    title = "Theoretical Complexity",
     label = "DMY: O(m log^{2/3} n)",
-    color = :blue)
+    color = :navy,
+    lw = 3,
+    legend = :topleft,
+    size = (900, 520),
+    dpi = 300)
 
-plot!(p6c, n_range, dijkstra_complexity,
-    linewidth = 3,
+plot!(p6b, n_range, dijkstra_complexity;
     label = "Dijkstra: O(m log n)",
-    color = :orange)
+    color = :darkorange,
+    lw = 3)
 
-# Find crossover
 crossover_idx = findfirst(i -> dmy_complexity[i] < dijkstra_complexity[i], 1:length(dmy_complexity))
 if crossover_idx !== nothing
     crossover_n = n_range[crossover_idx]
-    vline!([crossover_n], linestyle=:dash, color=:red, linewidth=2, label="Crossover")
+    vline!(p6b, [crossover_n]; linestyle=:dash, color=:black, linewidth=2, label="Crossover")
 end
 
-# Old vs New k comparison
-p6d = bar(["n=200\n(Old)", "n=200\n(New)", "n=2000\n(Old)", "n=2000\n(New)"],
-    [199, ceil(Int, 200^(1/3)), 1999, ceil(Int, 2000^(1/3))],
-    ylabel = "k (BMSSP rounds)",
-    title = "k Parameter: Old vs New",
-    color = [:red, :green, :red, :green],
-    legend = false
-)
-
-p6_combined = plot(p6a, p6b, p6c, p6d,
-    layout = (2,2),
-    size = (1200, 900),
-    dpi = 300,
-    plot_title = "DMY Algorithm: Corrected Performance Analysis"
-)
+p6_combined = plot(p6a, p6b,
+    layout = (1, 2),
+    size = (1200, 500),
+    dpi = 300)
 
 savefig(p6_combined, joinpath(output_dir, "performance_corrected.png"))
 println("  ✓ Saved: performance_corrected.png")
@@ -423,7 +392,7 @@ println("2. cox_selectivity.png - COX-2/COX-1 selectivity ratios")
 println("3. path_distances.png - Shortest path analysis")
 println("4. drug_pareto_front.png - 2D Pareto front projections (4 plots)")
 println("5. drug_pareto_3d.png - 3D Pareto front with labeled solutions")
-println("6. performance_corrected.png - Corrected algorithm performance")
+println("6. performance_corrected.png - Runtime + complexity benchmark")
 println("\nKey insights:")
 println("• 7 Pareto-optimal drug pathways identified")
 println("$(benchmark_summary(benchmarks))")

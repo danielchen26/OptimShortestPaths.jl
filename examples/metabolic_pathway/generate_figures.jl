@@ -8,6 +8,7 @@ Creates visualizations for single and multi-objective optimization results.
 using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 using Plots
+using Plots: mm
 using StatsPlots
 using Random
 include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
