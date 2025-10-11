@@ -104,18 +104,18 @@ This visualization shows the complete network topology with all possible shippin
 
 **Cost Summary** (Actual from simulation):
 - **Customers Served**: 10/10 (100% fulfillment)
-- **Average Path Cost**: \$73.99 per customer
-- **Total Production Cost**: \$450.00
-- **Total Transport Cost**: \$289.87
-- **Total System Cost**: \$739.87
-- **Cost Split**: 60.8% production / 39.2% transport
+- **Average Path Cost**: \$7,900.66 per customer
+- **Total Production Cost**: \$52,525.00
+- **Total Transport Cost**: \$26,481.61
+- **Total System Cost**: \$79,006.61
+- **Cost Split**: 66.5% production / 33.5% transport
 
 **Optimal Allocation**:
-- Factory 1: 0 customers assigned (high production cost)
-- Factory 2: 10 customers assigned (lowest cost facility - dominates)
-- Factory 3: 0 customers assigned (high production cost)
+- Factory 1: 350 units produced
+- Factory 2: 350 units produced
+- Factory 3: 350 units produced
 
-**Optimization Impact**: 31% cost reduction vs manual planning
+**Demand Satisfaction**: 110%
 
 ### Minimum Cost Routing
 

@@ -150,39 +150,36 @@ Each subplot shows a different 2D projection of the 4-dimensional Pareto front, 
 ![Pareto Front 3D](../assets/figures/metabolic_pathway/metabolic_pareto_3d.png)
 
 **3D Trade-off Space**:
-- **X-axis (Time)**: Pathway completion time (0-8 minutes)
-- **Y-axis (ATP)**: Net ATP production (0-30 molecules)
-- **Z-axis (Enzyme Load)**: Total enzyme requirement (0-15 units)
+- **X-axis (Time)**: Pathway completion time (~3.9-8.7 minutes)
+- **Y-axis (ATP)**: Net ATP production (≈12-23 molecules)
+- **Z-axis (Enzyme Load)**: Total enzyme requirement (≈11-17 units)
 
 Special solutions highlighted:
-- **Blue Star (Balanced)**: Weighted optimization across all objectives
-- **Green Diamond (Clean)**: Minimizes byproduct load (<0.3×)
-- **Red Hexagon (Knee Point)**: Optimal trade-off point - best compromise across all objectives
+- **Blue Star (Balanced)**: Weighted solution (ATP≈23.0, Time≈5.8 min, Enzyme load≈12.5 units, Byproduct≈0.85×)
+- **Green Annotation**: "Constraint load ≤0.30× infeasible" — the ε-constraint has no feasible solution for the seeded network
+- **Red Hexagon (Knee Point)**: Highest-efficiency trade-off (ATP≈13.2, Time≈8.7 min, Enzyme load≈16.5 units, Byproduct≈0.8×)
 
 This 3D surface represents the boundary of achievable metabolic performance. Points inside the surface are dominated (suboptimal), while points on the surface are Pareto-optimal.
 
 ### Pareto-Optimal Strategies
 
-| Strategy | ATP | Time | Enzymes | Byproducts | **Use Case** |
-|----------|-----|------|---------|------------|--------------|
-| Aerobic Respiration | 30 | 8.0min | 14.0 | 30% | **Energy storage** - Maximum ATP when time available |
-| Mixed Aerobic | 25 | 6.0min | 11.5 | 40% | **Normal growth** - Balanced energy production |
-| Enhanced Glycolysis | 18 | 4.5min | 9.0 | 35% | **Moderate activity** - Good overall balance |
-| Balanced Strategy | 15 | 5.0min | 8.0 | 40% | **Standard conditions** - All objectives balanced |
-| Clean Metabolism | 10 | 6.0min | 7.0 | 30% | **Detoxification** - Minimize toxic byproducts |
-| Rapid Glycolysis | 5 | 3.0min | 5.5 | 60% | **Burst activity** - Quick energy when needed |
-| Pentose Shunt | 5 | 4.0min | 6.0 | 50% | **Biosynthesis** - NADPH production priority |
-| Fermentation | 2 | 2.0min | 3.0 | 100% | **Anaerobic stress** - No oxygen available |
+| Solution | Pathway Profile | ATP | Time | Enzymes | Load (×) | **Use Case** |
+|----------|-----------------|-----|------|---------|----------|--------------|
+| 1 | Balanced glycolysis + respiration | 23.0 | 5.8 min | 12.5 | 0.85 | **Default mix** - Strong ATP with moderate duration |
+| 2 | Fermentation-heavy branch | 12.0 | 5.8 min | 11.0 | 1.90 | **Overflow metabolism** - Tolerate high metabolic burden |
+| 3 | Fast high-enzyme route | 14.8 | 3.9 min | 15.0 | 1.70 | **Sprint demand** - Prioritize speed |
+| 4 | Moderate-speed branch | 12.2 | 4.5 min | 14.0 | 1.65 | **Balanced anaerobic** - Slightly slower, similar yield |
+| 5 | Oxygen-rich variant | 13.2 | 8.7 min | 16.5 | 0.80 | **Clean aerobic** - Lower load, longer time |
 
 ### Figure 6: Metabolic Strategy Comparison
 
 ![Metabolic Strategies](../assets/figures/metabolic_pathway/metabolic_strategies.png)
 
 **Strategy Analysis**:
-- **Aerobic**: Maximum ATP (30) but slowest (8 min) and high enzyme cost
-- **Anaerobic (Fermentation)**: Minimal ATP (2) but fastest (2 min) and lowest enzyme cost
-- **Pentose Phosphate Pathway**: Moderate ATP (5) with NADPH production for biosynthesis
-- **Knee Point (Enhanced Glycolysis)**: Best overall trade-off (18 ATP in 4.5 min with moderate enzyme load)
+- **Balanced (Solution 1)**: 23 ATP in 5.8 min at moderate enzyme cost (default recommendation)
+- **Fastest (Solution 3)**: 14.8 ATP in 3.9 min using high enzyme load (short bursts)
+- **Clean Aerobic (Solution 5)**: 13.2 ATP in 8.7 min with load ≈0.80× (oxygen-rich)
+- **High-Load Fermentation (Solution 2)**: 12 ATP with 1.90× metabolic burden (overflow metabolism)
 
 The radar plot shows how each strategy prioritizes different objectives, helping visualize which strategy fits different cellular contexts.
 

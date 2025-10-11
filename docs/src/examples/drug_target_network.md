@@ -85,9 +85,9 @@ This ensures:
 
 | Drug | Selectivity | Interpretation | GI Risk |
 |------|------------|----------------|---------|
-| Celecoxib | 20.1x | Highly COX-2 selective | Low |
-| Ibuprofen | 10.5x | COX-2 selective | Low-Moderate |
-| Aspirin | 0.5x | COX-1 selective | High |
+| Celecoxib | 3.7x | Strong COX-2 preference | Low |
+| Ibuprofen | 2.0x | Mild COX-2 preference | Low-Moderate |
+| Aspirin | 0.7x | COX-1 biased (non-selective) | Higher |
 
 ### Finding Most Selective COX-2 Inhibitor
 
@@ -106,12 +106,12 @@ end
 
 **Results**:
 ```
-Aspirin selectivity: 0.5x (COX-1 preferring - causes GI bleeding)
-Ibuprofen selectivity: 10.5x (COX-2 selective - safer)
-Celecoxib selectivity: 20.1x (Highly COX-2 selective - safest)
+Aspirin selectivity: 0.7x (COX-1 biased - non-selective)
+Ibuprofen selectivity: 2.0x (Mild COX-2 preference)
+Celecoxib selectivity: 3.7x (Strong COX-2 preference - safest)
 ```
 
-**Clinical Implication**: Celecoxib identified as optimal for patients at high GI bleeding risk.
+**Clinical Implication**: Celecoxib identified as most COX-2 selective for patients at high GI bleeding risk.
 
 ---
 
