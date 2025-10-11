@@ -241,19 +241,4 @@ The DMY algorithm demonstrates:
 
 ---
 
-## 📈 Future Directions
-
-### Potential Enhancements
-- GPU acceleration for larger graphs
-- Distributed computing implementation
-- Incremental shortest path updates
-- Stochastic optimization extensions
-
-### Research Opportunities
-- Theoretical complexity refinements
-- Application to dynamic graphs
-- Integration with machine learning
-
----
-
 *Based on actual benchmark measurements - OptimShortestPaths Framework v1.0.0*

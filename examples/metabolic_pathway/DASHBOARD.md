@@ -121,50 +121,6 @@ Special solutions highlighted:
 
 ---
 
-## How to Use These Results
-
-### For Metabolic Engineers
-1. **Identify production goals**: ATP yield vs speed vs purity
-2. **Select from Pareto front**: Choose pathway matching constraints
-3. **Engineer enzymes**: Optimize rate-limiting steps identified
-4. **Monitor byproducts**: Ensure toxic metabolites stay below thresholds
-
-### For Systems Biologists
-1. **Model metabolism**: Use multi-objective framework
-2. **Predict phenotypes**: Different conditions favor different solutions
-3. **Identify targets**: Find enzymes controlling Pareto trade-offs
-4. **Design experiments**: Test predicted optimal pathways
-
-### For Synthetic Biology
-1. **Design pathways**: Build new routes following Pareto principles
-2. **Optimize yield**: Balance all objectives, not just product
-3. **Minimize toxicity**: Use clean metabolism strategies
-4. **Scale production**: Consider enzyme load constraints
-
----
-
-## Clinical and Biotechnology Applications
-
-### Medical Applications
-
-| Condition | Relevant Pathway | Optimization Goal |
-|-----------|-----------------|-------------------|
-| Cancer (Warburg) | Rapid Glycolysis | Block high-flux fermentation |
-| Diabetes | Balanced | Restore normal glucose utilization |
-| Exercise | Aerobic/Anaerobic | Optimize ATP for activity level |
-| Starvation | Gluconeogenesis | Minimize enzyme requirements |
-
-### Industrial Biotechnology
-
-| Product | Strategy | Trade-offs |
-|---------|----------|------------|
-| Ethanol | Fermentation | Fast but low ATP efficiency |
-| Organic Acids | Clean Metabolism | Higher cost, less byproducts |
-| Amino Acids | Balanced | Moderate all objectives |
-| Pharmaceuticals | Knee Point | Optimal overall efficiency |
-
----
-
 ## Key Takeaways
 
 ### Single vs Multi-Objective
@@ -202,16 +158,6 @@ julia --project=. examples/metabolic_pathway/metabolic_pathway.jl
 - 19 enzymatic reactions with measured costs
 - 4 objectives: ATP, time, enzyme load, byproducts
 - Steady-state flux assumptions
-
----
-
-## Future Directions
-
-1. **Compartmentalization**: Add mitochondrial/cytosolic separation
-2. **Dynamic Optimization**: Time-varying objective weights
-3. **Personalized Metabolism**: Patient-specific parameters
-4. **Pathway Design**: AI-guided metabolic engineering
-5. **Drug Metabolism**: Predict pharmaceutical effects on pathways
 
 ---
 

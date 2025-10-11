@@ -132,28 +132,6 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 
 ---
 
-## How to Use These Results
-
-### For Clinicians
-1. **Identify patient profile**: Age, risk factors, urgency, budget
-2. **Filter Pareto solutions**: Apply constraints based on profile
-3. **Select optimal pathway**: Choose from filtered solutions
-4. **Have backup options**: Keep alternative pathways ready
-
-### For Researchers
-1. **Extend the network**: Add new drugs/targets
-2. **Refine objectives**: Include additional factors (bioavailability, half-life)
-3. **Validate clinically**: Test predicted pathways in trials
-4. **Personalize further**: Add patient-specific parameters
-
-### For Healthcare Systems
-1. **Cost-effectiveness analysis**: Balance efficacy vs budget
-2. **Protocol development**: Create decision trees from Pareto front
-3. **Risk stratification**: Assign solutions based on patient risk
-4. **Outcome tracking**: Monitor which solutions work best
-
----
-
 ## Key Takeaways
 
 ### Single vs Multi-Objective

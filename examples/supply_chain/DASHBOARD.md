@@ -111,12 +111,6 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 3. **Cost Drivers**: Production costs (~66.5%) dominate over transport (~33.5%)
 4. **Scalability**: DMY algorithm handles real-time routing updates efficiently
 
-### **Business Applications**
-- **Dynamic routing**: Update costs in real-time, re-optimize instantly
-- **Capacity planning**: Identify bottleneck facilities
-- **Scenario analysis**: Test "what-if" scenarios (factory closures, demand changes)
-- **Multi-objective**: Extend to minimize cost + time + carbon footprint
-
 ---
 
 ## 📈 Comparison to Traditional Methods
@@ -149,17 +143,6 @@ weights[i] = production_cost + transport_cost(distance)
 distances = dmy_sssp!(graph, source)
 # distances[customer] = minimum total cost to serve that customer
 ```
-
----
-
-## 🚀 Extensions
-
-This example can be extended to include:
-- **Time windows**: Add temporal constraints
-- **Vehicle capacity**: Multi-commodity flow
-- **Demand uncertainty**: Stochastic optimization
-- **Carbon footprint**: Multi-objective (cost vs. emissions)
-- **Real-time updates**: Dynamic re-routing
 
 ---
 

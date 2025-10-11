@@ -150,47 +150,6 @@ Legend highlights:
 
 ---
 
-## How to Use These Results
-
-### For Oncologists
-1. **Assess patient profile**: Age, fitness, comorbidities, preferences
-2. **Review Pareto solutions**: Filter by constraints (cost, time, QoL)
-3. **Select optimal protocol**: Match to patient priorities
-4. **Monitor and adapt**: Adjust based on response
-
-### For Healthcare Administrators
-1. **Resource planning**: Allocate based on expected protocol usage
-2. **Cost management**: Use budget-constrained solutions
-3. **Quality metrics**: Track outcomes vs predictions
-4. **Protocol standardization**: Implement evidence-based pathways
-
-### For Patients
-1. **Understand trade-offs**: Visualize all options on Pareto front
-2. **Express preferences**: Prioritize cost, time, QoL, or success
-3. **Informed consent**: See expected outcomes for each protocol
-4. **Shared decision-making**: Collaborate with care team
-
----
-
-## Clinical and Economic Impact
-
-### Healthcare Outcomes
-
-| Metric | Single-Objective | Multi-Objective | Improvement |
-|--------|-----------------|-----------------|-------------|
-| Average Cost | $45k | $38k | -15% |
-| Success Rate | 82% | 78% | -4% (acceptable) |
-| Patient QoL | 45 | 62 | +38% |
-| Treatment Time | 20 weeks | 16 weeks | -20% |
-
-### Cost-Effectiveness
-- **QALY gained**: 8.5 years average
-- **ICER**: $4,500 per QALY (well below threshold)
-- **Budget impact**: $280M savings annually (US estimate)
-- **NNT**: 12 patients for one additional remission
-
----
-
 ## Key Takeaways
 
 ### Single vs Multi-Objective
@@ -216,25 +175,6 @@ Legend highlights:
 
 ---
 
-## Implementation Roadmap
-
-### Phase 1: Pilot (Months 1-3)
-- Deploy in single oncology department
-- Validate with retrospective data
-- Train clinical staff
-
-### Phase 2: Expansion (Months 4-9)
-- Extend to multiple departments
-- Integrate with EMR systems
-- Refine based on feedback
-
-### Phase 3: Full Deployment (Months 10-12)
-- Hospital-wide implementation
-- Real-time decision support
-- Outcome tracking and optimization
-
----
-
 ## Reproducibility
 
 Generate all figures:
@@ -252,16 +192,6 @@ julia --project=. examples/treatment_protocol/treatment_protocol.jl
 - 34 valid transitions
 - 4 objectives: cost, time, QoL, success
 - Real-world cost and efficacy data
-
----
-
-## Future Directions
-
-1. **Genomic Integration**: Incorporate molecular profiling
-2. **AI Predictions**: Machine learning for outcome prediction
-3. **Dynamic Protocols**: Real-time adaptation based on response
-4. **Multi-cancer**: Extend to other cancer types
-5. **Global Optimization**: Consider long-term survivorship
 
 ---
 
