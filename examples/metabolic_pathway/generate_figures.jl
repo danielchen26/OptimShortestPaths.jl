@@ -260,7 +260,7 @@ dijkstra_ci = benchmarks.dijkstra_ci_ms
 p6 = plot(sizes, dmy_times;
     xlabel="Number of Metabolites",
     ylabel="Runtime (ms)",
-    title="Performance: DMY vs Dijkstra (k = ⌈n^{1/3}⌉)",
+    title="Algorithm Performance: DMY vs Dijkstra",
     label="DMY (k = n^{1/3})",
     color=:navy,
     lw=3,

@@ -302,8 +302,8 @@ end
 savefig(p5_3d, joinpath(output_dir, "drug_pareto_3d.png"))
 println("  ✓ Saved: drug_pareto_3d.png")
 
-# Figure 6: Corrected Algorithm Performance
-println("\n📊 Figure 6: Algorithm Performance (CORRECTED)")
+# Figure 6: Algorithm Performance Benchmark
+println("\n📊 Figure 6: Algorithm Performance Benchmark")
 
 # Load shared benchmark results
 benchmarks = load_benchmark_results()
@@ -317,28 +317,32 @@ dijkstra_ci = benchmarks.dijkstra_ci_ms
 p6a = plot(test_sizes, dmy_times;
     xlabel = "Number of Vertices",
     ylabel = "Runtime (ms)",
-    title = "Corrected Performance: DMY vs Dijkstra",
-    label = "DMY runtime (O(m log^{2/3} n))",
+    title = "Algorithm Performance: DMY vs Dijkstra",
+    label = "DMY (k = n^{1/3})",
     marker = :circle,
-    markersize = 6,
-    linewidth = 2,
-    legend = :topleft,
+    markersize = 7,
+    linewidth = 3,
+    legend = :bottomright,
     yscale = :log10,
     xscale = :log10,
-    color = :dodgerblue)
+    color = :navy,
+    size = (900, 520),
+    dpi = 300,
+    left_margin = 10Plots.mm,
+    bottom_margin = 8Plots.mm)
 
 plot!(p6a, test_sizes, dijkstra_times;
-    label = "Dijkstra runtime (O(m log n))",
-    marker = :square,
-    markersize = 6,
-    linewidth = 2,
+    label = "Dijkstra",
+    marker = :diamond,
+    markersize = 7,
+    linewidth = 3,
     color = :darkorange)
 
 # Annotate speedup
 for (n, dmy, dijk) in zip(test_sizes, dmy_times, dijkstra_times)
     speed = dijk / dmy
     if speed > 1
-        annotate!(p6a, n, dmy, text("$(round(speed, digits=2))x", 8, :green, :bottom))
+        annotate!(p6a, n, dmy, text("$(round(speed, digits=2))x", 8, :black, :bottom))
     end
 end
 

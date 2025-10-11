@@ -101,10 +101,10 @@ Special solutions highlighted:
 
 ## Part 3: Algorithm Performance
 
-### Figure 7: Corrected Performance Analysis
+### Figure 7: Algorithm Performance Benchmark
 ![Performance Analysis](figures/metabolic_performance.png)
 
-**Critical Fix**: k parameter corrected from k=n-1 to k=n^(1/3)
+Benchmark results use the shared seeded dataset from `examples/comprehensive_demo/run_benchmarks.jl`, with `k = ⌈n^{1/3}⌉` applied throughout.
 
 | Graph Size | k (rounds) | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
 |------------|------------|------------------|-----------------------|---------|
@@ -115,9 +115,11 @@ Special solutions highlighted:
 | 5,000 | 18 | 3.346 ± 0.105 | 16.028 ± 0.241 | **4.79×** |
 
 **Key Insights**:
+- Panel (a) shows `DMY (k = n^{1/3})` versus `Dijkstra` runtimes with consistent error-bar styling
 - Crossover point: DMY overtakes Dijkstra once metabolic graphs exceed ~2,000 vertices
 - Larger sparse metabolomes (5,000 vertices in the shared benchmark) enjoy ~4.8× speedups
 - Smaller models remain Dijkstra-friendly because DMY’s preprocessing overhead dominates
+- Benchmark curves reuse the shared seeded dataset from `examples/comprehensive_demo/run_benchmarks.jl`, ensuring consistency with other dashboards
 
 ---
 

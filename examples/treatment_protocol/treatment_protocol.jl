@@ -392,7 +392,7 @@ println("| Quality priority | Immunotherapy | Better QoL profile |")
 
 # Part 4: Performance Analysis
 println("\n" * "=" ^ 55)
-println("📊 PART 4: PERFORMANCE ANALYSIS (CORRECTED)")
+println("📊 PART 4: PERFORMANCE ANALYSIS")
 println("-" ^ 50)
 
 println("\n🔧 Critical Fix: k parameter corrected from k=n-1 to k=n^(1/3)")

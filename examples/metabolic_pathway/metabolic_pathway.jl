@@ -331,7 +331,7 @@ end
 
 # Part 3: Performance Analysis
 println("\n" * "=" ^ 60)
-println("📊 PART 3: PERFORMANCE ANALYSIS (CORRECTED)")
+println("📊 PART 3: PERFORMANCE ANALYSIS")
 println("-" ^ 40)
 
 println("\n🔧 Critical Fix: k parameter corrected from k=n-1 to k=n^(1/3)")

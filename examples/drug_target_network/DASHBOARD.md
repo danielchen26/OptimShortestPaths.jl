@@ -110,10 +110,10 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 
 ## Part 3: Algorithm Performance
 
-### Figure 5: Corrected Performance Analysis
+### Figure 5: Algorithm Performance Benchmark
 ![Performance Analysis](figures/performance_corrected.png)
 
-**Critical Fix**: k parameter corrected from k=n-1 to k=n^(1/3)
+Benchmark results use the shared seeded dataset from `examples/comprehensive_demo/run_benchmarks.jl`, with `k = ⌈n^{1/3}⌉` applied throughout.
 
 | Graph Size | k (rounds) | **DMY vs Dijkstra** |
 |------------|------------|---------------------|
@@ -123,7 +123,7 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 | 5,000 | 18 | 3.97× faster |
 
 **Key Insights**:
-- Panel (a) shows the empirical runtimes with separate legends for DMY and Dijkstra (error whiskers = ±95% CI)
+- Panel (a) shows the empirical runtimes with separate legends for `DMY (k = n^{1/3})` and `Dijkstra` (error whiskers = ±95% CI)
 - Panel (b) tracks the corrected k = ⌈n^{1/3}⌉ values alongside the original mis-specified choice
 - Panel (c) contrasts theoretical growth O(m log^{2/3} n) vs O(m log n); panel (d) highlights the old vs new k at sample sizes
 - Small graphs (n≈1,000) still favour Dijkstra (≈0.6×); the 29× gain at n=100 reflects microsecond timings averaged over multiple runs
