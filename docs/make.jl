@@ -1,6 +1,25 @@
 using Documenter
 using OptimShortestPaths
 
+example_dirs = [
+    "comprehensive_demo",
+    "drug_target_network",
+    "metabolic_pathway",
+    "treatment_protocol",
+    "supply_chain",
+]
+
+for ex in example_dirs
+    src_figs = joinpath(@__DIR__, "..", "examples", ex, "figures")
+    if isdir(src_figs)
+        dst_dir = joinpath(@__DIR__, "src", "examples", ex)
+        mkpath(dst_dir)
+        dst_figs = joinpath(dst_dir, "figures")
+        isdir(dst_figs) && rm(dst_figs; recursive=true)
+        cp(src_figs, dst_figs; force=true)
+    end
+end
+
 makedocs(;
     modules=[OptimShortestPaths],
     authors="Tianchi Chen <chentianchi@gmail.com>",

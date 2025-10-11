@@ -35,6 +35,7 @@ Thumbs.db
 
 # Generated documentation build directory
 docs/build/
+docs/src/examples/*/figures/
 
 # Streamlit app (lives on streamlit_app branch)
 streamlit_app/
