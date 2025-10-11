@@ -24,12 +24,22 @@ The DMY algorithm achieves O(m log^(2/3) n) complexity for directed single-sourc
 
 OptimShortestPaths transforms optimization problems into shortest-path problems on directed graphs.
 
-![OptimShortestPaths Transformation Framework](figures/optimshortestpaths_philosophy.png)
+```mermaid
+graph LR
+    A[Optimization<br/>Problem] -->|Transform| B[Graph<br/>Representation]
+    B -->|DMY Algorithm| C[Shortest<br/>Path]
+    C -->|Interpret| D[Optimal<br/>Solution]
+
+    style A fill:#E3F2FD,stroke:#1976D2,stroke-width:2px
+    style B fill:#FFF3E0,stroke:#F57C00,stroke-width:2px
+    style C fill:#C8E6C9,stroke:#388E3C,stroke-width:2px
+    style D fill:#F3E5F5,stroke:#7B1FA2,stroke-width:2px
+```
 
 ### Transformation Method
 
-| **Original Problem** | **Graph Representation** | **Solution Meaning** |
-|---------------------|-------------------------|-------------------|
+| Original Problem | Graph Representation | Solution Meaning |
+|------------------|---------------------|------------------|
 | States/Configurations | Vertices | Points in solution space |
 | Allowed Transitions | Edges | Valid moves or decisions |
 | Transition Costs | Edge Weights | Cost of decisions |
@@ -39,14 +49,24 @@ OptimShortestPaths transforms optimization problems into shortest-path problems 
 
 ### Six-Step Process
 
-![Problem Casting Methodology](figures/problem_casting_methodology.png)
+```mermaid
+flowchart TD
+    A["1. IDENTIFY STATES<br/>Define configurations as vertices"]
+    B["2. DEFINE TRANSITIONS<br/>Map valid moves as edges"]
+    C["3. QUANTIFY COSTS<br/>Assign weights to transitions"]
+    D["4. SPECIFY OBJECTIVES<br/>Determine optimization goals"]
+    E["5. HANDLE CONSTRAINTS<br/>Remove invalid edges"]
+    F["6. SOLVE & INTERPRET<br/>Find shortest path as solution"]
 
-1. **IDENTIFY STATES** - Define problem configurations as vertices
-2. **DEFINE TRANSITIONS** - Map valid moves as edges
-3. **QUANTIFY COSTS** - Assign weights to transitions
-4. **SPECIFY OBJECTIVES** - Determine optimization goals
-5. **HANDLE CONSTRAINTS** - Remove invalid edges
-6. **SOLVE & INTERPRET** - Find shortest path as solution
+    A --> B --> C --> D --> E --> F
+
+    style A fill:#E3F2FD,stroke:#1976D2
+    style B fill:#E8F5E9,stroke:#388E3C
+    style C fill:#FFF3E0,stroke:#F57C00
+    style D fill:#F3E5F5,stroke:#7B1FA2
+    style E fill:#FCE4EC,stroke:#C2185B
+    style F fill:#E0F2F1,stroke:#00796B
+```
 
 ---
 

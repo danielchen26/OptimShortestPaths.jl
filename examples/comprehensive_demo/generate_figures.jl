@@ -76,6 +76,16 @@ println("🎯 OptimShortestPaths Framework Visualization Suite")
 println("="^80)
 
 # ==============================================================================
+# Figure 1 & 2: Now using Mermaid diagrams in DASHBOARD.md instead of PNG
+# ==============================================================================
+# Conceptual diagrams (framework overview, 6-step process) are now Mermaid
+# diagrams directly in the dashboard markdown for better maintainability.
+# PNG generation for these figures has been disabled.
+# ==============================================================================
+
+# The code below is commented out - figures now use Mermaid diagrams
+#=
+# ==============================================================================
 # Figure 1: OptimShortestPaths Philosophy - Domain-Agnostic Problem Transformation
 # ==============================================================================
 println("\n📐 Creating OptimShortestPaths Philosophy Figure...")
@@ -156,7 +166,7 @@ for x in [2.3, 4.05, 5.8, 7.55]
 end
 
 # Mathematical foundation
-annotate!(subplot=2, 5, 0.8, 
+annotate!(subplot=2, 5, 0.8,
     text("Mathematical Foundation", 11, :center, :bold))
 annotate!(subplot=2, 5, 0.4,
     text("min Σw(e) for path P from source to target, subject to constraints", 10, :center, :italic))
@@ -169,13 +179,13 @@ println("✓ Saved: optimshortestpaths_philosophy.png")
 # ==============================================================================
 println("\n📋 Creating Problem Casting Methodology Figure...")
 
-fig2 = plot(size=(1400, 1000), showaxis=false, grid=false, 
+fig2 = plot(size=(1400, 1000), showaxis=false, grid=false,
     xlims=(0, 14), ylims=(0, 11), dpi=300,
     title="OptimShortestPaths Problem Casting Methodology", titlefontsize=18)
 
 # Define methodology steps with proper spacing
 steps = [
-    (3, 9, "1. Problem\nAnalysis", COLORS[1], 
+    (3, 9, "1. Problem\nAnalysis", COLORS[1],
         "• Identify decisions\n• Define objectives\n• List constraints"),
     (7, 9, "2. State\nMapping", COLORS[2],
         "• Enumerate states\n• Define properties\n• Set boundaries"),
@@ -196,15 +206,15 @@ steps = [
 # Draw steps with clear separation
 for (x, y, title, color, details) in steps
     # Shadow for depth
-    plot!([x-1.3, x+1.3, x+1.3, x-1.3, x-1.3], 
+    plot!([x-1.3, x+1.3, x+1.3, x-1.3, x-1.3],
           [y-0.8, y-0.8, y+0.8, y+0.8, y-0.8],
         fillcolor=:gray, fillalpha=0.1, linecolor=:transparent, label="")
-    
+
     # Main box
-    plot!([x-1.25, x+1.25, x+1.25, x-1.25, x-1.25], 
+    plot!([x-1.25, x+1.25, x+1.25, x-1.25, x-1.25],
           [y-0.75, y-0.75, y+0.75, y+0.75, y-0.75],
         fillcolor=color, fillalpha=0.2, linecolor=color, lw=2.5, label="")
-    
+
     # Title and details with proper spacing
     annotate!(x, y+0.3, text(title, 11, :center, :bold, color))
     annotate!(x, y-0.3, text(details, 8, :center))
@@ -225,9 +235,9 @@ arrows = [
 
 for (x1, y1, x2, y2, label) in arrows
     # Draw arrow path
-    plot!([x1, x2], [y1, y2], arrow=true, color=:gray50, 
+    plot!([x1, x2], [y1, y2], arrow=true, color=:gray50,
         lw=2, alpha=0.7, arrowsize=10, arrowstyle=:closed, label="")
-    
+
     # Label positioned to avoid overlap
     mid_x, mid_y = (x1+x2)/2, (y1+y2)/2
     offset_y = abs(y2-y1) > 0.1 ? 0 : 0.15
@@ -242,6 +252,7 @@ annotate!(7, 1.0, text("Complete State Space • Accurate Cost Function • Prop
 
 savefig(fig2, "figures/problem_casting_methodology.png")
 println("✓ Saved: problem_casting_methodology.png")
+=#
 
 # ==============================================================================
 # Figure 3: Multi-Domain Applications - Clear Domain-Specific Casting
@@ -543,8 +554,15 @@ savefig(fig5, "figures/multi_objective_optimization.png")
 println("✓ Saved: multi_objective_optimization.png")
 
 # ==============================================================================
-# Figure 6: Real-World Applications - Illustrative Performance Comparison
+# Figure 6: Real-World Applications - REMOVED (misleading domain-averaged claims)
 # ==============================================================================
+# This figure showed domain-averaged performance percentages which are misleading
+# because different domains have different baselines and graph structures.
+# We already have honest benchmarks in benchmark_results.txt.
+# ==============================================================================
+
+#=
+# The code below is commented out - figure removed as misleading
 println("\n📊 Creating Real-World Applications Performance Figure...")
 
 fig6 = plot(size=(1400, 800), dpi=300, layout=(1,2))
@@ -670,9 +688,10 @@ annotate!(subplot=2, 0.5, 0.5, text(explanation_text, 10, :left))
 
 savefig(fig6, "figures/real_world_applications.png")
 println("✓ Saved: real_world_applications.png")
+=#
 
 # ==============================================================================
-# Figure 7: Algorithm Performance Comparison
+# Figure 7: Algorithm Performance Comparison (Now Figure 4)
 # ==============================================================================
 println("\n⚡ Creating Algorithm Performance Comparison...")
 
@@ -755,18 +774,19 @@ println("  $(benchmark_summary(results_fig7))")
 # ==============================================================================
 println("\n" * "="^80)
 println("✅ OptimShortestPaths Visualization Suite Complete!")
-println("\nGenerated Figures:")
-println("  1. optimshortestpaths_philosophy.png - Clear domain-agnostic transformation explanation")
-println("  2. problem_casting_methodology.png - Non-overlapping workflow with proper spacing")
-println("  3. multi_domain_applications.png - Domain-specific casting examples")
-println("  4. supply_chain_optimization.png - Real-world example with data sources")
-println("  5. multi_objective_optimization.png - Clear data generation methodology")
-println("  6. real_world_applications.png - Performance comparisons with baselines")
-println("  7. algorithm_performance_comparison.png - Benchmark results and speedup analysis")
+println("\nGenerated Figures (Data Visualizations Only - 4 figures):")
+println("  1. multi_domain_applications.png - Domain-specific casting examples")
+println("  2. supply_chain_optimization.png - Real-world case study with actual data")
+println("  3. multi_objective_optimization.png - Pareto front with computed statistics")
+println("  4. algorithm_performance_comparison.png - Benchmark results from benchmark_results.txt")
 
-println("\nKey Improvements:")
+println("\nNOT Generated (Replaced or Removed):")
+println("  • optimshortestpaths_philosophy.png → Mermaid diagram in DASHBOARD.md")
+println("  • problem_casting_methodology.png → Mermaid diagram in DASHBOARD.md")
+println("  • real_world_applications.png → REMOVED (misleading domain-averaged claims)")
+
+println("\nKey Features:")
 println("  ✓ Clear, non-overlapping text and labels")
-println("  ✓ Informative domain-agnostic explanations")
 println("  ✓ Data sources and methodologies clearly stated")
 println("  ✓ Performance comparisons with proper baselines")
 println("  ✓ Professional typography and spacing")
