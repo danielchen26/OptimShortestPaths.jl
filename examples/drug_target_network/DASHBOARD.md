@@ -66,11 +66,17 @@ Real-world drug selection involves multiple competing objectives:
 ![Pareto Front 3D](figures/drug_pareto_3d.png)
 
 **3D Trade-off Space**: This plot shows the three most critical objectives simultaneously:
-- **X-axis (Efficacy)**: Treatment effectiveness (0-100%)
-- **Y-axis (Toxicity)**: Side effect severity (0-100%)
-- **Z-axis (Cost)**: Price in dollars ($0-200)
+- **X-axis (Efficacy)**: Treatment effectiveness (0–100 %)
+- **Y-axis (Toxicity)**: Side effect severity (0–100 %)
+- **Z-axis (Cost)**: Price in dollars ($5–$50 across the frontier)
 
-Each point represents a different drug pathway. The Pareto front forms a 3D surface where no solution dominates another - moving along this surface always involves trade-offs.
+Legend highlights:
+- **Red sphere — “Max Efficacy”**: Morphine-like → MOR (Solution 5) delivers ~98 % efficacy in 1 h at the cost of high toxicity (70 %) and $50.
+- **Green sphere — “Min Toxicity”**: Ibuprofen-like → COX-2 (Solution 3) keeps toxicity at 10 % with moderate efficacy (~60 %) and $15 cost.
+- **Orange sphere — “Min Cost”**: Aspirin-like → COX-1 (Solution 1) is the $5 budget choice with 85 % efficacy and 30 % toxicity.
+- **Purple hexagon — “Knee Point”**: Morphine-like → COX-1 (Solution 4) marks the steepest trade-off change (95 % efficacy, 60 % toxicity, $50).
+
+The remaining Pareto solutions (grey) illustrate the continuous trade-offs between these extremes.
 
 ### Representative Pareto-Optimal Solutions
 
@@ -116,9 +122,12 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 | 5,000 | 18 | 3.97× faster |
 
 **Key Insights**:
+- Panel (a) shows the empirical runtimes with separate legends for DMY and Dijkstra (error whiskers = ±95% CI)
+- Panel (b) tracks the corrected k = ⌈n^{1/3}⌉ values alongside the original mis-specified choice
+- Panel (c) contrasts theoretical growth O(m log^{2/3} n) vs O(m log n); panel (d) highlights the old vs new k at sample sizes
 - Small graphs (n≈1,000) still favour Dijkstra (≈0.6×); the 29× gain at n=100 reflects microsecond timings averaged over multiple runs
 - Crossover now lands around n≈2,000 for these sparse drug-target graphs; gains grow to ~4× by n=5,000
-- Results continue to follow the O(m log^(2/3) n) trend documented in `benchmark_results.txt`
+- Results continue to follow the O(m log^{2/3} n) trend documented in `benchmark_results.txt`
 
 ---
 

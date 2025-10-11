@@ -189,12 +189,15 @@ if sol_balanced !== nothing
         markershape=:star5)
 end
 
-if sol_clean !== nothing
+if sol_clean !== nothing && all(isfinite, sol_clean.objectives)
     scatter3d!([sol_clean.objectives[2]], [-sol_clean.objectives[1]], [sol_clean.objectives[3]],
         label="Load ≤0.30×",
         markersize=10,
         color=:green,
         markershape=:diamond)
+else
+    annotate!(p4, maximum(time_values) - 0.8, maximum(atp_values) - 1.0, maximum(enzyme_values),
+        text("Constraint load ≤0.30× infeasible", 8, :green))
 end
 
 if knee !== nothing

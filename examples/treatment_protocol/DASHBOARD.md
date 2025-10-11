@@ -28,10 +28,10 @@ This dashboard presents comprehensive analysis of cancer treatment protocols usi
 ![Treatment Network](figures/treatment_network.png)
 
 **Key Insights**:
-- Adjacency matrix shows valid treatment transitions
-- Multiple pathways from diagnosis to outcome
-- Central decision point at staging (node 5)
-- Parallel treatment options available
+- Left-to-right layout shows diagnostic intake → planning → consults → active therapy → follow-up
+- Color coding separates Diagnostics, Planning, Specialist Consults, Active Treatment, and Follow-up & Support cohorts
+- Arrow directions capture every valid transition from the simulation (e.g., recurrence loops back to second-line or palliative care)
+- ⭐ Remission node is highlighted so reviewers can instantly identify terminal success states
 
 ### Figure 3: Risk-Benefit Analysis
 ![Risk Benefit](figures/risk_benefit.png)
@@ -70,13 +70,13 @@ Real-world treatment decisions involve optimizing multiple competing objectives:
 
 **3D Trade-off Space**:
 - **X-axis (Cost)**: Treatment cost in thousands (~$17–$56k across the Pareto set)
-- **Y-axis (Success)**: Scaled remission score (300–460 units; higher is better)
+- **Y-axis (Success)**: Scaled remission score (305–456 composite units; higher is better)
 - **Z-axis (QoL)**: Quality-of-life index (5–52; higher preserves comfort)
 
-Special solutions highlighted:
-- **Green Diamond (Budget)**: Cost-constrained option at $17.5k with success ≈305 (Solution 2)
-- **Red Hexagon (Knee)**: Highest success trade-off at $56.0k with success ≈456 (Solution 6)
-- Weighted blend is currently disabled (objectives mix min/max) — transform objectives before applying a weighted sum
+Legend highlights:
+- **Green Diamond — “Budget-constrained”**: Pareto solution 2 ($17.5k, 158 wk, QoL 52, success ≈ 305) satisfies the cost ≤ $50k constraint.
+- **Red Hexagon — “Knee Point”**: Pareto solution 6 ($56.0k, 60 wk, QoL 5, success ≈ 456) balances the frontier’s steepest trade-off.
+- Weighted-sum scoring is intentionally omitted because the objectives mix min/max senses; convert maximise metrics to costs before re-enabling it.
 
 ### Pareto-Optimal Treatment Protocols
 
@@ -142,6 +142,7 @@ Special solutions highlighted:
 | Current 20-node protocol | 0.01 ms | 0.03 ms | **2.14×** |
 
 **Key Insights**:
+- Legend separates `DMY (k = n^{1/3})` and `Dijkstra`; vertical whiskers denote ±95% confidence intervals
 - Even modest protocol graphs benefit from the DMY implementation
 - Larger hospital libraries inherit the same O(m log^{2/3} n) advantage
 - Lightweight runtimes enable real-time clinical decision support

@@ -7,7 +7,7 @@ This dashboard presents comprehensive analysis of metabolic pathways using the D
 **Key Findings**:
 1. **Single-objective**: Optimal glycolytic pathway from glucose to pyruvate costs 12.7 units with net +2 ATP (0.16 ATP per cost unit)
 2. **Multi-objective**: Five Pareto-optimal metabolic strategies discovered, trading ATP yield (12–23 molecules) against time (3.9–8.7 min), enzyme load, and metabolic load
-3. **Performance**: DMY reaches up to 35.4× speedup over Dijkstra at n=10,000 metabolites (k=⌈n^{1/3}⌉)
+3. **Performance**: DMY reaches ~4.8× speedup over Dijkstra at n=5,000 metabolites (k=⌈n^{1/3}⌉) in the shared benchmark set
 
 **Reproducibility**: run the scripts with a fixed seed (`OPTIM_SP_SEED=<int>` or `--seed=<int>`) to regenerate the exact same synthetic metabolic networks and benchmarks. Default seed is `42` when left unspecified.
 
@@ -73,9 +73,9 @@ Real metabolic engineering involves optimizing multiple competing objectives:
 - **Z-axis (Enzyme Load)**: Total enzyme requirement (≈11–17 units)
 
 Special solutions highlighted:
-- **Blue Star (Balanced)**: Weighted solution (ATP≈23, Time≈5.8 min, Load≈0.85×)
-- **Gray Triangle (Constraint)**: Load ≤0.30× is infeasible with current network
-- **Red Hexagon (Knee Point)**: Highest ATP option among the Pareto set (ATP≈23.0, Time≈5.8 min, Load≈0.85×)
+- **Blue Star (Balanced)**: Weighted solution (ATP≈23.0, Time≈5.8 min, Enzyme load≈12.5 units, Byproduct≈0.85×)
+- **Green Annotation**: “Constraint load ≤$0.30× infeasible” — the ε-constraint has no feasible solution for the seeded network
+- **Red Hexagon (Knee Point)**: Highest-efficiency trade-off (ATP≈13.2, Time≈8.7 min, Enzyme load≈16.5 units, Byproduct≈0.8×)
 
 ### Pareto-Optimal Metabolic Pathways
 
@@ -105,17 +105,18 @@ Special solutions highlighted:
 
 **Critical Fix**: k parameter corrected from k=n-1 to k=n^(1/3)
 
-| Metabolites | k (rounds) | **DMY vs Dijkstra** |
-|-------------|------------|---------------------|
-| 100 | 5 | 0.22× (slower) |
-| 1000 | 10 | 3.20× faster |
-| 5000 | 18 | 23.40× faster |
-| 10000 | 22 | 32.40× faster |
+| Graph Size | k (rounds) | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
+|------------|------------|------------------|-----------------------|---------|
+| 200 | 6 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× (Dijkstra faster) |
+| 500 | 8 | 0.426 ± 0.197 | 0.167 ± 0.004 | 0.39× (Dijkstra faster) |
+| 1,000 | 10 | 1.458 ± 1.659 | 0.641 ± 0.008 | 0.44× (Dijkstra faster) |
+| 2,000 | 13 | 1.415 ± 0.094 | 2.510 ± 0.038 | **1.77×** |
+| 5,000 | 18 | 3.346 ± 0.105 | 16.028 ± 0.241 | **4.79×** |
 
 **Key Insights**:
-- Crossover point: around n ≈ 1,000 metabolites for these sparse metabolic-like graphs
-- DMY shows accelerating gains on large, sparse metabolomes (up to ~32× at n=10,000)
-- Small networks (n≈100) still favor classic Dijkstra due to overhead
+- Crossover point: DMY overtakes Dijkstra once metabolic graphs exceed ~2,000 vertices
+- Larger sparse metabolomes (5,000 vertices in the shared benchmark) enjoy ~4.8× speedups
+- Smaller models remain Dijkstra-friendly because DMY’s preprocessing overhead dominates
 
 ---
 

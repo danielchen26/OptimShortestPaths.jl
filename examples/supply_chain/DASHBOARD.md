@@ -6,8 +6,8 @@ This dashboard presents results from applying the DMY shortest-path algorithm to
 
 **Key Findings**:
 1. **Network**: 22 nodes (3 factories, 4 warehouses, 5 distribution centers, 10 customers)
-2. **Optimal routing**: All 10 customers served with total cost ≈$77.9k (production $52.5k + transport $25.4k)
-3. **Performance**: DMY solves the 22-node network in ~0.07 ms (≈14× faster than an LP baseline)
+2. **Optimal routing**: All 10 customers served with total cost ≈$79.0k (production $52.5k + transport $26.5k)
+3. **Performance**: DMY solves the 22-node network in ~0.08 ms (≈14× faster than an LP baseline)
 
 **Reproducibility**: set `OPTIM_SP_SEED=<int>` (or pass `--seed=<int>`) before running `supply_chain.jl` or `generate_figures.jl` to rebuild the identical synthetic network. Default seed is `42` when none is provided.
 
@@ -36,7 +36,7 @@ DMY algorithm determines the optimal routing from factories to customers:
 ![Optimal Flows](figures/optimal_flows.png)
 
 **Key Insights**:
-- Customers are colored by their assigned factory
+- Customers are colored by their assigned factory (Factory 2 supplies the dominant cluster in this seeded run)
 - Edge thickness indicates usage frequency
 - Most traffic flows through Warehouse 2 and DC 3
 - Factory 2 serves the majority of customers (cost-optimal)
@@ -49,13 +49,13 @@ Detailed breakdown of production and transportation costs:
 
 ![Cost Analysis](figures/cost_analysis.png)
 
-**Cost Summary** (current simulation):
+**Cost Summary** (seeded simulation):
 - **Customers Served**: 10/10 (100%)
-- **Average Path Cost**: $7,788 per customer
+- **Average Path Cost**: $7,900.66 per customer
 - **Total Production Cost**: $52,525.00
-- **Total Transport Cost**: $25,355.76
-- **Total System Cost**: $77,880.76
-- **Cost Split**: 67.5% production / 32.5% transport
+- **Total Transport Cost**: $26,481.61
+- **Total System Cost**: $79,006.61
+- **Cost Split**: 66.5% production / 33.5% transport
 - **Demand Satisfaction**: 110%
 
 **Optimal Allocation**:
@@ -105,9 +105,9 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 ## 💡 Key Insights
 
 ### **Optimization Findings**
-1. **Factory Selection**: Centralized production at Factory 2 minimizes total cost
+1. **Factory Selection**: Factory 2’s lower production cost makes it the dominant supplier, with Factories 1 and 3 providing balanced backup capacity
 2. **Routing Efficiency**: Direct factory→DC routes used when warehouse costs are high
-3. **Cost Drivers**: Production costs (60.8%) dominate over transport (39.2%)
+3. **Cost Drivers**: Production costs (~66.5%) dominate over transport (~33.5%)
 4. **Scalability**: DMY algorithm handles real-time routing updates efficiently
 
 ### **Business Applications**
@@ -122,7 +122,7 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 
 | Method | Complexity | Time (22 nodes) | Optimality |
 |--------|-----------|-----------------|------------|
-| **OptimShortestPaths DMY** | O(m log^(2/3) n) | 0.05ms | Global optimal |
+| **OptimShortestPaths DMY** | O(m log^(2/3) n) | 0.08 ms | Global optimal |
 | Linear Programming | O(n³) | ~1ms | Global optimal |
 | Greedy Heuristic | O(n²) | ~2ms | ~85% optimal |
 | Manual Planning | N/A | Hours | Unknown |

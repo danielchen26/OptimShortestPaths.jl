@@ -9,6 +9,7 @@ using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 using Plots
 using StatsPlots
+using Colors
 using Random
 include(joinpath(@__DIR__, "..", "utils", "seed_utils.jl"))
 using .ExampleSeedUtils
@@ -70,7 +71,7 @@ costs = [TREATMENT_COSTS[index_map[name]] for (name, _) in selection]
 efficacy = [EFFICACY_WEIGHTS[index_map[name]] * 100 for (name, _) in selection]
 labels = [label for (_, label) in selection]
 
-p1 = groupedbar([costs efficacy ./ 2],
+p1 = groupedbar([costs efficacy],
     labels=["Cost (\$k)" "Efficacy (%)"],
     xticks=(1:length(labels), labels),
     xrotation=45,
@@ -85,68 +86,120 @@ savefig(p1, joinpath(fig_dir, "treatment_cost_efficacy.png"))
 # Part 2: Treatment Pathway Network
 println("📊 Creating treatment pathway network...")
 
-# Build adjacency matrix from transition set
-core_labels = [
-    "Initial_Screening",
-    "Diagnostic_Imaging",
-    "Biopsy",
-    "Staging",
-    "Multidisciplinary_Review",
-    "Surgery_Consultation",
-    "Medical_Oncology",
-    "Radiation_Oncology",
-    "Treatment_Option",
-    "Supportive_Care",
-    "Follow_up_Monitoring",
-    "Palliative_Care",
-    "Outcome"
+all_nodes = unique(vcat([src for (src, _, _) in TREATMENT_TRANSITIONS],
+                        [dst for (_, dst, _) in TREATMENT_TRANSITIONS]))
+
+level_layout = [
+    0 => ["Initial_Screening"],
+    1 => ["Diagnostic_Imaging"],
+    2 => ["Biopsy"],
+    3 => ["Staging"],
+    4 => ["Multidisciplinary_Review"],
+    5 => ["Surgery_Consultation", "Medical_Oncology", "Radiation_Oncology"],
+    6 => ["Chemotherapy_Neoadjuvant", "Surgery_Minor", "Surgery_Major"],
+    7 => ["Chemotherapy_Adjuvant", "Radiation_Therapy", "Immunotherapy", "Targeted_Therapy"],
+    8 => ["Follow_up_Monitoring", "Palliative_Care"],
+    9 => ["Recurrence_Detection", "Second_Line_Treatment"],
+    10 => ["Remission"]
 ]
 
-core_map = Dict(name => idx for (idx, name) in enumerate(core_labels))
-adj_matrix = zeros(length(core_labels), length(core_labels))
-
-function collapse_label(name::String)
-    if name in ("Surgery_Minor", "Surgery_Major", "Chemotherapy_Neoadjuvant",
-                "Chemotherapy_Adjuvant", "Radiation_Therapy",
-                "Immunotherapy", "Targeted_Therapy")
-        return "Treatment_Option"
-    elseif name == "Palliative_Care"
-        return "Palliative_Care"
-    elseif name == "Follow_up_Monitoring"
-        return "Follow_up_Monitoring"
-    elseif name == "Remission"
-        return "Outcome"
-    elseif name == "Recurrence_Detection" || name == "Second_Line_Treatment"
-        return "Supportive_Care"
-    else
-        return name
+coords = Dict{String, Tuple{Float64, Float64}}()
+for (lvl, names) in level_layout
+    spacing = length(names) == 1 ? [0.0] : collect(range(-(length(names)-1)/2, (length(names)-1)/2, length=length(names)))
+    for (idx, name) in enumerate(names)
+        coords[name] = (Float64(lvl), Float64(spacing[idx]))
     end
 end
+
+missing = setdiff(all_nodes, keys(coords))
+!isempty(missing) && error("Missing layout positions for nodes: $(collect(missing))")
+
+function treatment_category(name::String)
+    if name in ("Initial_Screening", "Diagnostic_Imaging", "Biopsy")
+        return "Diagnostics"
+    elseif name in ("Staging", "Multidisciplinary_Review")
+        return "Planning"
+    elseif name in ("Surgery_Consultation", "Medical_Oncology", "Radiation_Oncology")
+        return "Specialist Consults"
+    elseif name in ("Chemotherapy_Neoadjuvant", "Surgery_Minor", "Surgery_Major",
+                    "Chemotherapy_Adjuvant", "Radiation_Therapy", "Immunotherapy", "Targeted_Therapy")
+        return "Active Treatment"
+    else
+        return "Follow-up & Support"
+    end
+end
+
+function pretty_label(name::String)
+    words = split(replace(name, "_" => " "))
+    if length(words) <= 2
+        return join(words, "\n")
+    else
+        split_idx = ceil(Int, length(words) / 2)
+        return join(words[1:split_idx], " ") * "\n" * join(words[split_idx+1:end], " ")
+    end
+end
+
+p2 = plot(title="Treatment Pathway Network",
+    size=(950, 550),
+    xlims=(-0.5, 10.5),
+    ylims=(-3.0, 3.0),
+    xticks=[],
+    yticks=[],
+    framestyle=:none,
+    legend=:outerright,
+    background_color=:white)
 
 for (src, dst, _) in TREATMENT_TRANSITIONS
-    src_label = collapse_label(src)
-    dst_label = collapse_label(dst)
-    if haskey(core_map, src_label) && haskey(core_map, dst_label)
-        adj_matrix[core_map[src_label], core_map[dst_label]] = 1
+    x1, y1 = coords[src]
+    x2, y2 = coords[dst]
+    plot!([x1, x2], [y1, y2];
+        seriestype=:path,
+        color=:gray70,
+        linewidth=1.2,
+        alpha=0.8,
+        arrow=:arrow,
+        label="")
+end
+
+category_palette = Dict(
+    "Diagnostics" => RGB(0.20, 0.47, 0.75),
+    "Planning" => RGB(0.93, 0.53, 0.18),
+    "Specialist Consults" => RGB(0.57, 0.27, 0.68),
+    "Active Treatment" => RGB(0.18, 0.62, 0.36),
+    "Follow-up & Support" => RGB(0.80, 0.20, 0.33)
+)
+
+ordered_categories = ["Diagnostics", "Planning", "Specialist Consults", "Active Treatment", "Follow-up & Support"]
+for category in ordered_categories
+    nodes = [name for name in keys(coords) if treatment_category(name) == category]
+    isempty(nodes) && continue
+    xs = [coords[name][1] for name in nodes]
+    ys = [coords[name][2] for name in nodes]
+    scatter!(xs, ys;
+        markersize=12,
+        marker=:circle,
+        markerstrokecolor=:black,
+        markerstrokealpha=0.5,
+        markercolor=category_palette[category],
+        label=category)
+    for name in nodes
+        x, y = coords[name]
+        annotate!(x, y + 0.35, text(pretty_label(name), 8, :center))
     end
 end
 
-pathway_labels = [
-    "Start", "Screen", "Image", "Biopsy", "Stage",
-    "Review", "Surg Consult", "Med Onc", "Treat Opt",
-    "Support", "Follow-up", "Palliative", "Outcome"
-]
+# Highlight terminal remission node
+if haskey(coords, "Remission")
+    x_rem, y_rem = coords["Remission"]
+    scatter!([x_rem], [y_rem];
+        markersize=14,
+        marker=:star5,
+        markerstrokecolor=:goldenrod,
+        markerstrokewidth=1.5,
+        markercolor=:gold,
+        label="Remission")
+end
 
-p2 = heatmap(adj_matrix,
-    xticks=(1:length(core_labels), pathway_labels),
-    yticks=(1:length(core_labels), pathway_labels),
-    xrotation=45,
-    title="Treatment Pathway Network",
-    xlabel="Next Step",
-    ylabel="Current Step",
-    color=:viridis,
-    clims=(0, 1),
-    size=(800, 700))
 savefig(p2, joinpath(fig_dir, "treatment_network.png"))
 
 # Part 3: Multi-Objective Pareto Front
@@ -244,7 +297,7 @@ if sol_balanced !== nothing
         markershape=:star5)
 end
 
-if sol_budget !== nothing
+if sol_budget !== nothing && all(isfinite, sol_budget.objectives)
     scatter3d!([sol_budget.objectives[1]], [sol_budget.objectives[4]*100], [sol_budget.objectives[3]],
         label="Budget-constrained",
         markersize=10,
@@ -258,6 +311,11 @@ if knee !== nothing
         markersize=10,
         color=:red,
         markershape=:hexagon)
+end
+
+if sol_budget === nothing || !all(isfinite, sol_budget.objectives)
+    annotate!(p4, minimum(cost_values) + 5, maximum(success_values) - 5,
+        text("Budget constraint (≤\$50k) infeasible", 8, :green))
 end
 
 savefig(p4, joinpath(fig_dir, "treatment_pareto_3d.png"))
@@ -328,32 +386,45 @@ dijkstra_times = benchmarks.dijkstra_ms
 dmy_ci = benchmarks.dmy_ci_ms
 dijkstra_ci = benchmarks.dijkstra_ci_ms
 
-p7 = plot(sizes, [dmy_times dijkstra_times],
+p7 = plot(sizes, dmy_times;
     xlabel="Number of Treatment Protocols",
     ylabel="Runtime (ms)",
     title="Performance: DMY vs Dijkstra (Corrected)",
-    label=["DMY (k=n^(1/3))" "Dijkstra"],
-    lw=2,
+    label="DMY (k = n^{1/3})",
+    lw=3,
     marker=:circle,
-    markersize=6,
+    markersize=7,
+    color=:navy,
     xscale=:log10,
     yscale=:log10,
     xlims=(100, 10000),
     ylims=(0.01, 50),
-    legend=:topleft,
-    size=(800, 500))
+    legend=:bottomright,
+    size=(850, 520))
+
+plot!(p7, sizes, dijkstra_times;
+    label="Dijkstra",
+    lw=3,
+    marker=:diamond,
+    markersize=7,
+    color=:darkorange)
 
 # Add speedup annotations
 for (n, dmy, ci_dmy, dijk, ci_dij) in zip(sizes, dmy_times, dmy_ci, dijkstra_times, dijkstra_ci)
     if ci_dmy > 0
-        plot!(p7, [n, n], [dmy - ci_dmy, dmy + ci_dmy]; color=:green, lw=1)
+        lower = max(dmy - ci_dmy, 1e-4)
+        upper = dmy + ci_dmy
+        plot!(p7, [n, n], [lower, upper]; color=:navy, lw=1.2, label="")
     end
     if ci_dij > 0
-        plot!(p7, [n, n], [dijk - ci_dij, dijk + ci_dij]; color=:orange, lw=1)
+        lower = max(dijk - ci_dij, 1e-4)
+        upper = dijk + ci_dij
+        plot!(p7, [n, n], [lower, upper]; color=:darkorange, lw=1.2, label="")
     end
     speedup = dijk / dmy
     if speedup > 1
-        annotate!(n, dmy, text("$(round(speedup, digits=2))x", 8, :green, :bottom))
+        annotate!(n, dmy,
+            text("$(round(speedup, digits=2))×", 8, :black, :bottom))
     end
 end
 
