@@ -35,6 +35,7 @@ If no seed is provided, the default (`42`) is used. Use the same flag when gener
 ![COX Selectivity](figures/cox_selectivity.png)
 
 **Clinical Significance**:
+
 | Drug | Selectivity | Interpretation | GI Risk |
 |------|------------|----------------|---------|
 | Celecoxib | 3.7× | Strong COX-2 preference | Low |

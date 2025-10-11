@@ -28,6 +28,7 @@ This dashboard presents comprehensive analysis of metabolic pathways using the D
 ![Enzyme Costs](figures/enzyme_costs.png)
 
 **Key Insights**:
+
 | Enzyme | ATP Cost | Enzyme Load | Role |
 |--------|----------|-------------|------|
 | PFK | +1.0 | 2.5 | Rate-limiting step |
@@ -145,6 +146,7 @@ Special solutions highlighted:
 ## Clinical and Biotechnology Applications
 
 ### Medical Applications
+
 | Condition | Relevant Pathway | Optimization Goal |
 |-----------|-----------------|-------------------|
 | Cancer (Warburg) | Rapid Glycolysis | Block high-flux fermentation |
@@ -153,6 +155,7 @@ Special solutions highlighted:
 | Starvation | Gluconeogenesis | Minimize enzyme requirements |
 
 ### Industrial Biotechnology
+
 | Product | Strategy | Trade-offs |
 |---------|----------|------------|
 | Ethanol | Fermentation | Fast but low ATP efficiency |

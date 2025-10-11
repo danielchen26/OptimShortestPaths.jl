@@ -86,6 +86,7 @@ OptimShortestPaths successfully transforms problems across diverse domains:
 ### Actual Benchmark Measurements
 
 **Performance Metrics** (from benchmark_results.txt):
+
 | Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
 |------------|-------|------------------|-----------------------|---------|
 | 200 | 400 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× |
@@ -131,6 +132,7 @@ OptimShortestPaths handles competing objectives through Pareto optimization:
 - Quality scores ranging 0.5-1.0
 
 ### Sample Pareto Optimal Trade-offs
+
 | Cost (k$) | Time (days) | Quality |
 |-----------|-------------|---------|
 | 54.7 | 45.6 | 0.76 |

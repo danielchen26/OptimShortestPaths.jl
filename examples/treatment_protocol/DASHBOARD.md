@@ -37,6 +37,7 @@ This dashboard presents comprehensive analysis of cancer treatment protocols usi
 ![Risk Benefit](figures/risk_benefit.png)
 
 **Clinical Significance**:
+
 | Treatment | Risk | Benefit | Quadrant |
 |-----------|------|---------|----------|
 | Targeted | 15 | 80 | Low Risk, High Benefit ✓ |
@@ -174,6 +175,7 @@ Legend highlights:
 ## Clinical and Economic Impact
 
 ### Healthcare Outcomes
+
 | Metric | Single-Objective | Multi-Objective | Improvement |
 |--------|-----------------|-----------------|-------------|
 | Average Cost | $45k | $38k | -15% |

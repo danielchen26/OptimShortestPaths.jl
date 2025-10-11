@@ -73,6 +73,7 @@ Detailed breakdown of production and transportation costs:
 - ✅ Benchmarks from `benchmark_results.txt` (sparse random graphs) demonstrate scaling behavior:
 
 **Benchmark Data**:
+
 | Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
 |------------|-------|------------------|-----------------------|---------|
 | 200 | 400 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× |
