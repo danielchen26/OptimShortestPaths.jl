@@ -29,6 +29,7 @@ makedocs(;
         prettyurls=get(ENV, "CI", "false") == "true",
         canonical="https://danielchen26.github.io/OptimShortestPaths.jl",
         edit_link="main",
+        repolink="https://github.com/danielchen26/OptimShortestPaths.jl",
         assets=String[],
     ),
     pages=[
