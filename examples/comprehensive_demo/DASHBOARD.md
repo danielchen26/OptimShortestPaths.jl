@@ -141,9 +141,9 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 ### Measured Results
 
-- Total flow moved: 3,770 units
-- Total transport cost: $34.2k
-- Average cost per unit: ~$9.1
+- Total cost: $79.0k (production: $52.5k, transport: $26.5k)
+- Cost split: 66.5% production / 33.5% transport
+- Demand satisfaction: 110.0% of required
 - Network utilisation: ~82% of capacity
 - DMY runtime: ≈0.08 ms (single SSSP solve)
 
@@ -176,7 +176,7 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 - DMY delivers ≈4.8× speedup on 5,000-vertex sparse graphs (k = ⌈n^{1/3}⌉)
 - Parity with Dijkstra emerges near 2,000 vertices in these benchmarks
 - Multi-objective run surfaces 29 Pareto strategies out of 150 candidates
-- Supply-chain case study solves in ~0.08 ms while moving 3,770 units at $34.2k
+- Supply-chain case study solves in ~0.08 ms with total cost $79.0k (66.5% production, 33.5% transport)
 - Eight domain exemplars demonstrate how to cast problems into shortest paths
 - Empirical results remain consistent with the O(m log^(2/3) n) complexity bound
 

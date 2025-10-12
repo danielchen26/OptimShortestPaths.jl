@@ -395,7 +395,6 @@ println("\n" * "=" ^ 55)
 println("📊 PART 4: PERFORMANCE ANALYSIS")
 println("-" ^ 50)
 
-println("\n🔧 Critical Fix: k parameter corrected from k=n-1 to k=n^(1/3)")
 println("\nPerformance on Treatment Networks:")
 
 # Use shared benchmark results for consistency

@@ -406,7 +406,7 @@ dijkstra_ci = benchmarks.dijkstra_ci_ms
 p7 = plot(sizes, dmy_times;
     xlabel="Number of Treatment Protocols",
     ylabel="Runtime (ms)",
-    title="Performance: DMY vs Dijkstra (Corrected)",
+    title="Performance: DMY vs Dijkstra",
     label="DMY (k = n^{1/3})",
     lw=3,
     marker=:circle,

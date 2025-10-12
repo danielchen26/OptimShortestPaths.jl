@@ -133,10 +133,10 @@ Legend highlights:
 
 ## Part 4: Algorithm Performance
 
-### Figure 9: Corrected Performance Analysis
+### Figure 9: Performance Analysis
 ![Performance Analysis](figures/treatment_performance.png)
 
-**Critical Fix**: k parameter corrected from k=n-1 to k=n^(1/3)
+k = ⌈n^(1/3)⌉ parameter as specified by DMY algorithm
 
 | Scenario | DMY runtime | Dijkstra runtime | **Speedup** |
 |----------|-------------|------------------|-------------|

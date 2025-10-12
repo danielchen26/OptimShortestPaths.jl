@@ -334,7 +334,6 @@ println("\n" * "=" ^ 60)
 println("📊 PART 3: PERFORMANCE ANALYSIS")
 println("-" ^ 40)
 
-println("\n🔧 Critical Fix: k parameter corrected from k=n-1 to k=n^(1/3)")
 println("\nPerformance on Metabolic Networks:")
 
 # Run actual benchmarks on metabolic-like networks

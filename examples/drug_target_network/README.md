@@ -126,8 +126,8 @@ For pharmaceutical networks:
 
 **Theoretical Advantage**: DMY dominates when $nm < (n+m)^{4/3} \log(n+m)$
 
-### Performance Note (CORRECTED)
-⚠️ **Critical**: The k parameter must be set to n^(1/3) for correct performance. Using the shared benchmark data (`benchmark_results.txt`):
+### Performance Note
+The k parameter is set to n^(1/3) as specified by the DMY algorithm. Using the shared benchmark data (`benchmark_results.txt`):
 - n=200: DMY is **0.31×** the speed of Dijkstra (overhead dominates small graphs)
 - n=500: DMY is **0.39×** Dijkstra (still warming up)
 - n=2000: DMY is **1.77× faster** on sparse graphs
