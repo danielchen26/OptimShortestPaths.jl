@@ -6,8 +6,8 @@ This dashboard presents comprehensive results from applying the DMY shortest-pat
 
 **Key Findings**:
 1. **Single-objective**: Celecoxib remains the most COX-2 selective option (~3.7× vs COX-1) while all sample drugs reach every target
-2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost $5–$50, and onset 1–4 h
-3. **Performance**: DMY achieves up to ~4.0× speedup over Dijkstra at n=5000 (sparse graphs; k=⌈n^{1/3}⌉)
+2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost $5–$200, and onset 1.0–7.5 h
+3. **Performance**: DMY achieves ≈4.8× speedup over Dijkstra at n=5000 for sparse graphs (k = ⌈n^{1/3}⌉)
 
 ### Reproducibility
 
@@ -88,6 +88,10 @@ The remaining Pareto solutions (grey) illustrate the continuous trade-offs betwe
 | 3 | Ibuprofen-like → COX-2 | 60% | 10% | $15 | 4.0 h | **Elderly / GI risk** – prioritize low toxicity |
 | 4 | Morphine-like → COX-1 | 95% | 60% | $50 | 1.5 h | **Severe pain** – high efficacy, monitor side effects |
 | 5 | Morphine-like → MOR | 98% | 70% | $50 | 1.0 h | **Emergency trauma** – fastest, most potent relief |
+| 6 | Biologic-like → COX-2 | 45% | 5% | $200 | 6.5 h | **High-risk patients** – ultra-low toxicity despite high cost |
+| 7 | Biologic-like → MOR | 40% | 3% | $200 | 7.5 h | **Neuropathic pain** – minimal adverse effects, accepts slow onset |
+
+High-cost biologic options (Solutions 6–7) reduce toxicity to ≤5% while maintaining moderate efficacy (40–45%), but require $200 outlay and a 6.5–7.5 h onset.
 
 ### How to Select from Pareto Front
 
@@ -113,22 +117,21 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 ### Figure 5: Algorithm Performance Benchmark
 ![Performance Analysis](figures/performance_corrected.png)
 
-Benchmark results use the shared seeded dataset from `examples/comprehensive_demo/run_benchmarks.jl`, with `k = ⌈n^{1/3}⌉` applied throughout.
+Benchmark results from `benchmark_results.txt` with `k = ⌈n^{1/3}⌉`:
 
-| Graph Size | k (rounds) | **DMY vs Dijkstra** |
-|------------|------------|---------------------|
-| 100 | 5 | 29.28× faster |
-| 1,000 | 10 | 0.59× (slower) |
-| 2,000 | 13 | 1.36× faster |
-| 5,000 | 18 | 3.97× faster |
+| Graph Size | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
+|------------|------------------|-----------------------|---------|
+| 200 | 0.081 ± 0.002 | 0.025 ± 0.001 | 0.31× |
+| 500 | 0.426 ± 0.197 | 0.167 ± 0.004 | 0.39× |
+| 1,000 | 1.458 ± 1.659 | 0.641 ± 0.008 | 0.44× |
+| 2,000 | 1.415 ± 0.094 | 2.510 ± 0.038 | **1.77×** |
+| 5,000 | 3.346 ± 0.105 | 16.028 ± 0.241 | **4.79×** |
 
 **Key Insights**:
-- Panel (a) shows the empirical runtimes with separate legends for `DMY (k = n^{1/3})` and `Dijkstra` (error whiskers = ±95% CI)
-- Panel (b) tracks the corrected k = ⌈n^{1/3}⌉ values alongside the original mis-specified choice
-- Panel (c) contrasts theoretical growth O(m log^{2/3} n) vs O(m log n); panel (d) highlights the old vs new k at sample sizes
-- Small graphs (n≈1,000) still favour Dijkstra (≈0.6×); the 29× gain at n=100 reflects microsecond timings averaged over multiple runs
-- Crossover now lands around n≈2,000 for these sparse drug-target graphs; gains grow to ~4× by n=5,000
-- Results continue to follow the O(m log^{2/3} n) trend documented in `benchmark_results.txt`
+- Small graphs (n < 1,000): Dijkstra is faster (DMY at 0.3×–0.4× speed)
+- Crossover around n ≈ 2,000 vertices for sparse graphs
+- Large sparse graphs (n ≥ 2,000): DMY delivers ≈1.8×–4.8× speedups
+- Results match the canonical `benchmark_results.txt` file
 
 ---
 
@@ -140,8 +143,8 @@ Benchmark results use the shared seeded dataset from `examples/comprehensive_dem
 - **Real-world**: Multi-objective reflects clinical reality better
 
 ### Algorithm Performance
-- **Small graphs (n<1,000)**: Dijkstra remains competitive (speedup ≈1× after averaging)
-- **Large sparse graphs (n≥2,000)**: DMY delivers ~1.5×–4.3× speedups in our synthetic benchmarks
+- **Small graphs (n < 1,000)**: Dijkstra is faster (DMY at 0.3×–0.4× speed)
+- **Large sparse graphs (n ≥ 2,000)**: DMY delivers ≈1.8×–4.8× speedups
 - **Sparse networks**: DMY's sweet spot (k = ⌈n^{1/3}⌉)
 
 ### Clinical Impact
