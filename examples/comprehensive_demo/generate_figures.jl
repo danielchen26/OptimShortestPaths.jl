@@ -70,8 +70,9 @@ const COLORS = [
     RGB(0.09, 0.75, 0.81)   # Cyan
 ]
 
-# Create figures directory
-mkpath("figures")
+# Create figures directory in example folder
+fig_dir = joinpath(@__DIR__, "figures")
+mkpath(fig_dir)
 
 println("🎯 OptimShortestPaths Framework Visualization Suite")
 println("="^80)
