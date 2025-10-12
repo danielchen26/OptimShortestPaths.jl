@@ -80,7 +80,7 @@ flowchart TD
 
 ![Performance Comparison](figures/algorithm_performance_comparison.png)
 
-**Actual Benchmark Measurements** (from benchmark_results.txt):
+**Benchmark Results** (from benchmark_results.txt):
 
 | Graph Size | Edges | DMY (ms) ±95% CI | Dijkstra (ms) ±95% CI | Speedup |
 |------------|-------|------------------|-----------------------|---------|
@@ -122,27 +122,28 @@ OptimShortestPaths transforms problems across diverse domains:
 
 ## Multi-Objective Optimization
 
-OptimShortestPaths handles competing objectives through Pareto optimization:
+OptimShortestPaths handles competing objectives through Pareto optimization. The seeded synthetic portfolio (150 strategies) yields 29 non-dominated solutions spanning:
+
+- **Cost**: 50–93 k$
+- **Time**: 20–62 days
+- **Quality**: 0.54–1.00
+
+### Pareto Summary (seed = 42)
+
+| ID | Cost (k$) | Time (days) | Quality | Notes |
+|----|-----------|-------------|---------|-------|
+| 1 | 50.0 | 51.4 | 0.54 | Lowest cost, slower delivery |
+| 7 | 63.8 | 30.5 | 0.86 | Balanced cost/time |
+| 12 | 67.5 | 46.9 | 0.97 | Highest quality mid-cost |
+| 18 | 78.2 | 28.6 | 0.91 | Fast with strong quality |
+| 24 | 82.7 | 24.7 | 0.95 | Near-optimal across metrics |
+| 29 | 92.9 | 20.0 | 1.00 | Premium option, max quality |
+
+*Full Pareto table available via `generate_figures.jl` (see console output).*
 
 ![Pareto Front](figures/multi_objective_optimization.png)
 
-### Benchmark Results
-
-- 100 solutions evaluated
-- 53 Pareto optimal solutions identified (53%)
-- Trade-offs between cost (104-1091 k$) and time (54-130 days)
-- Quality scores ranging 0.29-0.93
-
-### Sample Pareto Optimal Trade-offs
-
-| Cost (k$) | Time (days) | Quality |
-|-----------|-------------|---------|
-| 103.96 | 129.91 | 0.29 |
-| 456.19 | 87.07 | 0.50 |
-| 831.86 | 64.61 | 0.74 |
-| 995.18 | 65.03 | 0.91 |
-
-*Data from benchmark_results.txt, lines 17-70*
+Pareto-optimal strategies appear as the colored markers in each pairwise projection; consult the table for exact cost–time–quality values.
 
 ---
 
@@ -154,17 +155,18 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 ### Problem Transformation
 
-- **Vertices**: 20 nodes (1 factory, 5 warehouses, 14 customers)
-- **Edges**: 35 shipping routes
-- **Weights**: Shipping costs ranging $22.8-$95.5
-- **Solution**: Optimal distribution path
+- **Vertices**: 14 sites (3 factories, 4 warehouses, 5 distribution centres, 2 regions)
+- **Edges**: 18 directed transport arcs
+- **Weights**: Shipping costs ranging $5–$15 per unit
+- **Solution**: Optimised multi-hop distribution plan
 
 ### Measured Results
 
-- Total optimal cost: $38.2k
-- OptimShortestPaths runtime: ~0.13 ms (single SSSP solve)
-- Average cost per unit shipped: $8.5
-- Network utilization: ~97% capacity
+- Total flow moved: 3,770 units
+- Total transport cost: $34.2k
+- Average cost per unit: ~$9.1
+- Network utilisation: ~82% of capacity
+- DMY runtime: ≈0.08 ms (single SSSP solve)
 
 ---
 
@@ -192,12 +194,12 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 ## Key Findings
 
-- DMY algorithm achieves 4.79× speedup on 5,000-vertex sparse graphs
-- Break-even point at ~2,000 vertices vs Dijkstra
-- Multi-objective optimization identifies 53% Pareto optimal solutions
-- Sub-millisecond performance on practical supply chain problems
-- Framework successfully transforms problems across 6+ domains
-- Theoretical O(m log^(2/3) n) complexity validated empirically
+- DMY delivers ≈4.8× speedup on 5,000-vertex sparse graphs (k = ⌈n^{1/3}⌉)
+- Parity with Dijkstra emerges near 2,000 vertices in these benchmarks
+- Multi-objective run surfaces 29 Pareto strategies out of 150 candidates
+- Supply-chain case study solves in ~0.08 ms while moving 3,770 units at $34.2k
+- Eight domain exemplars demonstrate how to cast problems into shortest paths
+- Empirical results remain consistent with the O(m log^(2/3) n) complexity bound
 
 ---
 
@@ -240,4 +242,4 @@ Benchmark data is stored in `benchmark_results.txt` with timestamp and seed info
 
 ---
 
-*Based on actual benchmark measurements - Generated 2025-10-10*
+*Generated 2025-10-10*

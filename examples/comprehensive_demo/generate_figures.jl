@@ -29,6 +29,7 @@ function load_benchmark_results(path = joinpath(@__DIR__, "..", "..", "benchmark
 end
 benchmark_summary(results) = "DMY achieves $(round(results.speedup[end], digits=2))× speedup at n=$(results.sizes[end]) vertices (sparse graph)"
 using Plots
+using Plots: mm
 using GraphRecipes
 using Colors
 using Random
@@ -451,7 +452,15 @@ println("✓ Saved: supply_chain_optimization.png")
 # ==============================================================================
 println("\n🎯 Creating Multi-Objective Optimization Figure...")
 
-fig5 = plot(layout=(2,2), size=(1400, 1000), dpi=300)
+fig5 = plot(
+    layout = (2, 2),
+    size = (1400, 1000),
+    dpi = 300,
+    left_margin = 12mm,
+    right_margin = 12mm,
+    top_margin = 15mm,
+    bottom_margin = 12mm
+)
 
 # Generate synthetic Pareto front data
 reset_global_rng(BASE_SEED, :multi_objective_figures)
@@ -487,39 +496,43 @@ for i in 1:n_solutions
 end
 
 # Plot 1: Cost vs Time
-scatter!(cost, time, subplot=1, ms=4, alpha=0.3, color=:lightgray,
+scatter!(cost, time, subplot=1, ms=4, alpha=0.25, color=:lightgray,
     label="All solutions (n=$n_solutions)",
     xlabel="Cost (k\$)", ylabel="Time (days)",
     title="Cost-Time Trade-off", grid=true,
-    xlims=(45, 105), ylims=(15, 105))
+    xlims=(45, 105), ylims=(15, 105),
+    legend=:topright,
+    left_margin=10mm)
 
 scatter!(cost[pareto_indices], time[pareto_indices], subplot=1,
-    ms=8, color=COLORS[1], markerstrokewidth=1.5, markerstrokecolor=:white,
+    ms=9, color=COLORS[1], marker=:circle, markerstrokewidth=2.0,
+    markerstrokecolor=:white,
     label="Pareto optimal (n=$(length(pareto_indices)))")
 
-# Sort and connect Pareto front
-sorted_idx = pareto_indices[sortperm(cost[pareto_indices])]
-plot!(cost[sorted_idx], time[sorted_idx], subplot=1,
-    color=COLORS[1], lw=2, linestyle=:dash, alpha=0.5, label="")
-
 # Plot 2: Cost vs Quality
-scatter!(cost, quality, subplot=2, ms=4, alpha=0.3, color=:lightgray,
+scatter!(cost, quality, subplot=2, ms=4, alpha=0.25, color=:lightgray,
     label="", xlabel="Cost (k\$)", ylabel="Quality Score",
     title="Cost-Quality Trade-off", grid=true,
-    xlims=(45, 105), ylims=(0.3, 1.05))
+    xlims=(45, 105), ylims=(0.3, 1.05),
+    legend=:bottomright,
+    left_margin=10mm)
 
 scatter!(cost[pareto_indices], quality[pareto_indices], subplot=2,
-    ms=8, color=COLORS[2], markerstrokewidth=1.5, markerstrokecolor=:white,
+    ms=9, color=COLORS[2], marker=:circle, markerstrokewidth=2.0,
+    markerstrokecolor=:white,
     label="Pareto optimal")
 
 # Plot 3: Time vs Quality
-scatter!(time, quality, subplot=3, ms=4, alpha=0.3, color=:lightgray,
+scatter!(time, quality, subplot=3, ms=4, alpha=0.25, color=:lightgray,
     label="", xlabel="Time (days)", ylabel="Quality Score",
     title="Time-Quality Trade-off", grid=true,
-    xlims=(15, 105), ylims=(0.3, 1.05))
+    xlims=(15, 105), ylims=(0.3, 1.05),
+    legend=:bottomright,
+    left_margin=10mm)
 
 scatter!(time[pareto_indices], quality[pareto_indices], subplot=3,
-    ms=8, color=COLORS[3], markerstrokewidth=1.5, markerstrokecolor=:white,
+    ms=9, color=COLORS[3], marker=:circle, markerstrokewidth=2.0,
+    markerstrokecolor=:white,
     label="Pareto optimal")
 
 # Plot 4: Summary Statistics
@@ -538,6 +551,7 @@ Results:
 Solutions explored: $(n_solutions)
 Pareto optimal: $(length(pareto_indices))
 Efficiency: $(round(100*length(pareto_indices)/n_solutions, digits=1))%
+Projection: Pareto points highlighted without connecting lines to avoid misleading 2D trends
 
 Best Values (Pareto set):
 • Min Cost: \$$(round(minimum(cost[pareto_indices]), digits=1))k
@@ -716,7 +730,7 @@ plot!(sizes, dmy_times, subplot=1,
     xaxis=:log10, yaxis=:log10, legend=:topleft,
     grid=true, minorgrid=true, gridlinewidth=0.3,
     xlims=(40, 15000), ylims=(0.008, 500),
-    bottom_margin=5Plots.mm, left_margin=5Plots.mm)
+    bottom_margin=8Plots.mm, left_margin=8Plots.mm, top_margin=8Plots.mm)
 
 plot!(sizes, dijkstra_times, subplot=1,
     label="Dijkstra: O((m+n)log n)",
@@ -742,7 +756,7 @@ plot!(subplot=2, grid=true, gridlinewidth=0.3,
     xticks=(1:length(sizes), string.(sizes)),
     legend=:topleft,
     ylims=(0, maximum([speedup_dij; speedup_bell]) * 1.15),
-    bottom_margin=5Plots.mm, left_margin=5Plots.mm)
+    bottom_margin=8Plots.mm, left_margin=8Plots.mm, top_margin=8Plots.mm)
 
 # Draw bars manually with offsets for grouping
 bar_width = 0.35

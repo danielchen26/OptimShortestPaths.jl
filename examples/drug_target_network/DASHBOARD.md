@@ -69,7 +69,7 @@ Real-world drug selection involves multiple competing objectives:
 **3D Trade-off Space**: This plot shows the three most critical objectives simultaneously:
 - **X-axis (Efficacy)**: Treatment effectiveness (0–100 %)
 - **Y-axis (Toxicity)**: Side effect severity (0–100 %)
-- **Z-axis (Cost)**: Price in dollars ($5–$50 across the frontier)
+- **Z-axis (Cost)**: Price in dollars ($5–$200 across the frontier)
 
 Legend highlights:
 - **Red sphere — “Max Efficacy”**: Morphine-like → MOR (Solution 5) delivers ~98 % efficacy in 1 h at the cost of high toxicity (70 %) and $50.
@@ -115,7 +115,7 @@ The current knee point is the Morphine-like → MOR pathway (Solution 5):
 ## Part 3: Algorithm Performance
 
 ### Figure 5: Algorithm Performance Benchmark
-![Performance Analysis](figures/performance_corrected.png)
+![Performance Analysis](figures/performance_analysis.png)
 
 Benchmark results from `benchmark_results.txt` with `k = ⌈n^{1/3}⌉`:
 

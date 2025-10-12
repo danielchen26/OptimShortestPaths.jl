@@ -2,7 +2,7 @@
 
 """
 Generate all figures for drug-target network analysis
-Includes single-objective, multi-objective, and corrected performance visualizations
+Includes single-objective, multi-objective, and performance visualizations
 """
 
 using OptimShortestPaths
@@ -379,8 +379,8 @@ p6_combined = plot(p6a, p6b,
     size = (1200, 500),
     dpi = 300)
 
-savefig(p6_combined, joinpath(output_dir, "performance_corrected.png"))
-println("  ✓ Saved: performance_corrected.png")
+savefig(p6_combined, joinpath(output_dir, "performance_analysis.png"))
+println("  ✓ Saved: performance_analysis.png")
 
 # Summary of figures generated
 println("\n" * "="^60)
@@ -392,7 +392,7 @@ println("2. cox_selectivity.png - COX-2/COX-1 selectivity ratios")
 println("3. path_distances.png - Shortest path analysis")
 println("4. drug_pareto_front.png - 2D Pareto front projections (4 plots)")
 println("5. drug_pareto_3d.png - 3D Pareto front with labeled solutions")
-println("6. performance_corrected.png - Runtime + complexity benchmark")
+println("6. performance_analysis.png - Runtime + complexity benchmark")
 println("\nKey insights:")
 println("• 7 Pareto-optimal drug pathways identified")
 println("$(benchmark_summary(benchmarks))")
