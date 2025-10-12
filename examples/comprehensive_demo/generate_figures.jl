@@ -551,7 +551,6 @@ Results:
 Solutions explored: $(n_solutions)
 Pareto optimal: $(length(pareto_indices))
 Efficiency: $(round(100*length(pareto_indices)/n_solutions, digits=1))%
-Projection: Pareto points highlighted without connecting lines to avoid misleading 2D trends
 
 Best Values (Pareto set):
 • Min Cost: \$$(round(minimum(cost[pareto_indices]), digits=1))k
