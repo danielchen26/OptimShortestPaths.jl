@@ -26,14 +26,10 @@ OptimShortestPaths transforms optimization problems into shortest-path problems 
 
 ```mermaid
 graph LR
-    A[Optimization Problem] -->|Transform| B[Graph Representation]
-    B -->|DMY Algorithm| C[Shortest Path]
-    C -->|Interpret| D[Optimal Solution]
+    A["Optimization Problem"] -->|Transform| B["Graph Representation"]
+    B -->|"DMY Algorithm"| C["Shortest Path"]
+    C -->|Interpret| D["Optimal Solution"]
 
-    style A fill:#E3F2FD
-    style B fill:#FFF3E0
-    style C fill:#C8E6C9
-    style D fill:#F3E5F5
 ```
 
 ### Transformation Method
@@ -51,25 +47,15 @@ graph LR
 
 ```mermaid
 flowchart TD
-    A[1. IDENTIFY STATES<br/>Define configurations as vertices]
-    B[2. DEFINE TRANSITIONS<br/>Map valid moves as edges]
-    C[3. QUANTIFY COSTS<br/>Assign weights to transitions]
-    D[4. SPECIFY OBJECTIVES<br/>Determine optimization goals]
-    E[5. HANDLE CONSTRAINTS<br/>Remove invalid edges]
-    F[6. SOLVE & INTERPRET<br/>Find shortest path as solution]
+    A["1. IDENTIFY STATES"]
+    B["2. DEFINE TRANSITIONS"]
+    C["3. QUANTIFY COSTS"]
+    D["4. SPECIFY OBJECTIVES"]
+    E["5. HANDLE CONSTRAINTS"]
+    F["6. SOLVE & INTERPRET"]
 
-    A --> B
-    B --> C
-    C --> D
-    D --> E
-    E --> F
+    A --> B --> C --> D --> E --> F
 
-    style A fill:#E3F2FD
-    style B fill:#E8F5E9
-    style C fill:#FFF3E0
-    style D fill:#F3E5F5
-    style E fill:#FCE4EC
-    style F fill:#E0F2F1
 ```
 
 ---
