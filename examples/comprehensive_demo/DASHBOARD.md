@@ -143,7 +143,7 @@ OptimShortestPaths handles competing objectives through Pareto optimization. The
 
 ![Pareto Front](figures/multi_objective_optimization.png)
 
-Pareto-optimal strategies appear as the colored markers in each pairwise projection; consult the table for exact cost–time–quality values.
+The figure shows Pareto-optimal trade-offs between cost, time, and quality. See table above for exact values.
 
 ---
 
