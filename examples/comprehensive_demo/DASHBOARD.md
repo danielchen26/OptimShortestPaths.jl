@@ -24,12 +24,11 @@ The DMY algorithm achieves O(m log^(2/3) n) complexity for directed single-sourc
 
 OptimShortestPaths transforms optimization problems into shortest-path problems on directed graphs.
 
-```mermaid
-graph LR
-    A["Optimization Problem"] -->|Transform| B["Graph Representation"]
-    B -->|"DMY Algorithm"| C["Shortest Path"]
-    C -->|Interpret| D["Optimal Solution"]
+**Transformation Flow:**
 
+```
+Optimization Problem → Graph Representation → Shortest Path → Optimal Solution
+      (Transform)          (DMY Algorithm)        (Interpret)
 ```
 
 ### Transformation Method
@@ -45,18 +44,12 @@ graph LR
 
 ### Six-Step Process
 
-```mermaid
-flowchart TD
-    A["1. IDENTIFY STATES"]
-    B["2. DEFINE TRANSITIONS"]
-    C["3. QUANTIFY COSTS"]
-    D["4. SPECIFY OBJECTIVES"]
-    E["5. HANDLE CONSTRAINTS"]
-    F["6. SOLVE & INTERPRET"]
-
-    A --> B --> C --> D --> E --> F
-
-```
+1. **IDENTIFY STATES** - Define problem configurations as vertices
+2. **DEFINE TRANSITIONS** - Map valid moves as edges
+3. **QUANTIFY COSTS** - Assign weights to transitions
+4. **SPECIFY OBJECTIVES** - Determine optimization goals
+5. **HANDLE CONSTRAINTS** - Remove invalid edges
+6. **SOLVE & INTERPRET** - Find shortest path as solution
 
 ---
 
