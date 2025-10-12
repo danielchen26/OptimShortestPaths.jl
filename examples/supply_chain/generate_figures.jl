@@ -14,6 +14,7 @@
 
 using Random
 using Plots
+using Plots: mm
 using Colors
 using OptimShortestPaths
 using Statistics
@@ -189,7 +190,9 @@ factory_assign_counts = [count(v -> v == f, values(assigned_factory)) for f in F
 # Figure 1: Network Topology
 # -----------------------------
 p1 = plot(size=(1200, 800), dpi=300, title="Supply Chain Network Topology",
-          xlabel="", ylabel="", legend=false)
+          xlabel="", ylabel="", legend=false,
+          left_margin=8Plots.mm, right_margin=8Plots.mm,
+          top_margin=10Plots.mm, bottom_margin=8Plots.mm)
 # Draw all layer edges lightly (exclude super source)
 for e in edges
     (e.source == SUPER_SRC) && continue
@@ -236,7 +239,9 @@ println("✓ Saved: $(joinpath(FIG_DIR, "network_topology.png"))")
 # Figure 2: Optimal Flows (highlight selected paths)
 # -----------------------------
 p2 = plot(size=(1200, 800), dpi=300, title="Optimal Flows to Customers",
-          xlabel="", ylabel="", legend=false)
+          xlabel="", ylabel="", legend=false,
+          left_margin=8Plots.mm, right_margin=8Plots.mm,
+          top_margin=10Plots.mm, bottom_margin=8Plots.mm)
 # Draw faint edges (exclude super source)
 for e in edges
     (e.source == SUPER_SRC) && continue
@@ -284,7 +289,9 @@ println("✓ Saved: $(joinpath(FIG_DIR, "optimal_flows.png"))")
 n_cust = length(CUSTOMERS)
 assigned = [get(assigned_factory, c, FACTORIES[1]) for c in CUSTOMERS]
 
-p3 = plot(layout=(2,2), size=(1300, 900), dpi=300)
+p3 = plot(layout=(2,2), size=(1300, 900), dpi=300,
+          left_margin=10Plots.mm, right_margin=8Plots.mm,
+          top_margin=12Plots.mm, bottom_margin=10Plots.mm)
 
 # Subplot 1: Customers per Factory
 bar!(p3, 1:3, factory_assign_counts, subplot=1, color=[COLORS[1], COLORS[2], COLORS[3]],
