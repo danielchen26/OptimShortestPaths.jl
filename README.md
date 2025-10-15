@@ -38,6 +38,8 @@ Pkg.develop(url="https://github.com/danielchen26/OptimShortestPaths.jl")
 
 ## Quick Start
 
+This minimal example builds a four-vertex directed graph, runs the DMY single-source shortest-path solver from vertex `1`, and shows the distance to every node. Use it as a template: replace the edges/weights with your own data and pick the source you care about.
+
 ```julia
 using OptimShortestPaths
 
@@ -50,6 +52,8 @@ graph = DMYGraph(4, edges, weights)
 distances = dmy_sssp!(graph, 1)
 # Output: [0.0, 1.0, 2.0, 2.5]
 ```
+
+The result vector lists the shortest-path cost from the source to each vertex. Here vertex `4` ends up at `2.5` because both routes `1 → 2 → 4` and `1 → 3 → 4` cost `1.0 + 1.5` and `2.0 + 0.5`, respectively; the algorithm keeps the minimum.
 
 ## Algorithm
 
@@ -80,17 +84,32 @@ The package implements the DMY (Duan-Mao-Yin) algorithm from STOC 2025 [1], whic
 
 ## Multi-Objective Optimization
 
+This self-contained example constructs a tiny two-objective graph (cost and time) and prints the Pareto-optimal paths from vertex `1` to `4`.
+
 ```julia
+using OptimShortestPaths
 using OptimShortestPaths.MultiObjective
 
-# Create multi-objective graph
-edges = [MultiObjectiveEdge(1, 2, [1.0, 2.0], 1), ...]
-graph = MultiObjectiveGraph(n, edges, 2, adjacency,
-                           ["Cost", "Time"],
-                           objective_sense=[:min, :min])
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(1, 3, [2.0, 3.0], 2),
+    MultiObjectiveEdge(2, 4, [1.0, 2.0], 3),
+    MultiObjectiveEdge(3, 4, [0.5, 4.0], 4),
+]
 
-# Compute Pareto front
-pareto_front = compute_pareto_front(graph, source, target, max_solutions=100)
+adjacency = [Int[] for _ in 1:4]
+for (i, edge) in enumerate(edges)
+    push!(adjacency[edge.source], i)
+end
+
+graph = MultiObjectiveGraph(4, edges, 2, adjacency,
+                            ["Cost", "Time"],
+                            objective_sense=[:min, :min])
+
+pareto_front = compute_pareto_front(graph, 1, 4)
+for solution in pareto_front
+    println("Objectives: $(round.(solution.objectives, digits=2))  Path: $(solution.path)")
+end
 ```
 
 Supports weighted sum, ε-constraint, and lexicographic approaches.
