@@ -50,6 +50,7 @@ makedocs(;
         ],
         "API Reference" => "api.md",
         "Benchmarks" => "benchmarks.md",
+        "Cheat Sheet" => "cheatsheet.md",
     ],
     warnonly = [:missing_docs],  # Don't fail on missing docstrings during initial setup
 )

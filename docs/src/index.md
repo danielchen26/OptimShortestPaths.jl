@@ -32,6 +32,14 @@ distances = dmy_sssp!(graph, 1)  # Source vertex 1
 println("Distances: ", distances)  # [0.0, 1.0, 3.0]
 ```
 
+### Cheat Sheet
+
+- For a comprehensive, example-driven overview, see the [Cheat Sheet](cheatsheet.md) page. It includes:
+  - Core shortest-path usage with line-by-line annotations
+  - Utilities, validations, and analysis helpers
+  - Multi-objective strategies and topology diagrams
+  - A categorized function reference and detailed output-key tables
+
 ## Installation
 
 The package requires Julia 1.9 or later:
