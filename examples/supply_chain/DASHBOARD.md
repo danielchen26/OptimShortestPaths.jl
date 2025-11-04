@@ -148,10 +148,10 @@ distances = dmy_sssp!(graph, source)
 
 ## 📚 Resources
 
-- **Main Script**: [supply_chain.jl](supply_chain.jl)
-- **Figure Generation**: [generate_figures.jl](generate_figures.jl)
-- **Documentation**: [README.md](README.md)
-- **OptimShortestPaths Framework**: [../../README.md](../../README.md)
+- **Main Script**: [supply_chain.jl](https://github.com/danielchen26/OptimShortestPaths.jl/tree/main/examples/supply_chain/supply_chain.jl)
+- **Figure Generation**: [generate_figures.jl](https://github.com/danielchen26/OptimShortestPaths.jl/tree/main/examples/supply_chain/generate_figures.jl)
+- **Example README**: [README.md](https://github.com/danielchen26/OptimShortestPaths.jl/tree/main/examples/supply_chain/README.md)
+- **Framework Documentation**: [OptimShortestPaths.jl](https://github.com/danielchen26/OptimShortestPaths.jl)
 
 ---
 

@@ -77,7 +77,7 @@ Cancer treatment pathway optimization:
 **Location**: `examples/supply_chain/`
 
 Multi-echelon logistics network:
-- 3 factories → 4 warehouses → 5 distribution centers → 2 customer regions
+- 3 factories → 4 warehouses → 5 distribution centers → 10 customers
 - 22-node network optimization
 - Flow analysis and cost minimization
 - Network topology visualization
@@ -151,18 +151,30 @@ println("Best trade-off - Cost: $(best.objectives[1]), Time: $(best.objectives[2
 ### Domain-Specific Example
 
 ```julia
-# Drug-target network
-drugs = ["Aspirin", "Ibuprofen"]
+using OptimShortestPaths
+
+# Drug-target network with binding affinities
+drugs = ["Aspirin", "Ibuprofen", "Celecoxib"]
 targets = ["COX1", "COX2"]
-affinities = [
-    ("Aspirin", "COX1", 2.5),
-    ("Aspirin", "COX2", 3.2),
-    ("Ibuprofen", "COX1", 1.8),
-    ("Ibuprofen", "COX2", 2.1)
+
+# Binding affinity matrix (0-1 scale, higher = stronger binding)
+affinity_matrix = [
+    0.85  0.45;  # Aspirin
+    0.30  0.90;  # Ibuprofen
+    0.05  0.95   # Celecoxib (COX-2 selective)
 ]
 
-network = create_drug_target_network(drugs, targets, affinities)
-distance, path = find_drug_target_paths(network, "Aspirin", "COX2")
+network = create_drug_target_network(drugs, targets, affinity_matrix)
+
+# Find path and calculate selectivity
+distance, path = find_drug_target_paths(network, "Celecoxib", "COX2")
+selectivity = calculate_distance_ratio(
+    network.graph,
+    network.drug_indices["Celecoxib"],
+    network.target_indices["COX1"],
+    network.target_indices["COX2"]
+)
+println("Celecoxib COX-2 selectivity: $(round(selectivity, digits=1))x")
 ```
 
 ## Visualization Examples
