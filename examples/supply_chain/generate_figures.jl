@@ -296,7 +296,7 @@ p3 = plot(layout=(2,2), size=(1300, 900), dpi=300,
 # Subplot 1: Customers per Factory
 bar!(p3, 1:3, factory_assign_counts, subplot=1, color=[COLORS[1], COLORS[2], COLORS[3]],
      xlabel="Factory", ylabel="# Customers", xticks=(1:3, ["F1","F2","F3"]),
-     title="Customer Allocation by Factory")
+     title="Customer Allocation by Factory", label="Customers Served", legend=false)
 
 # Subplot 2: Cost breakdown (Production vs Transport)
 bar!(p3, ["Production","Transport"], [production_cost_total, transport_cost_total], subplot=2,
@@ -324,7 +324,8 @@ end
 cust_total_costs = filter(!isnan, cust_total_costs)
 
 histogram!(p3, cust_total_costs, bins=10, color=COLORS[8], alpha=0.8, subplot=3,
-           xlabel="Total Cost per Customer", ylabel="Count", title="Path Cost Distribution")
+           xlabel="Total Cost per Customer (\$)", ylabel="Count",
+           title="Path Cost Distribution", label="Customer Path Costs", legend=:topright)
 
 # Subplot 4: Summary text (fixed to avoid overlap)
 plot!(p3, subplot=4, showaxis=false, grid=false, xlims=(0,1), ylims=(0,1), framestyle=:none)
