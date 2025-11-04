@@ -34,8 +34,11 @@ graph = MultiObjectiveGraph(
     ["Cost", "Time"]        # objective names
 )
 
+source = 1
+target = 3
+
 # Compute Pareto front
-pareto_solutions = compute_pareto_front(graph, 1, 3; max_solutions=1000)
+pareto_solutions = compute_pareto_front(graph, source, target; max_solutions=1000)
 
 # Each solution has:
 for sol in pareto_solutions
@@ -44,11 +47,30 @@ for sol in pareto_solutions
 end
 ```
 
+All upcoming examples repeat this lightweight setup so each block can be copied into a fresh Julia REPL and run on its own. If you are working through the page sequentially, feel free to skip the duplicated `using` and graph-construction code and reuse the `graph`, `source`, and `target` variables already in scope.
+
 ### Bounded Pareto Computation
 
 To prevent exponential growth of the Pareto set:
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)
+]
+
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(3, edges, 2, adjacency, ["Cost", "Time"])
+source = 1
+target = 3
+
 pareto_solutions = compute_pareto_front(
     graph, source, target;
     max_solutions=1000  # Stop after 1000 solutions
@@ -64,6 +86,23 @@ Each helper in this section returns a `ParetoSolution`, giving you direct access
 Convert multiple objectives into a single weighted sum:
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)
+]
+
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(3, edges, 2, adjacency, ["Cost", "Time"])
+source = 1
+target = 3
+
 weights = [0.7, 0.3]  # 70% cost, 30% time
 solution = weighted_sum_approach(graph, source, target, weights)
 println("Objectives: ", solution.objectives)
@@ -78,6 +117,23 @@ println("Path: ", solution.path)
 Optimize one objective while constraining others:
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)
+]
+
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(3, edges, 2, adjacency, ["Cost", "Time"])
+source = 1
+target = 3
+
 # Minimize cost subject to: time ≤ 10.0
 solution = epsilon_constraint_approach(
     graph, source, target,
@@ -93,6 +149,23 @@ println("Path: ", solution.path)
 Optimize objectives in priority order:
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)
+]
+
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(3, edges, 2, adjacency, ["Cost", "Time"])
+source = 1
+target = 3
+
 priorities = [1, 2]  # First minimize obj 1 (cost), then obj 2 (time)
 solution = lexicographic_approach(graph, source, target, priorities)
 println("Objectives: ", solution.objectives)
