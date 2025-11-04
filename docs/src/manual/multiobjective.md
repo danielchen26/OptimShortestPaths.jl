@@ -57,13 +57,17 @@ pareto_solutions = compute_pareto_front(
 
 ## Scalarization Methods
 
+Each helper in this section returns a `ParetoSolution`, giving you direct access to the objectives vector and reconstructed path.
+
 ### Weighted Sum Approach
 
 Convert multiple objectives into a single weighted sum:
 
 ```julia
 weights = [0.7, 0.3]  # 70% cost, 30% time
-distance, path = weighted_sum_approach(graph, source, target, weights)
+solution = weighted_sum_approach(graph, source, target, weights)
+println("Objectives: ", solution.objectives)
+println("Path: ", solution.path)
 ```
 
 !!! warning "Minimization Only"
@@ -75,11 +79,13 @@ Optimize one objective while constraining others:
 
 ```julia
 # Minimize cost subject to: time ≤ 10.0
-distance, path = epsilon_constraint_approach(
+solution = epsilon_constraint_approach(
     graph, source, target,
     1,              # Objective index to minimize (cost)
     [Inf, 10.0]     # Constraints on objectives [cost, time]
 )
+println("Objectives: ", solution.objectives)
+println("Path: ", solution.path)
 ```
 
 ### Lexicographic Optimization
@@ -88,7 +94,9 @@ Optimize objectives in priority order:
 
 ```julia
 priorities = [1, 2]  # First minimize obj 1 (cost), then obj 2 (time)
-distance, path = lexicographic_approach(graph, source, target, priorities)
+solution = lexicographic_approach(graph, source, target, priorities)
+println("Objectives: ", solution.objectives)
+println("Path: ", solution.path)
 ```
 
 ## Decision Support
