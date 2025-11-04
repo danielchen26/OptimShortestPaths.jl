@@ -179,6 +179,24 @@ println("Path: ", solution.path)
 The "knee point" offers the best trade-off between objectives:
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
+# Setup from previous examples
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)
+]
+
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(3, edges, 2, adjacency, ["Cost", "Time"])
+source = 1
+target = 3
+
 pareto_solutions = compute_pareto_front(graph, source, target)
 
 # Find solution with best trade-off
@@ -195,6 +213,9 @@ The knee point maximizes the angle between solutions, representing the steepest 
 ### Minimization and Maximization
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
 # Define mixed objectives
 edges = [MultiObjectiveEdge(1, 2, [5.0, 8.0], 1)]  # [cost_to_minimize, profit_to_maximize]
 

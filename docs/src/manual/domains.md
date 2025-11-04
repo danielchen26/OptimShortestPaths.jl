@@ -12,18 +12,16 @@ Analyze drug-target interactions and selectivity.
 using OptimShortestPaths
 
 drugs = ["Aspirin", "Ibuprofen", "Celecoxib"]
-targets = ["COX1", "COX2", "5-LOX", "PGHS"]
+targets = ["COX1", "COX2"]
 
-# Binding affinities (lower = stronger binding)
-affinities = [
-    ("Aspirin", "COX1", 2.5),
-    ("Aspirin", "COX2", 3.2),
-    ("Ibuprofen", "COX1", 1.8),
-    ("Ibuprofen", "COX2", 2.1),
-    ("Celecoxib", "COX2", 0.5),  # Highly selective
+# Binding affinities (0-1 scale, higher = stronger binding)
+affinity_matrix = [
+    0.85  0.45;  # Aspirin: strong COX1 (0.85), moderate COX2 (0.45)
+    0.30  0.90;  # Ibuprofen: moderate COX1 (0.30), strong COX2 (0.90)
+    0.05  0.95   # Celecoxib: weak COX1 (0.05), very strong COX2 (0.95) - selective!
 ]
 
-network = create_drug_target_network(drugs, targets, affinities)
+network = create_drug_target_network(drugs, targets, affinity_matrix)
 ```
 
 ### Finding Paths
@@ -37,7 +35,11 @@ println("Binding affinity: ", distance)
 ### Analyzing Selectivity
 
 ```julia
-# Compare drug affinity for two targets
+# Compare Ibuprofen affinity for COX1 vs COX2
+drug_idx = network.drug_indices["Ibuprofen"]
+cox1_idx = network.target_indices["COX1"]
+cox2_idx = network.target_indices["COX2"]
+
 ratio = calculate_distance_ratio(network.graph, drug_idx, cox1_idx, cox2_idx)
 println("COX2/COX1 selectivity ratio: ", ratio)
 
@@ -53,27 +55,29 @@ Optimize biochemical reaction pathways.
 ### Creating a Pathway
 
 ```julia
-metabolites = ["Glucose", "G6P", "F6P", "F16BP", "DHAP", "G3P", "PEP", "Pyruvate", "ATP"]
+metabolites = ["Glucose", "G6P", "F6P", "F16BP", "DHAP", "G3P", "PEP", "Pyruvate"]
 
-reactions = [
-    ("Hexokinase", "Glucose", "G6P", -1.0),      # ATP cost
-    ("PGI", "G6P", "F6P", 0.0),
-    ("PFK", "F6P", "F16BP", -1.0),               # ATP cost
-    ("Aldolase", "F16BP", "DHAP", 0.0),
-    ("TPI", "DHAP", "G3P", 0.0),
-    ("GAPDH", "G3P", "PEP", 2.0),                # ATP production
-    ("PK", "PEP", "Pyruvate", 2.0),              # ATP production
+reactions = ["Hexokinase", "PGI", "PFK", "Aldolase", "TPI", "GAPDH", "PK"]
+reaction_costs = [1.0, 0.0, 1.0, 0.0, 0.0, 0.2, 0.2]  # Encode energy usage as non-negative costs
+reaction_network = [
+    ("Glucose", "Hexokinase", "G6P"),
+    ("G6P",    "PGI",        "F6P"),
+    ("F6P",    "PFK",        "F16BP"),
+    ("F16BP",  "Aldolase",   "DHAP"),
+    ("DHAP",   "TPI",        "G3P"),
+    ("G3P",    "GAPDH",      "PEP"),
+    ("PEP",    "PK",         "Pyruvate"),
 ]
 
-pathway = create_metabolic_pathway(metabolites, reactions)
+pathway = create_metabolic_pathway(metabolites, reactions, reaction_costs, reaction_network)
 ```
 
 ### Finding Optimal Pathways
 
 ```julia
 # Find pathway from substrate to product
-atp_cost, pathway_steps = find_metabolic_pathway(pathway, "Glucose", "Pyruvate")
-println("Net ATP yield: ", -atp_cost)  # Negative cost = ATP production
+pathway_cost, pathway_steps = find_metabolic_pathway(pathway, "Glucose", "Pyruvate")
+println("Total pathway cost: ", pathway_cost)
 println("Pathway: ", pathway_steps)
 ```
 
@@ -133,12 +137,16 @@ n_vertices = factories + warehouses + dist_centers
 edges = Edge[]
 weights = Float64[]
 
+# Use a fixed RNG seed so the illustrative costs match the example script.
+using Random
+rng = MersenneTwister(42)
+
 # Factory → Warehouse links
 for f in 1:factories
     for w in 1:warehouses
         from = f
         to = factories + w
-        transport_cost = rand(10:20)
+        transport_cost = rand(rng, 10:20)
         push!(edges, Edge(from, to, length(edges)+1))
         push!(weights, float(transport_cost))
     end
@@ -149,7 +157,7 @@ for w in 1:warehouses
     for d in 1:dist_centers
         from = factories + w
         to = factories + warehouses + d
-        cost = rand(5:15)
+        cost = rand(rng, 5:15)
         push!(edges, Edge(from, to, length(edges)+1))
         push!(weights, float(cost))
     end
@@ -157,10 +165,10 @@ end
 
 graph = DMYGraph(n_vertices, edges, weights)
 
-# Find optimal route from factory 1 to dist center 3
-target = factories + warehouses + 3
+# Find optimal route from factory 1 to distribution center 5
+target = factories + warehouses + 5
 distances = dmy_sssp!(graph, 1)
-println("Minimum cost to DC 3: \$", distances[target])
+println("Minimum cost to DC 5: \$", distances[target])
 ```
 
 ## Generic Pattern

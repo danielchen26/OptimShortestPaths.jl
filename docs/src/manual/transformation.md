@@ -40,41 +40,59 @@ Run the DMY algorithm to find optimal solutions.
 ### High-Level Interface
 
 ```julia
-# Define your problem
+using OptimShortestPaths
+
+# Define problem data: simple drug-target affinity matrix
+drugs = ["Aspirin", "Ibuprofen"]
+targets = ["COX1", "COX2"]
+affinity_matrix = [
+    2.5  3.2;  # Aspirin binding costs
+    1.8  2.1   # Ibuprofen binding costs
+]
+
 problem = OptimizationProblem(
-    :drug_discovery,           # Problem type
-    (drugs, targets, affinities),  # Problem data
-    1                          # Source vertex
+    :drug_discovery,                     # Problem type selects the domain caster
+    (drugs, targets, affinity_matrix),   # Tuple passed to create_drug_target_network
+    1                                    # Source vertex (drug "Aspirin")
 )
 
-# Solve automatically
+# Solve automatically using the DMY algorithm
 distances = optimize_to_graph(problem; solver=:dmy)
+target_vertex = length(drugs) + 2  # Vertex index for COX2
+println("Distance from Aspirin to COX2: ", distances[target_vertex])
 ```
 
 ### Manual Casting
 
 ```julia
-# For custom problems
-function my_custom_cast(data)
-    # Extract problem-specific data
-    entities, transitions, costs = data
+using OptimShortestPaths
 
-    # Build edges
+# Custom caster that turns named transitions into a DMYGraph
+function my_custom_cast(data)
+    vertices, transitions = data
+    index = Dict(v => i for (i, v) in enumerate(vertices))
+
     edges = Edge[]
     weights = Float64[]
-    for (i, (from, to, cost)) in enumerate(transitions)
-        push!(edges, Edge(from, to, i))
+    for (src, dst, cost) in transitions
+        push!(edges, Edge(index[src], index[dst], length(edges) + 1))
         push!(weights, cost)
     end
 
-    # Create graph
-    n_vertices = length(entities)
-    return DMYGraph(n_vertices, edges, weights)
+    return DMYGraph(length(vertices), edges, weights), index
 end
 
-# Use it
-graph = my_custom_cast(my_data)
+vertices = ["Start", "Review", "Finish"]
+transitions = [
+    ("Start", "Review", 3.0),
+    ("Review", "Finish", 2.0),
+    ("Start", "Finish", 7.0),
+]
+
+graph, index = my_custom_cast((vertices, transitions))
+source = index["Start"]
 distances = dmy_sssp!(graph, source)
+println("Cost Start → Finish: ", distances[index["Finish"]])
 ```
 
 ## Domain-Agnostic Examples
@@ -82,6 +100,8 @@ distances = dmy_sssp!(graph, source)
 ### Resource Scheduling
 
 ```julia
+using OptimShortestPaths
+
 # States: Time slots (1-24) × Resources (A, B, C)
 # Edges: Task assignments
 # Weights: Completion time + setup cost
