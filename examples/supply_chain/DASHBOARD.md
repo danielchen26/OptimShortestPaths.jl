@@ -131,11 +131,12 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 **Graph Construction**:
 ```julia
 # Facilities become vertices, routes become edges
-n_vertices = 23  # 1 super-source + 22 facilities
-edges = 88       # All possible shipping routes
+total_nodes = 22  # 3 factories + 4 warehouses + 5 DCs + 10 customers
+edges = 88        # All transportation routes
 
-# Edge weights combine:
-weights[i] = production_cost + transport_cost(distance)
+# Edge weights represent transportation costs
+# (production costs handled separately per factory)
+weights[i] = transport_cost(distance)
 ```
 
 **Solution Extraction**:
