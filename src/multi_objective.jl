@@ -71,6 +71,33 @@ function MultiObjectiveGraph(n_vertices::Int, edges::Vector{MultiObjectiveEdge},
 end
 
 """
+Convenience constructor that builds adjacency list automatically from edges.
+
+# Example
+```julia
+mo_edges = [
+    MultiObjectiveEdge(1, 2, [50.0, 10.0], 1),
+    MultiObjectiveEdge(2, 3, [30.0, 8.0], 2)
+]
+
+# No need to build adjacency list manually!
+mo_graph = MultiObjectiveGraph(3, mo_edges, 2, ["Cost", "Time"])
+```
+"""
+function MultiObjectiveGraph(n_vertices::Int, edges::Vector{MultiObjectiveEdge},
+                              n_objectives::Int, objective_names::Vector{String};
+                              objective_sense=fill(:min, n_objectives))
+    # Build adjacency list automatically
+    adjacency_list = [Int[] for _ in 1:n_vertices]
+    for (idx, edge) in enumerate(edges)
+        push!(adjacency_list[edge.source], idx)
+    end
+
+    return MultiObjectiveGraph(n_vertices, edges, n_objectives, adjacency_list,
+                               objective_names, Symbol.(objective_sense))
+end
+
+"""
 Check if solution a dominates solution b (all objectives <= and at least one <)
 """
 function dominates(a::Vector{Float64}, b::Vector{Float64}, sense::Vector{Symbol}; atol=1e-10)
