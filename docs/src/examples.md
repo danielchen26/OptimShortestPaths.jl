@@ -116,21 +116,29 @@ distance, path = find_shortest_path(graph, 1, 3)
 ### Multi-Objective Example
 
 ```julia
+using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
+
 # Create multi-objective graph
 edges = [
-    MultiObjectiveEdge(1, 2, 1),
-    MultiObjectiveEdge(2, 3, 2),
-    MultiObjectiveEdge(1, 3, 3)
+    MultiObjectiveEdge(1, 2, [1.0, 10.0], 1),  # Cheap but slow
+    MultiObjectiveEdge(2, 3, [2.0, 5.0], 2),   # Moderate
+    MultiObjectiveEdge(1, 3, [5.0, 3.0], 3)    # Expensive but fast
 ]
 
-# [cost, time] for each edge
-objectives = [
-    [1.0, 10.0],  # Cheap but slow
-    [2.0, 5.0],   # Moderate
-    [5.0, 3.0]    # Expensive but fast
-]
+# Build adjacency list
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
 
-graph = MultiObjectiveGraph(3, edges, objectives)
+graph = MultiObjectiveGraph(
+    3,                      # n_vertices
+    edges,                  # edges
+    2,                      # n_objectives
+    adjacency,              # adjacency list
+    ["Cost", "Time"]        # objective names
+)
 
 # Compute Pareto front
 solutions = compute_pareto_front(graph, 1, 3)

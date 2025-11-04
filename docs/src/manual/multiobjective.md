@@ -12,12 +12,27 @@ When you have multiple conflicting objectives (e.g., minimize cost AND minimize 
 
 ```julia
 using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
 
 # Create multi-objective graph
-edges = [MultiObjectiveEdge(1, 2, 1), MultiObjectiveEdge(2, 3, 2)]
-objectives = [[1.0, 5.0], [2.0, 1.0]]  # [cost, time] for each edge
+edges = [
+    MultiObjectiveEdge(1, 2, [1.0, 5.0], 1),  # [cost, time] for edge 1->2
+    MultiObjectiveEdge(2, 3, [2.0, 1.0], 2)   # [cost, time] for edge 2->3
+]
 
-graph = MultiObjectiveGraph(3, edges, objectives)
+# Build adjacency list
+adjacency = [Int[] for _ in 1:3]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
+
+graph = MultiObjectiveGraph(
+    3,                      # n_vertices
+    edges,                  # edges with weights
+    2,                      # n_objectives
+    adjacency,              # adjacency list
+    ["Cost", "Time"]        # objective names
+)
 
 # Compute Pareto front
 pareto_solutions = compute_pareto_front(graph, 1, 3; max_solutions=1000)
@@ -26,7 +41,6 @@ pareto_solutions = compute_pareto_front(graph, 1, 3; max_solutions=1000)
 for sol in pareto_solutions
     println("Objectives: ", sol.objectives)  # [total_cost, total_time]
     println("Path: ", sol.path)              # Vertex sequence
-    println("Edges: ", sol.edges)            # Edge IDs
 end
 ```
 
@@ -101,13 +115,20 @@ The knee point maximizes the angle between solutions, representing the steepest 
 
 ```julia
 # Define mixed objectives
-edges = [MultiObjectiveEdge(1, 2, 1)]
-objectives = [[5.0, 8.0]]  # [cost_to_minimize, profit_to_maximize]
+edges = [MultiObjectiveEdge(1, 2, [5.0, 8.0], 1)]  # [cost_to_minimize, profit_to_maximize]
+
+# Build adjacency list
+adjacency = [Int[] for _ in 1:2]
+push!(adjacency[1], 1)
 
 # Specify senses
 graph = MultiObjectiveGraph(
-    2, edges, objectives;
-    objective_sense = [:min, :max]  # Minimize cost, maximize profit
+    2,                               # n_vertices
+    edges,                           # edges
+    2,                               # n_objectives
+    adjacency,                       # adjacency list
+    ["Cost", "Profit"],              # objective names
+    objective_sense = [:min, :max]   # Minimize cost, maximize profit
 )
 
 # Pareto front respects both senses
@@ -134,24 +155,29 @@ minimization_objective = baseline - original_profit
 
 ```julia
 using OptimShortestPaths
+using OptimShortestPaths.MultiObjective
 
 # Supply chain network: minimize cost AND time
 edges = [
-    MultiObjectiveEdge(1, 2, 1),
-    MultiObjectiveEdge(1, 3, 2),
-    MultiObjectiveEdge(2, 4, 3),
-    MultiObjectiveEdge(3, 4, 4)
+    MultiObjectiveEdge(1, 2, [10.0, 1.0], 1),  # Cheap but slow
+    MultiObjectiveEdge(1, 3, [30.0, 0.5], 2),  # Expensive but fast
+    MultiObjectiveEdge(2, 4, [5.0, 2.0], 3),   # Cheap and slow
+    MultiObjectiveEdge(3, 4, [15.0, 1.0], 4)   # Moderate
 ]
 
-# [cost, time] for each edge
-objectives = [
-    [10.0, 1.0],  # Cheap but slow
-    [30.0, 0.5],  # Expensive but fast
-    [5.0, 2.0],   # Cheap and slow
-    [15.0, 1.0]   # Moderate
-]
+# Build adjacency list
+adjacency = [Int[] for _ in 1:4]
+for (idx, edge) in enumerate(edges)
+    push!(adjacency[edge.source], idx)
+end
 
-graph = MultiObjectiveGraph(4, edges, objectives)
+graph = MultiObjectiveGraph(
+    4,                      # n_vertices
+    edges,                  # edges
+    2,                      # n_objectives (cost, time)
+    adjacency,              # adjacency list
+    ["Cost", "Time"]        # objective names
+)
 
 # Find all Pareto-optimal paths
 pareto_front = compute_pareto_front(graph, 1, 4)
