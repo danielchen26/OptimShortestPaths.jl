@@ -120,6 +120,14 @@ println("Total cost: \$", total_cost * 1000)
 println("Optimal sequence: ", sequence)
 ```
 
+### Accessibility Summary
+
+```julia
+stats = analyze_treatment_accessibility(protocol, "Initial")
+println("Reachable treatments: ", stats["reachable_treatments"])
+println("Average downstream cost: ", stats["avg_treatment_distance"])
+```
+
 ## Supply Chain Optimization
 
 For custom domains like supply chain, use the generic interface:

@@ -47,7 +47,7 @@ export pivot_selection_statistics, validate_pivot_selection, partition_blocks_ad
 export dmy_sssp_with_parents!, dmy_sssp_bounded!, validate_dmy_input
 export dmy_algorithm_statistics
 export find_drug_target_paths, analyze_drug_connectivity
-export find_metabolic_pathway, optimize_treatment_sequence
+export find_metabolic_pathway, optimize_treatment_sequence, analyze_treatment_accessibility
 
 # Constants
 const INF = typemax(Float64)
@@ -146,5 +146,5 @@ end
 # Bring Pharma (pharmaceutical networks) symbols into OptimShortestPaths scope
 import .Pharma: create_drug_target_network, find_drug_target_paths, analyze_drug_connectivity,
                  create_metabolic_pathway, find_metabolic_pathway, create_treatment_protocol,
-                 optimize_treatment_sequence
+                 optimize_treatment_sequence, analyze_treatment_accessibility
 end # module OptimShortestPaths

@@ -8,7 +8,7 @@ Comprehensive performance analysis of the DMY algorithm implementation.
 - **Graph Types**: Sparse random graphs (m ≈ 2n edges)
 - **Baseline**: Simple Dijkstra implementation
 - **Methodology**: 40 warm-up trials per solver, 95% confidence intervals
-- **Source**: `benchmark_results.txt` and `test/benchmark_performance.jl`
+- **Source**: `benchmark_results.txt` and `dev/benchmark_performance.jl`
 
 ## Results
 
@@ -104,7 +104,7 @@ graph = DMYGraph(n, edges, weights)
 Run the full benchmark suite:
 
 ```bash
-julia --project=. test/benchmark_performance.jl
+julia --project=. dev/benchmark_performance.jl
 ```
 
 This generates `benchmark_results.txt` with detailed timing data for various graph sizes.
@@ -163,13 +163,13 @@ These combine to achieve the O(m log^(2/3) n) bound.
 
 All benchmark data is canonical and version-controlled:
 - **Data file**: `benchmark_results.txt`
-- **Generation script**: `test/benchmark_performance.jl`
+- **Generation script**: `dev/benchmark_performance.jl`
 - **Figures**: Generated from canonical data via `examples/comprehensive_demo/generate_figures.jl`
 
 To reproduce benchmarks on your hardware:
 
 ```bash
-julia --project=. test/benchmark_performance.jl > benchmark_results.txt
+julia --project=. dev/benchmark_performance.jl > benchmark_results.txt
 cd examples/comprehensive_demo
 julia --project=. generate_figures.jl  # Regenerate with your data
 ```

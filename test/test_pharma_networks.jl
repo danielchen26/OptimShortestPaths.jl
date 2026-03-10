@@ -261,6 +261,18 @@ const INF = OptimShortestPaths.INF
         # Test invalid treatment names
         @test_throws ArgumentError optimize_treatment_sequence(protocol, "NonexistentTreatment", "Recovery")
         @test_throws ArgumentError optimize_treatment_sequence(protocol, "Diagnosis", "NonexistentTreatment")
+
+        accessibility = analyze_treatment_accessibility(protocol, "Diagnosis")
+        @test accessibility["treatment_name"] == "Diagnosis"
+        @test accessibility["total_treatments"] == 4
+        @test accessibility["reachable_treatments"] == 4
+        @test accessibility["connectivity_ratio"] == 1.0
+        @test "Recovery" in accessibility["reachable_treatment_names"]
+        @test haskey(accessibility, "min_treatment_distance")
+        @test haskey(accessibility, "max_treatment_distance")
+        @test haskey(accessibility, "avg_treatment_distance")
+
+        @test_throws ArgumentError analyze_treatment_accessibility(protocol, "UnknownTreatment")
     end
     
     @testset "Pharmaceutical Network Error Handling" begin

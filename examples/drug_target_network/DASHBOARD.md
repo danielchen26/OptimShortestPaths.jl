@@ -6,7 +6,7 @@ This dashboard presents comprehensive results from applying the DMY shortest-pat
 
 **Key Findings**:
 1. **Single-objective**: Celecoxib remains the most COX-2 selective option (~3.7× vs COX-1) while all sample drugs reach every target
-2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost $5–$200, and onset 1.0–7.5 h
+2. **Multi-objective**: Seven Pareto-optimal drug pathways span efficacy 40–98%, toxicity 3–70%, cost \$5–\$200, and onset 1.0–7.5 h
 3. **Performance**: DMY achieves ≈4.8× speedup over Dijkstra at n=5000 for sparse graphs (k = ⌈n^{1/3}⌉)
 
 ### Reproducibility
@@ -69,13 +69,13 @@ Real-world drug selection involves multiple competing objectives:
 **3D Trade-off Space**: This plot shows the three most critical objectives simultaneously:
 - **X-axis (Efficacy)**: Treatment effectiveness (0–100 %)
 - **Y-axis (Toxicity)**: Side effect severity (0–100 %)
-- **Z-axis (Cost)**: Price in dollars ($5–$200 across the frontier)
+- **Z-axis (Cost)**: Price in dollars (\$5–\$200 across the frontier)
 
 Legend highlights:
-- **Red sphere — “Max Efficacy”**: Morphine-like → MOR (Solution 5) delivers ~98 % efficacy in 1 h at the cost of high toxicity (70 %) and $50.
-- **Green sphere — “Min Toxicity”**: Ibuprofen-like → COX-2 (Solution 3) keeps toxicity at 10 % with moderate efficacy (~60 %) and $15 cost.
-- **Orange sphere — “Min Cost”**: Aspirin-like → COX-1 (Solution 1) is the $5 budget choice with 85 % efficacy and 30 % toxicity.
-- **Purple hexagon — “Knee Point”**: Morphine-like → COX-1 (Solution 4) marks the steepest trade-off change (95 % efficacy, 60 % toxicity, $50).
+- **Red sphere — “Max Efficacy”**: Morphine-like → MOR (Solution 5) delivers ~98 % efficacy in 1 h at the cost of high toxicity (70 %) and \$50.
+- **Green sphere — “Min Toxicity”**: Ibuprofen-like → COX-2 (Solution 3) keeps toxicity at 10 % with moderate efficacy (~60 %) and \$15 cost.
+- **Orange sphere — “Min Cost”**: Aspirin-like → COX-1 (Solution 1) is the \$5 budget choice with 85 % efficacy and 30 % toxicity.
+- **Purple hexagon — “Knee Point”**: Morphine-like → COX-1 (Solution 4) marks the steepest trade-off change (95 % efficacy, 60 % toxicity, \$50).
 
 The remaining Pareto solutions (grey) illustrate the continuous trade-offs between these extremes.
 
@@ -83,15 +83,15 @@ The remaining Pareto solutions (grey) illustrate the continuous trade-offs betwe
 
 | Solution | Drug→Target | Efficacy | Toxicity | Cost | Time | **When to Use** |
 |----------|------------|----------|----------|------|------|-----------------|
-| 1 | Aspirin-like → COX-1 | 85% | 30% | $5 | 2.5 h | **Baseline analgesia** – inexpensive, moderate toxicity |
-| 2 | Ibuprofen-like → COX-1 | 65% | 15% | $15 | 3.5 h | **General pain** – balanced efficacy/toxicity |
-| 3 | Ibuprofen-like → COX-2 | 60% | 10% | $15 | 4.0 h | **Elderly / GI risk** – prioritize low toxicity |
-| 4 | Morphine-like → COX-1 | 95% | 60% | $50 | 1.5 h | **Severe pain** – high efficacy, monitor side effects |
-| 5 | Morphine-like → MOR | 98% | 70% | $50 | 1.0 h | **Emergency trauma** – fastest, most potent relief |
-| 6 | Biologic-like → COX-2 | 45% | 5% | $200 | 6.5 h | **High-risk patients** – ultra-low toxicity despite high cost |
-| 7 | Biologic-like → MOR | 40% | 3% | $200 | 7.5 h | **Neuropathic pain** – minimal adverse effects, accepts slow onset |
+| 1 | Aspirin-like → COX-1 | 85% | 30% | \$5 | 2.5 h | **Baseline analgesia** – inexpensive, moderate toxicity |
+| 2 | Ibuprofen-like → COX-1 | 65% | 15% | \$15 | 3.5 h | **General pain** – balanced efficacy/toxicity |
+| 3 | Ibuprofen-like → COX-2 | 60% | 10% | \$15 | 4.0 h | **Elderly / GI risk** – prioritize low toxicity |
+| 4 | Morphine-like → COX-1 | 95% | 60% | \$50 | 1.5 h | **Severe pain** – high efficacy, monitor side effects |
+| 5 | Morphine-like → MOR | 98% | 70% | \$50 | 1.0 h | **Emergency trauma** – fastest, most potent relief |
+| 6 | Biologic-like → COX-2 | 45% | 5% | \$200 | 6.5 h | **High-risk patients** – ultra-low toxicity despite high cost |
+| 7 | Biologic-like → MOR | 40% | 3% | \$200 | 7.5 h | **Neuropathic pain** – minimal adverse effects, accepts slow onset |
 
-High-cost biologic options (Solutions 6–7) reduce toxicity to ≤5% while maintaining moderate efficacy (40–45%), but require $200 outlay and a 6.5–7.5 h onset.
+High-cost biologic options (Solutions 6–7) reduce toxicity to ≤5% while maintaining moderate efficacy (40–45%), but require \$200 outlay and a 6.5–7.5 h onset.
 
 ### How to Select from Pareto Front
 
@@ -101,13 +101,13 @@ Because this problem mixes maximize (efficacy) and minimize (toxicity/cost/time)
 #### Method 2: Constraint-Based Selection
 Set hard limits on certain objectives:
 - Toxicity ≤ 30% → Aspirin-like → COX-1 (Solution 1) is the lone candidate
-- Cost ≤ $20 → Aspirin-like (Solution 1), Ibuprofen-like COX-1/COX-2 (Solutions 2–3)
+- Cost ≤ \$20 → Aspirin-like (Solution 1), Ibuprofen-like COX-1/COX-2 (Solutions 2–3)
 - Both constraints → Ibuprofen-like COX-1/COX-2 trade a little efficacy for safety
 
 #### Method 3: Knee Point Selection
 The current knee point is the Morphine-like → MOR pathway (Solution 5):
 - Maximum efficacy (≈98%) with 1 h onset
-- Accept high toxicity (70%) and higher cost ($50)
+- Accept high toxicity (70%) and higher cost (\$50)
 - Suitable when rapid, potent analgesia outweighs side-effect risk
 
 ---

@@ -4,7 +4,7 @@ Complete working examples demonstrating OptimShortestPaths capabilities.
 
 ## Running Examples
 
-All examples are located in the `examples/` directory. Each has its own `Project.toml` for isolated dependencies.
+All examples are located in the `examples/` directory. The larger example folders ship with their own `Project.toml` for isolated dependencies, while standalone scripts such as `examples/generic_utilities_demo.jl` run from the repository root project.
 
 To run an example:
 
@@ -126,26 +126,19 @@ edges = [
     MultiObjectiveEdge(1, 3, [5.0, 3.0], 3)    # Expensive but fast
 ]
 
-# Build adjacency list
-adjacency = [Int[] for _ in 1:3]
-for (idx, edge) in enumerate(edges)
-    push!(adjacency[edge.source], idx)
-end
-
 graph = MultiObjectiveGraph(
     3,                      # n_vertices
     edges,                  # edges
     2,                      # n_objectives
-    adjacency,              # adjacency list
     ["Cost", "Time"]        # objective names
 )
 
 # Compute Pareto front
 solutions = compute_pareto_front(graph, 1, 3)
 
-# Find best trade-off
+# Pick a representative trade-off from the Pareto front
 best = get_knee_point(solutions)
-println("Best trade-off - Cost: $(best.objectives[1]), Time: $(best.objectives[2])")
+println("Representative trade-off - Cost: $(best.objectives[1]), Time: $(best.objectives[2])")
 ```
 
 ### Domain-Specific Example

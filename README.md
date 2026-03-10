@@ -132,7 +132,7 @@ using Pkg
 Pkg.test("OptimShortestPaths")
 ```
 
-The test suite includes comprehensive assertions (over 1,800 passing tests) validating algorithm correctness, multi-objective optimization, and domain applications.
+The test suite includes 1,700+ assertions validating algorithm correctness, multi-objective optimization, domain applications, and executable documentation examples.
 
 ## Documentation
 

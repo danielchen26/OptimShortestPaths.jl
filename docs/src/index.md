@@ -12,7 +12,7 @@ OptimShortestPaths is a Julia package that provides a unified framework for solv
 - **Multi-Objective**: Pareto front computation with bounded solutions
 - **Domain-Agnostic**: Transform ANY optimization problem to shortest paths
 - **Domain-Specific**: Built-in support for drug discovery, metabolic networks, treatment protocols
-- **Well-Tested**: Over 1,900 passing tests with 100% pass rate
+- **Well-Tested**: 1,700+ assertions across algorithm, domain, and documentation coverage
 - **Publication-Quality**: Professional figures and comprehensive benchmarks
 
 ## Quick Start

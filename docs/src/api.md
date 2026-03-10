@@ -2,6 +2,12 @@
 
 Complete reference for all exported functions and types in OptimShortestPaths.
 
+## Package
+
+```@docs
+OptimShortestPaths
+```
+
 ## Core Algorithm
 
 ### Main Functions
@@ -27,6 +33,7 @@ recursive_layer!
 bmssp!
 bmssp_single_round!
 select_pivots
+OptimShortestPaths.select_pivots_advanced
 partition_blocks
 partition_blocks_adaptive
 ```
@@ -54,6 +61,12 @@ count_relaxations
 compute_pareto_front
 get_knee_point
 compute_path_objectives
+```
+
+### Dominance Utilities
+
+```@docs
+OptimShortestPaths.MultiObjective.dominates
 ```
 
 ### Optimization Methods
@@ -111,6 +124,7 @@ find_drug_target_paths
 analyze_drug_connectivity
 find_metabolic_pathway
 optimize_treatment_sequence
+analyze_treatment_accessibility
 ```
 
 ## Generic Graph Utilities

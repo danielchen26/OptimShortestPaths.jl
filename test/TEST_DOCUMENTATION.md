@@ -29,20 +29,17 @@ test/
 ├── Application Tests        # Domain-specific
 │   ├── test_pharma_networks.jl    # Pharmaceutical applications
 │   ├── test_multi_objective.jl    # Multi-objective optimization
-│   └── test_pareto_simple.jl      # Pareto front analysis
+│   └── test_documentation_examples.jl # Executable documentation examples
 │
 ├── Validation Tests         # Correctness verification
 │   ├── test_correctness.jl        # DMY vs Dijkstra comparison
-│   ├── test_equal_paths.jl        # Path equivalence testing
 │   └── test_utilities.jl          # Utility function tests
 │
 ├── Performance Tests        # Benchmarking
-│   ├── benchmark_performance.jl   # Comprehensive benchmarks
-│   └── benchmark_simple.jl        # Quick performance tests
+│   └── ../dev/benchmark_performance.jl # Comprehensive benchmark generator
 │
 └── Utility Scripts          # Testing helpers
-    ├── run_single_test.jl         # Run individual test files
-    └── minimal_test.jl            # Minimal test for debugging
+    └── run_single_test.jl         # Run individual test files with package context
 ```
 
 ---
@@ -138,7 +135,7 @@ test/
 **Key Insights:**
 - Crossover point on sparse random graphs occurs near n ≈ 1,800 vertices
 - DMY shines on large, sparse networks (m ≈ 2n)
-- Results generated via `test/benchmark_performance.jl`
+- Results generated via `dev/benchmark_performance.jl`
 
 ---
 
@@ -146,9 +143,9 @@ test/
 
 ### Overall Test Coverage: **100%**
 
-- 1,600+ assertions executed across more than one hundred focused `@testset`s (randomized cases mean the total fluctuates slightly)
+- 1,700+ assertions executed across more than one hundred focused `@testset`s
 - Core algorithm, utilities, and pharmaceutical domain helpers maintain dedicated suites
-- Multi-objective scenarios now run as part of the default `Pkg.test()` invocation
+- Multi-objective scenarios and documentation examples run as part of the default `Pkg.test()` invocation
 - Every numerical result cross-checks against the Dijkstra baseline
 - Edge cases (disconnected, zero-weight, INF handling) covered explicitly
 
@@ -164,26 +161,19 @@ julia --project=. test/runtests.jl
 ### Run Specific Test Category
 ```bash
 # Core algorithm tests
-julia --project=. test/test_dmy_algorithm.jl
+julia --project=. test/run_single_test.jl test_dmy_algorithm.jl
 
 # Application tests
-julia --project=. test/test_pharma_networks.jl
+julia --project=. test/run_single_test.jl test_pharma_networks.jl
 
 # Performance benchmarks
-julia --project=. test/benchmark_performance.jl
+julia --project=. dev/benchmark_performance.jl
 ```
 
 ### Run Single Test File
 ```bash
 julia --project=. test/run_single_test.jl test_correctness.jl
 ```
-
-### Quick Validation
-```bash
-julia --project=. test/minimal_test.jl
-```
-
----
 
 ## Test Development Guidelines
 
@@ -197,7 +187,8 @@ julia --project=. test/minimal_test.jl
 ### Test Structure Template
 ```julia
 using Test
-using DMYShortestPath
+include("../src/OptimShortestPaths.jl")
+using .OptimShortestPaths
 
 @testset "Component Name Tests" begin
     @testset "Feature 1" begin
@@ -217,7 +208,7 @@ end
 - Use `@time` or `@benchmark` for timing
 - Compare against Dijkstra baseline
 - Test on various graph structures (sparse, dense, chain)
-- Record results in benchmark files
+- Record results in `benchmark_results.txt`
 
 ---
 

@@ -158,4 +158,55 @@ const get_knee_point = MO.get_knee_point
         @test sol.path == [1, 2]
         @test sol.objectives ≈ [1.0, 2.0]
     end
+
+    @testset "Cycle and Validation Handling" begin
+        cycle_graph = MultiObjectiveGraph(
+            3,
+            [
+                MultiObjectiveEdge(1, 2, [1.0, 1.0], 1),
+                MultiObjectiveEdge(2, 2, [0.0, 0.0], 2),
+                MultiObjectiveEdge(2, 3, [1.0, 1.0], 3),
+            ],
+            2,
+            ["a", "b"],
+        )
+
+        pareto_front = compute_pareto_front(cycle_graph, 1, 3; max_solutions = 10)
+        @test length(pareto_front) == 1
+        @test pareto_front[1].path == [1, 2, 3]
+        @test pareto_front[1].objectives ≈ [2.0, 2.0]
+
+        valid_edges = [MultiObjectiveEdge(1, 2, [1.0, 2.0], 1)]
+        @test_throws ArgumentError MultiObjectiveGraph(2, valid_edges, 2, [Int[], Int[]], ["x", "y"])
+        @test_throws ArgumentError MultiObjectiveGraph(
+            2,
+            [MultiObjectiveEdge(3, 2, [1.0, 2.0], 1)],
+            2,
+            ["x", "y"],
+        )
+        @test_throws ArgumentError MultiObjectiveGraph(
+            2,
+            valid_edges,
+            2,
+            [[1, 1], Int[]],
+            ["x", "y"],
+        )
+    end
+
+    @testset "Knee Point Selection" begin
+        pareto_front = [
+            ParetoSolution([1.0, 10.0], [1], Int[]),
+            ParetoSolution([3.0, 4.0], [2], Int[]),
+            ParetoSolution([10.0, 1.0], [3], Int[]),
+        ]
+        @test get_knee_point(pareto_front).path == [2]
+
+        mixed_front = [
+            ParetoSolution([10.0, 10.0], [1], Int[]),
+            ParetoSolution([7.0, 4.0], [2], Int[]),
+            ParetoSolution([1.0, 1.0], [3], Int[]),
+        ]
+        mixed_knee = get_knee_point(mixed_front; objective_sense = [:max, :min])
+        @test mixed_knee.path == [2]
+    end
 end

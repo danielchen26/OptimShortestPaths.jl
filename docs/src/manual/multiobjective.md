@@ -206,7 +206,7 @@ println("Best trade-off: ", best_solution.objectives)
 println("Path: ", best_solution.path)
 ```
 
-The knee point maximizes the angle between solutions, representing the steepest change in the Pareto curve.
+The knee point uses a geometric trade-off heuristic. In two objectives, it selects the Pareto solution with the largest perpendicular distance from the chord joining the normalized extreme points. For higher-dimensional fronts, it falls back to the distance from the normalized utopia-nadir diagonal. When objectives mix minimization and maximization senses, pass `objective_sense` so the normalization matches the front correctly.
 
 ## Working with Objective Senses
 

@@ -9,7 +9,7 @@ julia --project=. test/runtests.jl
 
 Run specific test:
 ```bash
-julia --project=. test/test_dmy_algorithm.jl
+julia --project=. test/run_single_test.jl test_dmy_algorithm.jl
 ```
 
 ## Test Categories
@@ -24,20 +24,18 @@ julia --project=. test/test_dmy_algorithm.jl
 ### Application Tests
 - `test_pharma_networks.jl` - Drug discovery and healthcare applications
 - `test_multi_objective.jl` - Multi-objective Pareto optimization
-- `test_pareto_simple.jl` - Simple Pareto front tests
+- `test_documentation_examples.jl` - Executable documentation and example snippets
 
 ### Validation Tests
 - `test_correctness.jl` - Comparison with Dijkstra's algorithm
-- `test_equal_paths.jl` - Path equivalence testing
 - `test_utilities.jl` - Utility function validation
 
 ### Performance Tests
-- `benchmark_performance.jl` - Comprehensive performance benchmarks
-- `benchmark_simple.jl` - Quick performance validation
+- `../dev/benchmark_performance.jl` - Benchmark generator used for published numbers
 
 ## Test Coverage
 
-- **1,600+ assertions** exercising 100+ focused test sets (randomized sizes mean totals can vary)
+- **1,700+ assertions** covering core algorithms, domain wrappers, and documentation examples
 - **100% coverage** of core algorithm components
 - Multi-objective engines participate in the default test run
 - All results validated against Dijkstra's algorithm
@@ -52,9 +50,4 @@ For detailed test documentation, see [TEST_DOCUMENTATION.md](TEST_DOCUMENTATION.
 Use the helper script:
 ```bash
 julia --project=. test/run_single_test.jl test_name.jl
-```
-
-Or for minimal testing:
-```bash
-julia --project=. test/minimal_test.jl
 ```

@@ -71,15 +71,10 @@ for store in stores_in_budget
     println("   Store $(store-4): \$$(round(dist, digits=2))")
 end
 
-# 4. CALCULATE PREFERENCE between two warehouses
-println("\n4️⃣ Warehouse Preference for Store 7:")
-# Which warehouse is better for Store 7: Warehouse 2 or 3?
-preference = calculate_path_preference(supply_graph, 7, 3, 4)  # Store 7 prefers WH2 over WH3
-if preference > 1.0
-    println("   Store 7 prefers Warehouse 2 ($(round(preference, digits=2))x preference)")
-else
-    println("   Store 7 prefers Warehouse 3 ($(round(1/preference, digits=2))x preference)")
-end
+# 4. CALCULATE RELATIVE SHIPPING COSTS
+println("\n4️⃣ Relative Shipping Cost: Store 3 vs Store 4")
+cost_ratio = calculate_distance_ratio(supply_graph, 1, 7, 8)
+println("   Store 3 costs $(round(cost_ratio, digits=2))x as much to reach as Store 4")
 
 # Example 2: Social Network
 println("\n\n👥 Example 2: Social Network (Influence Propagation)")

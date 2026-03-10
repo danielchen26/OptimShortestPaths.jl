@@ -27,7 +27,7 @@ For healthcare professionals, the example provides intuitive wrappers:
 - `optimize_treatment_sequence(protocol, start_treatment, end_treatment)` - Find optimal pathway using familiar terminology
 - `analyze_treatment_accessibility(protocol, treatment_name)` - Treatment-specific metrics
 
-**The example explicitly demonstrates both approaches side-by-side**, showing they produce identical results. This allows you to choose based on your preference and expertise level.
+**The example explicitly demonstrates both approaches side-by-side**, including the treatment-specific accessibility helper, so you can choose between generic graph functions and named clinical wrappers.
 
 ## 📊 Mathematical Formulation
 
@@ -54,12 +54,13 @@ We construct a directed graph $G = (V, E, w)$ where:
    Edges encode clinical constraints and feasible treatment sequences.
 
 3. **Weight function**:
-   $$w(t_i, t_j) = \frac{c(t_j) + \tau(t_i, t_j)}{e(t_j)}$$
+   $$w(t_i, t_j) = \tau(t_i, t_j) + \frac{c(t_j)}{\max(e(t_j), \varepsilon)}$$
    
    where:
    - $c(t_j)$: Direct cost of treatment $t_j$
    - $\tau(t_i, t_j)$: Transition cost (coordination, waiting time, overhead)
-   - $e(t_j)$: Efficacy factor (normalizes by treatment effectiveness)
+   - $e(t_j)$: Efficacy factor (down-weights less effective treatments)
+   - $\varepsilon$: Small numerical safeguard preventing division by zero
 
 ### The Optimization Problem
 
@@ -104,7 +105,7 @@ The DMY algorithm transforms clinical pathway optimization into an efficient gra
 1. **Graph Initialization**:
    ```julia
    for each transition (t_i, t_j, transition_cost):
-       weight = (treatment_cost[j] + transition_cost) / efficacy[j]
+       weight = transition_cost + treatment_cost[j] / max(efficacy[j], 10^{-6})
        add_edge(t_i → t_j, weight)
    ```
 
@@ -205,10 +206,10 @@ Screening → Imaging → Biopsy → Staging → MDT Review
 Starting from Initial Screening with $\text{dist}[\text{Screening}] = 0$:
 
 $$\begin{align}
-\text{dist}[\text{Imaging}] &= 0.5 + \frac{2.0 + 0.2}{0.95} = 2.82 \\
-\text{dist}[\text{Biopsy}] &= 2.82 + \frac{1.5 + 0.5}{0.98} = 4.86 \\
-\text{dist}[\text{Staging}] &= 4.86 + \frac{1.0 + 0.3}{0.90} = 6.30 \\
-\text{dist}[\text{MDT Review}] &= 6.30 + \frac{0.8 + 0.2}{0.85} = 7.48
+\text{dist}[\text{Imaging}] &= 0.5 + 0.2 + \frac{2.0}{0.95} = 2.81 \\
+\text{dist}[\text{Biopsy}] &= 2.81 + 0.5 + \frac{1.5}{0.98} = 4.84 \\
+\text{dist}[\text{Staging}] &= 4.84 + 0.3 + \frac{1.0}{0.90} = 6.25 \\
+\text{dist}[\text{MDT Review}] &= 6.25 + 0.2 + \frac{0.8}{0.85} = 7.39
 \end{align}$$
 
 The algorithm then evaluates treatment options, finding the optimal path based on patient-specific factors.
@@ -256,8 +257,8 @@ function create_treatment_protocol(treatments, costs, efficacy, transitions)
         treatment_cost = costs[to_idx]
         treatment_efficacy = efficacy[to_idx]
         
-        # Combined weight: (treatment + transition) / efficacy
-        total_weight = (treatment_cost + transition_cost) / treatment_efficacy
+        # Combined weight: transition cost plus efficacy-adjusted treatment cost
+        total_weight = transition_cost + treatment_cost / max(treatment_efficacy, 1e-6)
         
         push!(edges, Edge(from_idx, to_idx, length(edges) + 1))
         push!(weights, total_weight)

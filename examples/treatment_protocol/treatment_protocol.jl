@@ -145,6 +145,13 @@ println("   Reachable treatments: $(screening_connectivity["reachable_count"])/$
 println("   Average cost to reach: \$$(round(screening_connectivity["avg_distance"], digits=1))k")
 println("   Max cost: \$$(round(screening_connectivity["max_distance"], digits=1))k")
 
+# Use the domain-specific accessibility wrapper for the same starting point
+screening_accessibility = analyze_treatment_accessibility(protocol, "Initial_Screening")
+println("\nUsing analyze_treatment_accessibility() from Initial_Screening:")
+println("   Reachable treatments: $(screening_accessibility["reachable_treatments"])/$(screening_accessibility["total_treatments"])")
+println("   Average cost to reach: \$$(round(screening_accessibility["avg_treatment_distance"], digits=1))k")
+println("   Max cost: \$$(round(screening_accessibility["max_treatment_distance"], digits=1))k")
+
 # Use GENERIC find_reachable_vertices for budget-constrained analysis
 budget = 50.0  # $50k budget
 affordable_treatments = find_reachable_vertices(protocol.graph, screening_idx, budget)

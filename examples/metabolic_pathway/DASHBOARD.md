@@ -75,7 +75,7 @@ Real metabolic engineering involves optimizing multiple competing objectives:
 
 Special solutions highlighted:
 - **Blue Star (Balanced)**: Weighted solution (ATP≈23.0, Time≈5.8 min, Enzyme load≈12.5 units, Byproduct≈0.85×)
-- **Green Annotation**: “Constraint load ≤$0.30× infeasible” — the ε-constraint has no feasible solution for the seeded network
+- **Green Annotation**: “Constraint load ≤\$0.30× infeasible” — the ε-constraint has no feasible solution for the seeded network
 - **Red Hexagon (Knee Point)**: Highest-efficiency trade-off (ATP≈13.2, Time≈8.7 min, Enzyme load≈16.5 units, Byproduct≈0.8×)
 
 ### Pareto-Optimal Metabolic Pathways

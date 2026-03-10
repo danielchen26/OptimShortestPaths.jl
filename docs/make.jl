@@ -23,7 +23,7 @@ end
 makedocs(;
     modules=[OptimShortestPaths],
     authors="Tianchi Chen <chentianchi@gmail.com>",
-    repo="https://github.com/danielchen26/OptimShortestPaths.jl/blob/{commit}{path}#{line}",
+    remotes=nothing,
     sitename="OptimShortestPaths.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
@@ -31,6 +31,7 @@ makedocs(;
         edit_link="main",
         repolink="https://github.com/danielchen26/OptimShortestPaths.jl",
         assets=String[],
+        size_threshold_ignore=["cheatsheet.md"],
     ),
     pages=[
         "Home" => "index.md",

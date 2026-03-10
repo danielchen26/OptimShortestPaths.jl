@@ -136,12 +136,12 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 - **Vertices**: 14 sites (3 factories, 4 warehouses, 5 distribution centres, 2 regions)
 - **Edges**: 18 directed transport arcs
-- **Weights**: Shipping costs ranging $5–$15 per unit
+- **Weights**: Shipping costs ranging \$5–\$15 per unit
 - **Solution**: Optimised multi-hop distribution plan
 
 ### Measured Results
 
-- Total cost: $79.0k (production: $52.5k, transport: $26.5k)
+- Total cost: \$79.0k (production: \$52.5k, transport: \$26.5k)
 - Cost split: 66.5% production / 33.5% transport
 - Demand satisfaction: 110.0% of required
 - Network utilisation: ~82% of capacity
@@ -176,7 +176,7 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 - DMY delivers ≈4.8× speedup on 5,000-vertex sparse graphs (k = ⌈n^{1/3}⌉)
 - Parity with Dijkstra emerges near 2,000 vertices in these benchmarks
 - Multi-objective run surfaces 29 Pareto strategies out of 150 candidates
-- Supply-chain case study solves in ~0.08 ms with total cost $79.0k (66.5% production, 33.5% transport)
+- Supply-chain case study solves in ~0.08 ms with total cost \$79.0k (66.5% production, 33.5% transport)
 - Eight domain exemplars demonstrate how to cast problems into shortest paths
 - Empirical results remain consistent with the O(m log^(2/3) n) complexity bound
 
@@ -206,7 +206,7 @@ OptimShortestPaths transforms supply chain networks into solvable shortest-path 
 
 All results in this dashboard can be regenerated using:
 
-- **Benchmarks**: `julia --project=. test/benchmark_performance.jl`
+- **Benchmarks**: `julia --project=. dev/benchmark_performance.jl`
 - **Visualization**: `julia --project=. examples/comprehensive_demo/generate_figures.jl`
 - **Main Demo**: `julia --project=. examples/comprehensive_demo/comprehensive_demo.jl`
 

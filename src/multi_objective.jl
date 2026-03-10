@@ -30,6 +30,12 @@ struct ParetoSolution
     parent::Vector{Int}          # Parent array for path reconstruction
 end
 
+struct MOSPLabel
+    vertex::Int
+    objectives::Vector{Float64}
+    parent_label::Int
+end
+
 """
 Multi-objective graph structure
 """
@@ -54,9 +60,7 @@ struct MultiObjectiveGraph
             sense in valid_senses || throw(ArgumentError("Objective sense must be :min or :max"))
         end
 
-        for edge in edges
-            length(edge.weights) == n_objectives || throw(ArgumentError("Edge weight dimension mismatch with number of objectives"))
-        end
+        validate_multiobjective_graph_inputs(n_vertices, edges, n_objectives, adjacency_list)
 
         return new(n_vertices, edges, n_objectives, adjacency_list, objective_names, objective_sense)
     end
@@ -90,6 +94,7 @@ function MultiObjectiveGraph(n_vertices::Int, edges::Vector{MultiObjectiveEdge},
     # Build adjacency list automatically
     adjacency_list = [Int[] for _ in 1:n_vertices]
     for (idx, edge) in enumerate(edges)
+        1 <= edge.source <= n_vertices || throw(ArgumentError("Invalid source vertex for edge $idx: $(edge.source)"))
         push!(adjacency_list[edge.source], idx)
     end
 
@@ -123,100 +128,153 @@ function dominates(a::Vector{Float64}, b::Vector{Float64}, sense::Vector{Symbol}
     return improved
 end
 
+function objectives_equal(a::Vector{Float64}, b::Vector{Float64}; atol=1e-10)
+    length(a) == length(b) || return false
+    return all(abs(x - y) <= atol for (x, y) in zip(a, b))
+end
+
+function validate_multiobjective_graph_inputs(n_vertices::Int,
+                                              edges::Vector{MultiObjectiveEdge},
+                                              n_objectives::Int,
+                                              adjacency_list::Vector{Vector{Int}})
+    for (idx, edge) in enumerate(edges)
+        1 <= edge.source <= n_vertices || throw(ArgumentError("Invalid source vertex for edge $idx: $(edge.source)"))
+        1 <= edge.target <= n_vertices || throw(ArgumentError("Invalid target vertex for edge $idx: $(edge.target)"))
+        edge.edge_id == idx || throw(ArgumentError("Edge id mismatch at position $idx"))
+        length(edge.weights) == n_objectives || throw(ArgumentError("Edge weight dimension mismatch with number of objectives"))
+        all(isfinite, edge.weights) || throw(ArgumentError("Edge $idx contains non-finite objective weights"))
+        idx in adjacency_list[edge.source] || throw(ArgumentError("Edge $idx not found in adjacency list for vertex $(edge.source)"))
+    end
+
+    for (vertex, adj_edges) in enumerate(adjacency_list)
+        seen = Set{Int}()
+        for edge_idx in adj_edges
+            1 <= edge_idx <= length(edges) || throw(ArgumentError("Invalid edge index $edge_idx in adjacency list for vertex $vertex"))
+            edge_idx in seen && throw(ArgumentError("Duplicate edge index $edge_idx in adjacency list for vertex $vertex"))
+            push!(seen, edge_idx)
+            edges[edge_idx].source == vertex || throw(ArgumentError("Edge $edge_idx in adjacency list for vertex $vertex has wrong source"))
+        end
+    end
+
+    return true
+end
+
+function label_to_solution(labels::Vector{MOSPLabel}, label_id::Int, n_vertices::Int)
+    path = Int[]
+    parent_array = zeros(Int, n_vertices)
+    current_id = label_id
+
+    while current_id != 0
+        label = labels[current_id]
+        pushfirst!(path, label.vertex)
+        if label.parent_label != 0
+            parent_array[label.vertex] = labels[label.parent_label].vertex
+        end
+        current_id = label.parent_label
+    end
+
+    return ParetoSolution(copy(labels[label_id].objectives), path, parent_array)
+end
+
+function normalized_objectives(solution::ParetoSolution, objective_sense::Vector{Symbol},
+                               utopia::Vector{Float64}, nadir::Vector{Float64})
+    normalized = Float64[]
+    for i in 1:length(solution.objectives)
+        if objective_sense[i] === :min
+            range = nadir[i] - utopia[i]
+            value = range > 1e-10 ? (solution.objectives[i] - utopia[i]) / range : 0.0
+            push!(normalized, value)
+        else
+            range = utopia[i] - nadir[i]
+            value = range > 1e-10 ? (utopia[i] - solution.objectives[i]) / range : 0.0
+            push!(normalized, value)
+        end
+    end
+    return normalized
+end
+
+function distance_to_segment(point::Vector{Float64}, start::Vector{Float64}, finish::Vector{Float64})
+    direction = finish .- start
+    length_sq = sum(direction .^ 2)
+    if length_sq <= 1e-12
+        return sqrt(sum((point .- start) .^ 2))
+    end
+
+    t = sum((point .- start) .* direction) / length_sq
+    t = clamp(t, 0.0, 1.0)
+    projection = start .+ t .* direction
+    return sqrt(sum((point .- projection) .^ 2))
+end
+
 """
 Compute the full Pareto front for multi-objective shortest paths.
 Returns all non-dominated paths from source to target.
 """
-function compute_pareto_front(graph::MultiObjectiveGraph, source::Int, target::Int; 
-                             max_solutions::Int=100)
-    pareto_front = ParetoSolution[]
-    
-    # Each vertex maintains a set of non-dominated labels
-    # Label format: (objectives, parent_vertex, parent_label_index)
-    labels = [Vector{Tuple{Vector{Float64}, Int, Int}}() for _ in 1:graph.n_vertices]
-    
-    # Initialize source
-    push!(labels[source], (zeros(graph.n_objectives), 0, 0))
-    
-    # Queue: (vertex, label_index)
-    # Use a set to track processed items
-    queue = [(source, 1)]
-    processed = Set{Tuple{Int, Int}}()
-    
-    while !isempty(queue) && length(pareto_front) < max_solutions
-        item = popfirst!(queue)
-        
-        # Skip if already processed
-        if item in processed
-            continue
-        end
-        push!(processed, item)
-        
-        u, label_idx = item
-        
-        if label_idx > length(labels[u])
-            continue
-        end
-        
-        current_cost, parent_v, parent_idx = labels[u][label_idx]
-        
-        # If this is the target, add to Pareto front
-        if u == target
-            # Reconstruct path
-            path = [u]
-            parent_array = zeros(Int, graph.n_vertices)
-            curr_v = u
-            curr_idx = label_idx
-            
-            while curr_v != source
-                if curr_idx > length(labels[curr_v])
-                    break
-                end
-                _, p_v, p_idx = labels[curr_v][curr_idx]
-                parent_array[curr_v] = p_v
-                curr_v = p_v
-                curr_idx = p_idx
-                pushfirst!(path, curr_v)
+function compute_pareto_front(graph::MultiObjectiveGraph, source::Int, target::Int;
+                              max_solutions::Int=100)
+    1 <= source <= graph.n_vertices || throw(BoundsError("Source vertex $source out of range"))
+    1 <= target <= graph.n_vertices || throw(BoundsError("Target vertex $target out of range"))
+    max_solutions > 0 || throw(ArgumentError("max_solutions must be positive"))
+
+    active_labels = [Int[] for _ in 1:graph.n_vertices]
+    active_sets = [Set{Int}() for _ in 1:graph.n_vertices]
+    all_labels = MOSPLabel[]
+    queue = Int[]
+    processed = Set{Int}()
+
+    function add_label!(vertex::Int, objectives::Vector{Float64}, parent_label::Int)
+        for existing_id in active_labels[vertex]
+            existing = all_labels[existing_id]
+            if objectives_equal(existing.objectives, objectives)
+                return nothing
             end
-            
-            push!(pareto_front, ParetoSolution(current_cost, path, parent_array))
+            if dominates(existing.objectives, objectives, graph.objective_sense)
+                return nothing
+            end
         end
 
-        # Explore neighbors
-        for edge_idx in graph.adjacency_list[u]
+        survivor_ids = Int[]
+        dominated_existing = false
+        for existing_id in active_labels[vertex]
+            existing = all_labels[existing_id]
+            if dominates(objectives, existing.objectives, graph.objective_sense)
+                delete!(active_sets[vertex], existing_id)
+                dominated_existing = true
+            else
+                push!(survivor_ids, existing_id)
+            end
+        end
+
+        if vertex == target && length(survivor_ids) >= max_solutions && !dominated_existing
+            return nothing
+        end
+
+        active_labels[vertex] = survivor_ids
+        label_id = length(all_labels) + 1
+        push!(all_labels, MOSPLabel(vertex, copy(objectives), parent_label))
+        push!(active_labels[vertex], label_id)
+        push!(active_sets[vertex], label_id)
+        push!(queue, label_id)
+        return label_id
+    end
+
+    add_label!(source, zeros(graph.n_objectives), 0)
+
+    while !isempty(queue)
+        label_id = popfirst!(queue)
+        label_id in processed && continue
+        push!(processed, label_id)
+
+        label = all_labels[label_id]
+        label_id in active_sets[label.vertex] || continue
+
+        for edge_idx in graph.adjacency_list[label.vertex]
             edge = graph.edges[edge_idx]
-            v = edge.target
-            
-            # New objective values
-            new_cost = current_cost .+ edge.weights
-
-            # Check if dominated by existing labels at v
-            dominated = false
-            for (existing_cost, _, _) in labels[v]
-                if dominates(existing_cost, new_cost, graph.objective_sense)
-                    dominated = true
-                    break
-                end
-            end
-
-            if !dominated
-                # Remove labels dominated by new_cost
-                old_size = length(labels[v])
-                filter!(label -> !dominates(new_cost, label[1], graph.objective_sense), labels[v])
-                
-                # Add new label
-                push!(labels[v], (new_cost, u, label_idx))
-                new_item = (v, length(labels[v]))
-                
-                # Only add to queue if not already processed
-                if new_item ∉ processed
-                    push!(queue, new_item)
-                end
-            end
+            add_label!(edge.target, label.objectives .+ edge.weights, label_id)
         end
     end
-    
-    return pareto_front
+
+    return [label_to_solution(all_labels, label_id, graph.n_vertices) for label_id in active_labels[target]]
 end
 
 """
@@ -228,6 +286,7 @@ function weighted_sum_approach(graph::MultiObjectiveGraph, source::Int, target::
     # Validate weights
     length(weights) == graph.n_objectives || error("Weight vector size mismatch")
     abs(sum(weights) - 1.0) < 1e-6 || error("Weights must sum to 1 within tolerance 1e-6")
+    1 <= source <= graph.n_vertices || throw(BoundsError("Source vertex $source out of range"))
     1 <= target <= graph.n_vertices || throw(BoundsError("Target vertex $target out of range"))
 
     # DMY-based aggregation currently expects cost-type objectives
@@ -304,6 +363,7 @@ Good for finding specific trade-off solutions.
 """
 function epsilon_constraint_approach(graph::MultiObjectiveGraph, source::Int, target::Int,
                                     primary_objective::Int, constraints::Vector{Float64})
+    1 <= source <= graph.n_vertices || throw(BoundsError("Source vertex $source out of range"))
     1 <= target <= graph.n_vertices || throw(BoundsError("Target vertex $target out of range"))
     length(constraints) == graph.n_objectives || error("Constraints vector must match number of objectives")
     1 <= primary_objective <= graph.n_objectives || throw(BoundsError("Primary objective index out of range"))
@@ -353,10 +413,13 @@ Good when objectives have clear priority ranking.
 """
 function lexicographic_approach(graph::MultiObjectiveGraph, source::Int, target::Int,
                                priority_order::Vector{Int})
+    1 <= source <= graph.n_vertices || throw(BoundsError("Source vertex $source out of range"))
     1 <= target <= graph.n_vertices || throw(BoundsError("Target vertex $target out of range"))
     all(graph.objective_sense .== :min) || throw(ArgumentError(
         "lexicographic_approach currently supports only objectives expressed as costs (sense=:min). " *
         "Transform maximize metrics into costs before calling."))
+    all(1 <= idx <= graph.n_objectives for idx in priority_order) ||
+        throw(BoundsError("Priority order contains objective index out of range"))
     isempty(priority_order) && return ParetoSolution(fill(Inf, graph.n_objectives), Int[], zeros(Int, graph.n_vertices))
 
     # Maintain the subset of edge indices that remain feasible after each priority.
@@ -440,53 +503,73 @@ function lexicographic_approach(graph::MultiObjectiveGraph, source::Int, target:
 end
 
 """
-Find the "knee point" in the Pareto front - the solution with best trade-off.
-Uses the maximum distance from the utopia-nadir line.
+Find the "knee point" in the Pareto front using a geometric trade-off heuristic.
+
+For two objectives, this uses the point with maximum perpendicular distance from
+the chord joining the extreme Pareto solutions after objective normalization.
+For higher dimensions, it falls back to the distance from the normalized utopia-nadir
+diagonal. Pass `objective_sense` when the front mixes minimization and maximization.
 """
-function get_knee_point(pareto_front::Vector{ParetoSolution})
+function get_knee_point(pareto_front::Vector{ParetoSolution};
+                        objective_sense::Vector{Symbol}=fill(:min, isempty(pareto_front) ? 0 : length(pareto_front[1].objectives)))
     isempty(pareto_front) && return nothing
     length(pareto_front) == 1 && return pareto_front[1]
-    
-    # Find utopia and nadir points
     n_obj = length(pareto_front[1].objectives)
-    utopia = fill(Inf, n_obj)
-    nadir = fill(-Inf, n_obj)
-    
+    length(objective_sense) == n_obj || throw(ArgumentError("Objective sense length must match the number of objectives"))
+
+    utopia = [sense === :min ? Inf : -Inf for sense in objective_sense]
+    nadir = [sense === :min ? -Inf : Inf for sense in objective_sense]
     for sol in pareto_front
         for i in 1:n_obj
-            utopia[i] = min(utopia[i], sol.objectives[i])
-            nadir[i] = max(nadir[i], sol.objectives[i])
-        end
-    end
-    
-    # Normalize objectives
-    normalized_solutions = []
-    for sol in pareto_front
-        normalized = Float64[]
-        for i in 1:n_obj
-            if nadir[i] - utopia[i] > 1e-10
-                push!(normalized, (sol.objectives[i] - utopia[i]) / (nadir[i] - utopia[i]))
+            if objective_sense[i] === :min
+                utopia[i] = min(utopia[i], sol.objectives[i])
+                nadir[i] = max(nadir[i], sol.objectives[i])
             else
-                push!(normalized, 0.0)
+                utopia[i] = max(utopia[i], sol.objectives[i])
+                nadir[i] = min(nadir[i], sol.objectives[i])
             end
         end
-        push!(normalized_solutions, normalized)
     end
-    
-    # Find point with maximum distance from utopia-nadir line
-    max_distance = -Inf
-    knee_idx = 1
-    
-    for (i, norm_sol) in enumerate(normalized_solutions)
-        # Distance from point to line (simplified for 2D, generalizable)
-        distance = sqrt(sum(norm_sol.^2))
-        if distance > max_distance
-            max_distance = distance
-            knee_idx = i
+
+    normalized_solutions = [normalized_objectives(sol, objective_sense, utopia, nadir) for sol in pareto_front]
+
+    if n_obj == 2
+        order = sortperm(1:length(normalized_solutions), by=i -> (normalized_solutions[i][1], normalized_solutions[i][2]))
+        start_point = normalized_solutions[first(order)]
+        end_point = normalized_solutions[last(order)]
+
+        best_idx = first(order)
+        best_distance = -Inf
+        best_score = Inf
+        for idx in order
+            distance = distance_to_segment(normalized_solutions[idx], start_point, end_point)
+            score = sum(normalized_solutions[idx])
+            if distance > best_distance + 1e-12 || (abs(distance - best_distance) <= 1e-12 && score < best_score)
+                best_idx = idx
+                best_distance = distance
+                best_score = score
+            end
+        end
+        return pareto_front[best_idx]
+    end
+
+    start_point = zeros(n_obj)
+    end_point = ones(n_obj)
+    best_idx = 1
+    best_distance = -Inf
+    best_score = Inf
+
+    for (idx, point) in enumerate(normalized_solutions)
+        distance = distance_to_segment(point, start_point, end_point)
+        score = sum(point)
+        if distance > best_distance + 1e-12 || (abs(distance - best_distance) <= 1e-12 && score < best_score)
+            best_idx = idx
+            best_distance = distance
+            best_score = score
         end
     end
-    
-    return pareto_front[knee_idx]
+
+    return pareto_front[best_idx]
 end
 
 """
@@ -496,6 +579,10 @@ which multi-objective edge was used to reach each vertex.
 """
 function compute_path_objectives(graph::MultiObjectiveGraph, parent::Vector{Int},
                                 source::Int, target::Int; edge_indices::Union{Nothing,Vector{Int}}=nothing)
+    1 <= source <= graph.n_vertices || throw(BoundsError("Source vertex $source out of range"))
+    1 <= target <= graph.n_vertices || throw(BoundsError("Target vertex $target out of range"))
+    edge_indices === nothing || length(edge_indices) == graph.n_vertices ||
+        throw(ArgumentError("Edge index lookup must match the number of vertices"))
     objectives = zeros(graph.n_objectives)
     
     if parent[target] == 0 && target != source

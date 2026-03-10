@@ -5,8 +5,8 @@
 This dashboard presents comprehensive analysis of cancer treatment protocols using the DMY shortest-path algorithm, including both **single-objective** cost optimization and **multi-objective Pareto front** analysis balancing cost, time, quality of life, and success rates.
 
 **Key Findings**:
-1. **Single-objective**: Optimal curative pathway costs $10.8k with 7 treatment steps (Initial Screening → Remission)
-2. **Multi-objective**: Six Pareto-optimal protocols balance cost ($17.5k–$56k), duration (54–158 wk), QoL (5–52), and success (305–456 scaled units)
+1. **Single-objective**: Optimal curative pathway costs \$10.8k with 7 treatment steps (Initial Screening → Remission)
+2. **Multi-objective**: Six Pareto-optimal protocols balance cost (\$17.5k–\$56k), duration (54–158 wk), QoL (5–52), and success (305–456 scaled units)
 3. **Performance**: On the current 20-node protocol, DMY runs ~2.1× faster than Dijkstra (0.01 ms vs 0.03 ms)
 
 **Reproducibility**: run `treatment_protocol.jl` or `generate_figures.jl` with `--seed=<int>` (or set `OPTIM_SP_SEED`) to replay the exact same simulated patient pathways. Default seed is `42`.
@@ -19,8 +19,8 @@ This dashboard presents comprehensive analysis of cancer treatment protocols usi
 ![Treatment Cost Efficacy](figures/treatment_cost_efficacy.png)
 
 **Interpretation**:
-- Major surgery: Highest cost ($35k) with 90% efficacy
-- Targeted therapy: Most expensive ($45k) with 80% efficacy
+- Major surgery: Highest cost (\$35k) with 90% efficacy
+- Targeted therapy: Most expensive (\$45k) with 80% efficacy
 - Screening/Biopsy: Low cost, high diagnostic value
 - Trade-off clearly visible between cost and treatment success
 
@@ -70,25 +70,25 @@ Real-world treatment decisions involve optimizing multiple competing objectives:
 ![Pareto Front 3D](figures/treatment_pareto_3d.png)
 
 **3D Trade-off Space**:
-- **X-axis (Cost)**: Treatment cost in thousands (~$17–$56k across the Pareto set)
+- **X-axis (Cost)**: Treatment cost in thousands (~\$17–\$56k across the Pareto set)
 - **Y-axis (Success)**: Scaled remission score (305–456 composite units; higher is better)
 - **Z-axis (QoL)**: Quality-of-life index (5–52; higher preserves comfort)
 
 Legend highlights:
-- **Green Diamond — “Budget-constrained”**: Pareto solution 2 ($17.5k, 158 wk, QoL 52, success ≈ 305) satisfies the cost ≤ $50k constraint.
-- **Red Hexagon — “Knee Point”**: Pareto solution 6 ($56.0k, 60 wk, QoL 5, success ≈ 456) balances the frontier’s steepest trade-off.
+- **Green Diamond — “Budget-constrained”**: Pareto solution 2 (\$17.5k, 158 wk, QoL 52, success ≈ 305) satisfies the cost ≤ \$50k constraint.
+- **Red Hexagon — “Knee Point”**: Pareto solution 6 (\$56.0k, 60 wk, QoL 5, success ≈ 456) balances the frontier’s steepest trade-off.
 - Weighted-sum scoring is intentionally omitted because the objectives mix min/max senses; convert maximise metrics to costs before re-enabling it.
 
 ### Pareto-Optimal Treatment Protocols
 
 | Solution | Treatment Pattern | Cost | Time | QoL | Success* | **When to Use** |
 |----------|-------------------|------|------|-----|----------|-----------------|
-| 1 | Diagnosis → Basic Imaging → Staging → … | $22.5k | 55 wk | 42 | 365 | **Balanced** – moderate cost, solid outcome |
-| 2 | Diagnosis → Basic Imaging → Staging → … | $17.5k | 158 wk | 52 | 305 | **Budget-focused** – extend time to control cost |
-| 3 | Diagnosis → Advanced Imaging → Staging → … | $26.0k | 54 wk | 40 | 373 | **Aggressive imaging** – faster staging, good success |
-| 4 | Diagnosis → Advanced Imaging → Staging → … | $21.0k | 157 wk | 50 | 313 | **Cost-conscious imaging** – slightly slower, lower spend |
-| 5 | Diagnosis → Basic Imaging → Staging → … | $52.5k | 61 wk | 7 | 448 | **High-intensity therapy** – prioritize success despite QoL hit |
-| 6 | Diagnosis → Advanced Imaging → Staging → … | $56.0k | 60 wk | 5 | 456 | **Max success knee point** – resource-rich settings |
+| 1 | Diagnosis → Basic Imaging → Staging → … | \$22.5k | 55 wk | 42 | 365 | **Balanced** – moderate cost, solid outcome |
+| 2 | Diagnosis → Basic Imaging → Staging → … | \$17.5k | 158 wk | 52 | 305 | **Budget-focused** – extend time to control cost |
+| 3 | Diagnosis → Advanced Imaging → Staging → … | \$26.0k | 54 wk | 40 | 373 | **Aggressive imaging** – faster staging, good success |
+| 4 | Diagnosis → Advanced Imaging → Staging → … | \$21.0k | 157 wk | 50 | 313 | **Cost-conscious imaging** – slightly slower, lower spend |
+| 5 | Diagnosis → Basic Imaging → Staging → … | \$52.5k | 61 wk | 7 | 448 | **High-intensity therapy** – prioritize success despite QoL hit |
+| 6 | Diagnosis → Advanced Imaging → Staging → … | \$56.0k | 60 wk | 5 | 456 | **Max success knee point** – resource-rich settings |
 
 *Success values are scaled composite scores from the example model and can exceed 100.
 
@@ -96,9 +96,9 @@ Legend highlights:
 ![Treatment Strategies](figures/treatment_strategies.png)
 
 **Strategy Analysis**:
-- **Budget control** (Solution 2): $17.5k, success ≈305, QoL 52 – lowest spend, longest duration
-- **Mid-range blend** (Solution 1): $22.5k, success ≈365, QoL 42 – balanced compromise
-- **High-success knee** (Solution 6): $56.0k, success ≈456, QoL 5 – maximum remission at the expense of comfort
+- **Budget control** (Solution 2): \$17.5k, success ≈305, QoL 52 – lowest spend, longest duration
+- **Mid-range blend** (Solution 1): \$22.5k, success ≈365, QoL 42 – balanced compromise
+- **High-success knee** (Solution 6): \$56.0k, success ≈456, QoL 5 – maximum remission at the expense of comfort
 - Weighted-sum ranking requires converting efficacy to a cost; disabled by default to avoid misleading scores
 
 ---
@@ -112,11 +112,11 @@ Legend highlights:
 
 | Patient Profile | Recommended Protocol | Cost | Success* | QoL | Rationale |
 |----------------|---------------------|------|---------|-----|-----------|
-| Young, fit | Solution 6 (High-success) | $56.0k | 456 | 5 | Maximize remission when tolerance for toxicity is high |
-| Standard risk | Solution 1 (Balanced) | $22.5k | 365 | 42 | Strong remission with manageable QoL impact |
-| Budget-limited | Solution 2 (Cost focus) | $17.5k | 305 | 52 | Lowest spend, accepts longer duration |
-| QoL-priority | Solution 2 or 1 | $17.5k–$22.5k | 305–365 | 42–52 | Keeps QoL above 40 while maintaining efficacy |
-| Salvage/advanced disease | Solution 5 (Aggressive) | $52.5k | 448 | 7 | Pursue high success despite severe QoL penalty |
+| Young, fit | Solution 6 (High-success) | \$56.0k | 456 | 5 | Maximize remission when tolerance for toxicity is high |
+| Standard risk | Solution 1 (Balanced) | \$22.5k | 365 | 42 | Strong remission with manageable QoL impact |
+| Budget-limited | Solution 2 (Cost focus) | \$17.5k | 305 | 52 | Lowest spend, accepts longer duration |
+| QoL-priority | Solution 2 or 1 | \$17.5k–\$22.5k | 305–365 | 42–52 | Keeps QoL above 40 while maintaining efficacy |
+| Salvage/advanced disease | Solution 5 (Aggressive) | \$52.5k | 448 | 7 | Pursue high success despite severe QoL penalty |
 
 *Success values are scaled composite scores from the example model.
 

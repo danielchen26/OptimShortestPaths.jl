@@ -6,7 +6,7 @@ This dashboard presents results from applying the DMY shortest-path algorithm to
 
 **Key Findings**:
 1. **Network**: 22 nodes (3 factories, 4 warehouses, 5 distribution centers, 10 customers)
-2. **Optimal routing**: All 10 customers served with total cost ≈$79.0k (production $52.5k + transport $26.5k)
+2. **Optimal routing**: All 10 customers served with total cost ≈\$79.0k (production \$52.5k + transport \$26.5k)
 3. **Performance**: DMY solves the 22-node network in ~0.08 ms (≈14× faster than an LP baseline)
 
 **Reproducibility**: set `OPTIM_SP_SEED=<int>` (or pass `--seed=<int>`) before running `supply_chain.jl` or `generate_figures.jl` to rebuild the identical synthetic network. Default seed is `42` when none is provided.
@@ -51,10 +51,10 @@ Detailed breakdown of production and transportation costs:
 
 **Cost Summary** (seeded simulation):
 - **Customers Served**: 10/10 (100%)
-- **Average Path Cost**: $7,900.66 per customer
-- **Total Production Cost**: $52,525.00
-- **Total Transport Cost**: $26,481.61
-- **Total System Cost**: $79,006.61
+- **Average Path Cost**: \$7,900.66 per customer
+- **Total Production Cost**: \$52,525.00
+- **Total Transport Cost**: \$26,481.61
+- **Total System Cost**: \$79,006.61
 - **Cost Split**: 66.5% production / 33.5% transport
 - **Demand Satisfaction**: 110%
 
@@ -99,7 +99,7 @@ Find minimum-cost distribution paths from factories through warehouses and distr
 ✅ **All customers served** at minimum total cost
 ✅ **22-node network** solved in **< 0.1ms**
 ✅ **Factory 2** identified as most cost-effective source
-✅ **$79,006.61 total cost** (66.5% production, 33.5% transport)
+✅ **\$79,006.61 total cost** (66.5% production, 33.5% transport)
 
 ---
 

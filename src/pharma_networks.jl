@@ -3,7 +3,7 @@ using ..OptimShortestPaths: Edge, DMYGraph, INF, dmy_sssp!, dmy_sssp_with_parent
                PharmaNetwork, DrugTargetNetwork, MetabolicPathway, TreatmentProtocol
 export create_drug_target_network, find_drug_target_paths, analyze_drug_connectivity,
        create_metabolic_pathway, find_metabolic_pathway, create_treatment_protocol,
-       optimize_treatment_sequence
+       optimize_treatment_sequence, analyze_treatment_accessibility
 
 """
 Pharmaceutical network implementations for drug discovery and healthcare applications.
@@ -407,5 +407,44 @@ function optimize_treatment_sequence(protocol::TreatmentProtocol, start_treatmen
     treatment_sequence = [protocol.treatments[v] for v in vertex_path]
     
     return total_cost, treatment_sequence
+end
+
+"""
+    analyze_treatment_accessibility(protocol::TreatmentProtocol, treatment_name::String) -> Dict{String, Any}
+
+Analyze reachability and cost statistics starting from a treatment step.
+Returns summary metrics over all treatment vertices reachable from the named step.
+"""
+function analyze_treatment_accessibility(protocol::TreatmentProtocol, treatment_name::String)
+    haskey(protocol.treatment_indices, treatment_name) ||
+        throw(ArgumentError("Treatment '$treatment_name' not found"))
+
+    start_vertex = protocol.treatment_indices[treatment_name]
+    dist = dmy_sssp!(protocol.graph, start_vertex)
+
+    reachable_treatments = String[]
+    treatment_distances = Float64[]
+    for treatment in protocol.treatments
+        vertex = protocol.treatment_indices[treatment]
+        if dist[vertex] < INF
+            push!(reachable_treatments, treatment)
+            push!(treatment_distances, dist[vertex])
+        end
+    end
+
+    analysis = Dict{String, Any}()
+    analysis["treatment_name"] = treatment_name
+    analysis["total_treatments"] = length(protocol.treatments)
+    analysis["reachable_treatments"] = length(reachable_treatments)
+    analysis["reachable_treatment_names"] = reachable_treatments
+    analysis["connectivity_ratio"] = length(reachable_treatments) / length(protocol.treatments)
+
+    if !isempty(treatment_distances)
+        analysis["min_treatment_distance"] = minimum(treatment_distances)
+        analysis["max_treatment_distance"] = maximum(treatment_distances)
+        analysis["avg_treatment_distance"] = sum(treatment_distances) / length(treatment_distances)
+    end
+
+    return analysis
 end
 end # module Pharma
